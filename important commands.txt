@@ -1,0 +1,5 @@
+To install WIFI module 
+GO to - https://launchpad.net/ubuntu/jammy/amd64/backport-iwlwifi-dkms/9858-0ubuntu3
+download the deb file. then run: sudo dpkg -i backport-iwlwifi-dkms_9858-0ubuntu3_all.deb
+
+To install ros noetic: http://wiki.ros.org/noetic/Installation/Ubuntu

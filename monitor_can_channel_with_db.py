@@ -17,7 +17,9 @@ The source of the messages may be e.g. the pinger.py example script.
 
 """
 import argparse
-
+import pandas as pd
+import time
+import datetime
 from canlib import canlib, kvadblib
 
 bitrates = {
@@ -31,41 +33,54 @@ bitrates = {
     '83K': canlib.Bitrate.BITRATE_83K,
     '10K': canlib.Bitrate.BITRATE_10K,
 }
+def get_current_time():
+    current_time = datetime.datetime.now()
+    return current_time.strftime('%d-%m-%y_%H-%M-%S')
 
-
-def printframe(db, frame):
+def get_frame_data(db, frame):
     try:
         bmsg = db.interpret(frame)
     except kvadblib.KvdNoMessage:
-        # print("<<< No message found for frame with id %s >>>" % frame.id)
+        print("<<< No message found for frame with id %s >>>" % frame.id)
         print(frame.id)
-        return
+        return None
 
-    if not bmsg._message.dlc == bmsg._frame.dlc:
-        print(
-            "<<< Could not interpret message because DLC does not match for frame with id %s >>>"
-            % frame.id
-        )
-        print("\t- DLC (database): %s" % bmsg._message.dlc)
-        print("\t- DLC (received frame): %s" % bmsg._frame.dlc)
-        return
+    # if not bmsg._message.dlc == bmsg._frame.dlc:
+    #     print(
+    #         "<<< Could not interpret message because DLC does not match for frame with id %s >>>"
+    #         % frame.id
+    #     )
+    #     print("\t- DLC (database): %s" % bmsg._message.dlc)
+    #     print("\t- DLC (received frame): %s" % bmsg._frame.dlc)
+    #     return None
 
     msg = bmsg._message
 
-    # print('┏', msg.name)
+    print('┏', msg.name)
 
-    # if msg.comment:
-    #     print('┃', '"%s"' % msg.comment)
+    if msg.comment:
+        print('┃', '"%s"' % msg.comment)
 
-    # for bsig in bmsg:
-    #     print('┃', bsig.name + ':', bsig.value, bsig.unit)
+    for bsig in bmsg:
+        print('┃', bsig.name + ':', bsig.value, bsig.unit)
 
-    # print('┗')
+    print('┗')
 
-    
+    cur_frame_id = frame.id
+    cur_time = frame.timestamp
+    cur_data = frame.data
+    cur_dlc = frame.dlc
+    cur_flags = frame.flags
+    cur_msg_name = msg.name
+    cur_msg_comment = msg.comment
+    cur_signals = []
+    for bsig in bmsg:
+        cur_signals.append([bsig.name,bsig.value,bsig.unit])
+    #cur message is a dict of the current message
+    cur_message = {'time':cur_time,'frame_id':cur_frame_id,'msg_name':cur_msg_name,'signals':cur_signals}
+    return cur_message
 
-
-def monitor_channel(channel_number, db_name, bitrate, ticktime):
+def monitor_channel(channel_number, db_name, bitrate, ticktime, filename):
     db = kvadblib.Dbc(filename=db_name)
 
     ch = canlib.openChannel(channel_number, canlib.canOPEN_ACCEPT_LARGE_DLC, bitrate=bitrate)
@@ -78,12 +93,16 @@ def monitor_channel(channel_number, db_name, bitrate, ticktime):
         ticktime = None
     elif ticktime < timeout:
         timeout = ticktime
-
+    all_frame_data = []
     print("Listening...")
     while True:
         try:
             frame = ch.read(timeout=int(timeout * 1000))
-            printframe(db, frame)
+            if frame.id in [832,705,34,35,37]:
+                frame_data = get_frame_data(db, frame)
+                if frame_data is not None:
+                    all_frame_data.append(frame_data)
+
         except canlib.CanNoMsg:
             if ticktime is not None:
                 tick_countup += timeout
@@ -91,7 +110,12 @@ def monitor_channel(channel_number, db_name, bitrate, ticktime):
                     print("tick")
                     tick_countup -= ticktime
         except KeyboardInterrupt:
-            print("Stop.")
+            print("Stoping")
+            #Saving all_frame_data to a csv file using pandas dataframe
+            
+            df = pd.DataFrame(all_frame_data)
+            df.to_csv(filename)
+            ch.busOff()
             break
 
 
@@ -118,5 +142,6 @@ if __name__ == '__main__':
         help=("If greater than zero, display 'tick' every this many seconds"),
     )
     args = parser.parse_args()
+    filename ='/home/iac_user/data_collection_scripts/can_{}.csv'.format(get_current_time())
 
-    monitor_channel(args.channel, args.db, bitrates[args.bitrate.upper()], args.ticktime)
+    monitor_channel(args.channel, args.db, bitrates[args.bitrate.upper()], args.ticktime,filename)

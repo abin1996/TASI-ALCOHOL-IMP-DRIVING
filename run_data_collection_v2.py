@@ -14,7 +14,8 @@ DATA_COLLECTION_FOLDER_NAME = ''
 START_RECORD_AUDIO_BUTTON = "AUDIO TEST: START RECORD"
 STOP_AUDIO_RECORD_BUTTON = "AUDIO TEST: STOP RECORD"
 
-START_VISUAL_TEST_BUTTON = "VISUAL TEST RECORD"
+START_BRAC_BUTTON = "BREATH SENSOR: START RECORD"
+
 START_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: START RECORD"
 STOP_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: STOP RECORD"
 
@@ -26,9 +27,23 @@ CHECK_RECORDING_FOR_DRVING_SCRIPT = "/home/iac_user/data_collection_scripts/chec
 START_AUDIO_RECORDING_SCRIPT = "/home/iac_user/data_collection_scripts/start_audio_recording.sh"
 
 WINDOW_OUTPUT_TEXT= "*"
+# Define the layout of the GUI
+layout = [
+    [sg.Button(START_BRAC_BUTTON,button_color="green")],
+    # [sg.Button(STOP_BRAC_BUTTON,button_color="red")],
+    [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green")],
+    [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red")],
+    [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green")],
+    [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red")],
+    [sg.Frame("Output", [[sg.Multiline(disabled=True,size=(150, 30), font=("Courier New", 25), key="-OUTPUT-", background_color="black", text_color="white")]],expand_x=True,expand_y=True)],
+    [sg.Button("Exit")]
+]
+
+# Create the window
+window = sg.Window("TASI DATA COLLECTION", layout,resizable=True)
 # Global variable to store the running processes in reverse order
 RUNNING_PROCESSES = []
-completed_steps = set()
+
 def get_rec_file_name(string):
     pattern = r"\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}"
     match = re.search(pattern, string)
@@ -41,7 +56,7 @@ def get_rec_file_name(string):
 
 def get_current_time():
     current_time = datetime.datetime.now()
-    return current_time.strftime('%d-%m-%y_%H:%M:%S')
+    return current_time.strftime('%d-%m-%y_%H-%M-%S')
 
 # Function to execute the Bash command in a new terminal and capture output
 def execute_bash_command_in_terminal(command, command_type,is_shell=False):
@@ -162,26 +177,16 @@ def update_output_element(window_text, script_path, subject_id):
         call_bash_script(script_path,window_text, subject_id)
         # Adjust the update interval as needed
 
-# Define the layout of the GUI
-layout = [
-    [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green")],
-    [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red")],
-    [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green")],
-    [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red")],
-    [sg.Frame("Output", [[sg.Multiline(disabled=True,size=(150, 30), font=("Courier New", 25), key="-OUTPUT-", background_color="black", text_color="white")]],expand_x=True,expand_y=True)],
-    [sg.Button("Exit")]
-]
-
-# Create the window
-window = sg.Window("TASI DATA COLLECTION", layout,resizable=True)
-execute_bash_command_in_terminal([ROSCORE_START_SCRIPT],"roscore")
-time.sleep(0.5)
+def call_and_wait_for_breath_sensor(DATA_COLLECTION_FOLDER_NAME,subject_id):
+    pass
 
 def main(subject_id):
     # Event loop to process events and get button clicks
     global DATA_COLLECTION_FOLDER_NAME
     global RUNNING_PROCESSES
     global WINDOW_OUTPUT_TEXT
+    execute_bash_command_in_terminal([ROSCORE_START_SCRIPT],"roscore")
+    time.sleep(0.5)
     while True:
         event, values = window.read()
         if event in (sg.WINDOW_CLOSED, "Exit"):
@@ -213,14 +218,12 @@ def main(subject_id):
             output_thread = threading.Thread(target=update_output_element, args=(WINDOW_OUTPUT_TEXT, CHECK_RECORDING_FOR_DRVING_SCRIPT, subject_id), daemon=True)
             output_thread.start()    
         if event == STOP_RECORDING_DRIVING_BUTTON:
-            DATA_COLLECTION_FOLDER_NAME = ''
             WINDOW_OUTPUT_TEXT += "\nVISUAL/DRIVING RECORDING COMPLETED"
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
             kill_running_processes_name("all_camera_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
             time.sleep(0.5)
-            time.sleep(1)
             break
 
     kill_running_processes(RUNNING_PROCESSES)
@@ -229,6 +232,7 @@ def main(subject_id):
 
 if __name__ == "__main__":
     try:
+
         argParser = argparse.ArgumentParser()
         argParser.add_argument("-s", "--subjectID", help="Subject ID",default="Subject_01")
 

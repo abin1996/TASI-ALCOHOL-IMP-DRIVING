@@ -93,15 +93,15 @@ def sig_lines(signal):
 
 def examine_database(db_name):
     with kvadblib.Dbc(filename=db_name) as db:
-        # print_db(db)
-        for message in db.messages():
-            # print(message)
-            frame = Frame(id_=0x320, data=[1], flags=canlib.MessageFlag.EXT)
-            bmsg = db.interpret(frame)
-            print(bmsg._message)
-            print(bmsg._frame)
-            for bsig in bmsg:
-                print('┃',bsig)
+        print_db(db)
+        # for message in db.messages():
+        #     # print(message)
+        #     # frame = Frame(id_=0x320, data=[1], flags=canlib.MessageFlag.EXT)
+        #     bmsg = db.interpret(frame)
+        #     print(bmsg._message)
+        #     print(bmsg._frame)
+        #     for bsig in bmsg:
+        #         print('┃',bsig)
  
 
 if __name__ == '__main__':
@@ -111,4 +111,4 @@ if __name__ == '__main__':
     # )
     # args = parser.parse_args()
 
-    examine_database('/home/iac_user/data_collection_scripts/dadss_breath_sensor.dbc')
+    examine_database('/home/iac_user/data_collection_scripts/446w_iupui_fixed.dbc')

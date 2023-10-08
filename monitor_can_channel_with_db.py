@@ -82,7 +82,6 @@ def get_frame_data(db, frame):
 
 def monitor_channel(channel_number, db_name, bitrate, ticktime, filename):
     db = kvadblib.Dbc(filename=db_name)
-
     ch = canlib.openChannel(channel_number, canlib.canOPEN_ACCEPT_LARGE_DLC, bitrate=bitrate)
     ch.setBusOutputControl(canlib.canDRIVER_NORMAL)
     ch.busOn()
@@ -110,7 +109,7 @@ def monitor_channel(channel_number, db_name, bitrate, ticktime, filename):
                     print("tick")
                     tick_countup -= ticktime
         except KeyboardInterrupt:
-            print("Stoping")
+            print("Stopping")
             #Saving all_frame_data to a csv file using pandas dataframe
             
             df = pd.DataFrame(all_frame_data)

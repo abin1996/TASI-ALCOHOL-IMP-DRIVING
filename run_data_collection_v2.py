@@ -22,7 +22,7 @@ STOP_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: STOP RECORD"
 
 ROSCORE_START_SCRIPT = "roscore"
 START_DRIVERS_SCRIPT = "/home/iac_user/start_drivers.sh"
-START_RECORDING_FOR_DRIVING_SCRIPT = "/home/iac_user/data_collection_scripts/begin_recording_v2.sh"
+START_RECORDING_FOR_DRIVING_SCRIPT = "/home/iac_user/data_collection_scripts/start_recording_cam_gps_joy.sh"
 CHECK_RECORDING_FOR_DRVING_SCRIPT = "/home/iac_user/data_collection_scripts/check_recording_v2.sh"
 START_AUDIO_RECORDING_SCRIPT = "/home/iac_user/data_collection_scripts/start_audio_recording.sh"
 

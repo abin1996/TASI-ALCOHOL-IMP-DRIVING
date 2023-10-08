@@ -1,0 +1,213 @@
+,time,frame_id,msg_name,signals,result_ready,test_count,test_failed
+0,08-10-23_14:40:56.724833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 67.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+1,08-10-23_14:40:56.725833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+2,08-10-23_14:40:56.934833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 68.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+3,08-10-23_14:40:56.935833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+4,08-10-23_14:40:57.144833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 69.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+5,08-10-23_14:40:57.145833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+6,08-10-23_14:40:57.354833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 70.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+7,08-10-23_14:40:57.355833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+8,08-10-23_14:40:57.564833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 71.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+9,08-10-23_14:40:57.565833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+10,08-10-23_14:40:57.775833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 72.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+11,08-10-23_14:40:57.775833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+12,08-10-23_14:40:57.984833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 73.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+13,08-10-23_14:40:57.985833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+14,08-10-23_14:40:58.194833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 74.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+15,08-10-23_14:40:58.195833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+16,08-10-23_14:40:58.404833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 75.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+17,08-10-23_14:40:58.405833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+18,08-10-23_14:40:58.614833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 76.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+19,08-10-23_14:40:58.615833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+20,08-10-23_14:40:58.825833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 77.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+21,08-10-23_14:40:58.825833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+22,08-10-23_14:40:59.035833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 78.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+23,08-10-23_14:40:59.035833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+24,08-10-23_14:40:59.244833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 79.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+25,08-10-23_14:40:59.245833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+26,08-10-23_14:40:59.454833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 80.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+27,08-10-23_14:40:59.455833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+28,08-10-23_14:40:59.664833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 81.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+29,08-10-23_14:40:59.665833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+30,08-10-23_14:40:59.874833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 82.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+31,08-10-23_14:40:59.875833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+32,08-10-23_14:41:00.084833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 83.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+33,08-10-23_14:41:00.085833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+34,08-10-23_14:41:00.294833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 84.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+35,08-10-23_14:41:00.295833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+36,08-10-23_14:41:00.504833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 85.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+37,08-10-23_14:41:00.505833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+38,08-10-23_14:41:00.714833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 86.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+39,08-10-23_14:41:00.715833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+40,08-10-23_14:41:00.924833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 87.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+41,08-10-23_14:41:00.925833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+42,08-10-23_14:41:01.134833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 88.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+43,08-10-23_14:41:01.135833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+44,08-10-23_14:41:01.344833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 89.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+45,08-10-23_14:41:01.345833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+46,08-10-23_14:41:01.554833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 90.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+47,08-10-23_14:41:01.555833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+48,08-10-23_14:41:01.764833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 91.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+49,08-10-23_14:41:01.765833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+50,08-10-23_14:41:01.974833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 92.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+51,08-10-23_14:41:01.975833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+52,08-10-23_14:41:02.184833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 93.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+53,08-10-23_14:41:02.185833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+54,08-10-23_14:41:02.394833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 94.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+55,08-10-23_14:41:02.395833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+56,08-10-23_14:41:02.604833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 95.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+57,08-10-23_14:41:02.605833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+58,08-10-23_14:41:02.814833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 96.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+59,08-10-23_14:41:02.815833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+60,08-10-23_14:41:03.024833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 97.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+61,08-10-23_14:41:03.025833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+62,08-10-23_14:41:03.234833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 98.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+63,08-10-23_14:41:03.235833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+64,08-10-23_14:41:03.444833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 99.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+65,08-10-23_14:41:03.445833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+66,08-10-23_14:41:03.654833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 100.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+67,08-10-23_14:41:03.655833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+68,08-10-23_14:41:03.865833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 101.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+69,08-10-23_14:41:03.865833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+70,08-10-23_14:41:04.074833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 102.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+71,08-10-23_14:41:04.075833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+72,08-10-23_14:41:04.284833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 103.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+73,08-10-23_14:41:04.285833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+74,08-10-23_14:41:04.494833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 104.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+75,08-10-23_14:41:04.495833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+76,08-10-23_14:41:04.704833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 105.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 8.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,8.0,False
+77,08-10-23_14:41:04.705833,799,DLFR,"[['DF_Breath', 3.228515625, '']]",False,,False
+78,08-10-23_14:41:04.914833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 106.0, ''], ['e_Status', 3.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+79,08-10-23_14:41:04.915833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+80,08-10-23_14:41:05.124833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 107.0, ''], ['e_Status', 3.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+81,08-10-23_14:41:05.125833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+82,08-10-23_14:41:05.334833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 108.0, ''], ['e_Status', 3.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+83,08-10-23_14:41:05.335833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+84,08-10-23_14:41:05.544833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 109.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+85,08-10-23_14:41:05.545833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+86,08-10-23_14:41:05.754833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 110.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+87,08-10-23_14:41:05.755833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+88,08-10-23_14:41:05.964833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 111.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+89,08-10-23_14:41:05.965833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+90,08-10-23_14:41:06.174833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 112.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+91,08-10-23_14:41:06.175833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+92,08-10-23_14:41:06.384833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 113.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+93,08-10-23_14:41:06.385833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+94,08-10-23_14:41:06.594833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 114.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+95,08-10-23_14:41:06.595833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+96,08-10-23_14:41:06.804833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 115.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+97,08-10-23_14:41:06.805833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+98,08-10-23_14:41:07.014833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 116.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+99,08-10-23_14:41:07.015833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+100,08-10-23_14:41:07.224833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 117.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+101,08-10-23_14:41:07.225833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+102,08-10-23_14:41:07.434833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 118.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+103,08-10-23_14:41:07.435833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+104,08-10-23_14:41:07.644833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 119.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+105,08-10-23_14:41:07.645833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+106,08-10-23_14:41:07.854833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 120.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+107,08-10-23_14:41:07.855833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+108,08-10-23_14:41:08.064833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 121.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+109,08-10-23_14:41:08.065833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+110,08-10-23_14:41:08.274833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 122.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+111,08-10-23_14:41:08.275833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+112,08-10-23_14:41:08.484833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 123.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+113,08-10-23_14:41:08.485833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+114,08-10-23_14:41:08.694833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 124.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+115,08-10-23_14:41:08.695833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+116,08-10-23_14:41:08.905833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 125.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+117,08-10-23_14:41:08.905833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+118,08-10-23_14:41:09.114833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 126.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+119,08-10-23_14:41:09.115833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+120,08-10-23_14:41:09.324833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 127.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+121,08-10-23_14:41:09.325833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+122,08-10-23_14:41:09.534833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 128.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+123,08-10-23_14:41:09.535833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+124,08-10-23_14:41:09.744833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 129.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+125,08-10-23_14:41:09.745833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+126,08-10-23_14:41:09.954833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 130.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+127,08-10-23_14:41:09.955833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+128,08-10-23_14:41:10.164833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 131.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+129,08-10-23_14:41:10.165833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+130,08-10-23_14:41:10.374833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 132.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+131,08-10-23_14:41:10.375833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+132,08-10-23_14:41:10.584833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 133.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+133,08-10-23_14:41:10.584833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+134,08-10-23_14:41:10.794833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 134.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+135,08-10-23_14:41:10.794833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+136,08-10-23_14:41:11.004833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 135.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+137,08-10-23_14:41:11.004833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+138,08-10-23_14:41:11.214833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 136.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+139,08-10-23_14:41:11.214833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+140,08-10-23_14:41:11.424833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 137.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+141,08-10-23_14:41:11.425833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+142,08-10-23_14:41:11.634833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 138.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+143,08-10-23_14:41:11.635833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+144,08-10-23_14:41:11.844833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 139.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+145,08-10-23_14:41:11.844833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+146,08-10-23_14:41:12.054833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 140.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+147,08-10-23_14:41:12.054833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+148,08-10-23_14:41:12.264833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 141.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+149,08-10-23_14:41:12.264833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+150,08-10-23_14:41:12.474833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 142.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+151,08-10-23_14:41:12.474833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+152,08-10-23_14:41:12.684833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 143.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+153,08-10-23_14:41:12.684833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+154,08-10-23_14:41:12.894833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 144.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+155,08-10-23_14:41:12.894833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+156,08-10-23_14:41:13.104833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 145.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+157,08-10-23_14:41:13.104833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+158,08-10-23_14:41:13.314833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 146.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+159,08-10-23_14:41:13.314833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+160,08-10-23_14:41:13.524833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 147.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+161,08-10-23_14:41:13.524833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+162,08-10-23_14:41:13.734833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 148.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+163,08-10-23_14:41:13.734833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+164,08-10-23_14:41:13.944833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 149.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+165,08-10-23_14:41:13.945833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+166,08-10-23_14:41:14.154833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 150.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+167,08-10-23_14:41:14.154833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+168,08-10-23_14:41:14.364833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 151.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+169,08-10-23_14:41:14.364833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+170,08-10-23_14:41:14.574833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 152.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+171,08-10-23_14:41:14.574833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+172,08-10-23_14:41:14.784833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 153.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+173,08-10-23_14:41:14.784833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+174,08-10-23_14:41:14.995833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 154.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+175,08-10-23_14:41:14.995833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+176,08-10-23_14:41:15.204833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 155.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+177,08-10-23_14:41:15.204833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+178,08-10-23_14:41:15.414833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 156.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+179,08-10-23_14:41:15.414833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+180,08-10-23_14:41:15.624833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 157.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+181,08-10-23_14:41:15.624833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+182,08-10-23_14:41:15.834833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 158.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+183,08-10-23_14:41:15.834833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+184,08-10-23_14:41:16.044833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 159.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+185,08-10-23_14:41:16.044833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+186,08-10-23_14:41:16.254833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 160.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+187,08-10-23_14:41:16.254833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+188,08-10-23_14:41:16.464833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 161.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+189,08-10-23_14:41:16.464833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+190,08-10-23_14:41:16.674833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 162.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+191,08-10-23_14:41:16.674833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+192,08-10-23_14:41:16.884833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 163.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+193,08-10-23_14:41:16.884833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+194,08-10-23_14:41:17.094833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 164.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+195,08-10-23_14:41:17.094833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+196,08-10-23_14:41:17.304833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 165.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+197,08-10-23_14:41:17.304833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+198,08-10-23_14:41:17.514833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 166.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+199,08-10-23_14:41:17.514833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+200,08-10-23_14:41:17.724833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 167.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+201,08-10-23_14:41:17.724833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+202,08-10-23_14:41:17.934833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 168.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+203,08-10-23_14:41:17.934833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+204,08-10-23_14:41:18.144833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 169.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+205,08-10-23_14:41:18.144833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+206,08-10-23_14:41:18.354833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 170.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+207,08-10-23_14:41:18.354833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+208,08-10-23_14:41:18.564833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 171.0, ''], ['e_Status', 4.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 9.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,9.0,False
+209,08-10-23_14:41:18.564833,799,DLFR,"[['DF_Breath', 3.96875, '']]",False,,False
+210,08-10-23_14:41:18.774833,783,BRAC,"[['x_FaultStatus', 0.0, ''], ['RollingCounter', 172.0, ''], ['e_Status', 3.0, ''], ['b_BrAC_Avl', 0.0, ''], ['n_BrAC_Count', 10.0, ''], ['CmgL_BrAC', 0.0, 'mg/L']]",False,10.0,False
+211,08-10-23_14:41:18.774833,799,DLFR,"[['DF_Breath', 3.966796875, '']]",False,,False

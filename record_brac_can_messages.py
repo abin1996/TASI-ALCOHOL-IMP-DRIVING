@@ -2,11 +2,11 @@
 # The CANlib library is initialized when the canlib module is imported. To be
 # able to send a message, Frame also needs to be installed.
 from canlib import canlib, Frame, kvadblib
-import time
+import pandas as pd
+import datetime
+RESULTS = []
 
-
-
-def printframe(db, frame):
+def get_frame_data(db, frame, start_time, print_to_stdout=False):
     try:
         bmsg = db.interpret(frame)
     except kvadblib.KvdNoMessage:
@@ -24,16 +24,40 @@ def printframe(db, frame):
         return
 
     msg = bmsg._message
+    if print_to_stdout:
+        print('┏', msg.name)
 
-    print('┏', msg.name)
+        if msg.comment:
+            print('┃', '"%s"' % msg.comment)
+        # print(bmsg)
+        for bsig in bmsg:
+            print('┃', bsig.name + ':', bsig.value, bsig.unit)
 
-    if msg.comment:
-        print('┃', '"%s"' % msg.comment)
-    # print(bmsg)
+        print('┗')
+    cur_frame_id = frame.id
+    cur_time = start_time + datetime.timedelta(milliseconds=float(frame.timestamp))
+    cur_time = cur_time.strftime('%d-%m-%y_%H:%M:%S.%f')
+    cur_data = frame.data 
+    cur_dlc = frame.dlc
+    cur_flags = frame.flags
+    cur_msg_name = msg.name
+    cur_msg_comment = msg.comment
+    cur_signals = []
+    result_ready = False 
+    test_failed = False
+    test_count = None
     for bsig in bmsg:
-        print('┃', bsig.name + ':', bsig.value, bsig.unit)
+        cur_signals.append([bsig.name,bsig.value,bsig.unit])
+        if bsig.name == 'e_Status' and bsig.value == 6:
+            result_ready = True
+        if bsig.name == 'e_Status' and bsig.value == 5:
+            test_failed = True
+        if bsig.name == 'n_BrAC_Count':
+            test_count = bsig.value
+    
+    cur_message = {'time':cur_time,'frame_id':cur_frame_id,'msg_name':cur_msg_name,'signals':cur_signals, 'result_ready':result_ready, 'test_count':test_count, 'test_failed':test_failed}
 
-    print('┗')
+    return cur_message
 
 
 
@@ -43,68 +67,96 @@ def printframe(db, frame):
 # open the channels call on the openChannel method inside of canlib and, as an
 # input put in channel=0 and channel=1. Where 0 and 1 represents the two
 # CANlib channels 0 and 1.
-db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor.dbc')
+db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
 ch_a = canlib.openChannel(channel=1)
-# ch_b = canlib.openChannel(channel=0)
-
-# After opening the channel, we need to set the bus parameters. Some
-# interfaces keep their params from previous programs. This can cause problems
-# if the params are different between the interfaces/channels. For now we will
-# use setBusParams() to set the canBitrate to 250K.
 ch_a.setBusParams(canlib.canBITRATE_500K)
-# ch_b.setBusParams(canlib.canBITRATE_500K)
-
-# The next step is to Activate the CAN chip for each channel (ch_a and ch_b in
-# this example) use .busOn() to make them ready to receive and send messages.
-# ch_a.busOn()
-
-
-# To transmit a message with (11-bit) CAN id = 123 and contents (decimal) 72,
-# 69, 76, 76, 79, 33, first create the CANFrame (CANmessage) and name it. In
-# this example, the CANFrame is named frame. Then send the message by calling on
-# the channel that will act as the sender and use .write() with the CANFrame
-# # as input. In this example ch_a will act as sender.
 ch_a.busOn()
-frame = Frame(id_=800, data=[1], flags=canlib.MessageFlag.STD)
+print("Starting BRAC test")
+frame = Frame(id_=800, data=bytearray(b'\x01\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
 ch_a.write(frame)
-# To make sure the message was sent we will attempt to read the message. Using
-# timeout, only 500 ms will be spent waiting to receive the CANFrame. If it takes
-# longer the program will encounter a timeout error. read the CANFrame by calling
-# .read() on the channel that receives the message, ch_b in this example. To
-# then read the message we will use print() and send msg as the input.
+
+all_frame_data = []
+start_time = datetime.datetime.now()
+latest_brac_count = None
+print("Blow into the sensor")
+num_of_results = 0
+failed_tests = set()
+break_loop = False
+channel_closed = False
 while True:
     try:
         msg = ch_a.read(timeout=500)
         if msg.id == 783:
-            print("Status:")
-            print(msg)
-            # printframe(db, msg)
+            # print("Status:")
+            # print(msg)
+            decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
+            all_frame_data.append(decoded_frame)
+            if not latest_brac_count:
+                print("setting latest_brac_count {}".format(decoded_frame['test_count']))
+                latest_brac_count = decoded_frame['test_count']
+            
+            if decoded_frame['test_failed'] and decoded_frame['test_count'] not in failed_tests:
+                failed_tests.add(decoded_frame['test_count'])
+                if num_of_results > 0:
+                    num_of_results -= 1
+                print("Test FAILED")
+                print("Tests Done: {}".format(num_of_results))
+
+
+            elif decoded_frame['test_count'] > latest_brac_count:
+                num_of_results += 1
+                print("Tests Done: {}".format(num_of_results))
+                latest_brac_count = decoded_frame['test_count']
+                if num_of_results == 2:
+                    break_loop = True
+
+            if decoded_frame['result_ready']:
+                num_of_results += 1
+                print("Tests Done: {}".format(num_of_results))
+                latest_brac_count = decoded_frame['test_count']
+                if num_of_results == 2:
+                    break_loop = True
+
+            
             # break
         if msg.id == 799:
-            print("Results:")
-            print(msg)
-            # printframe(db, msg)
+            # print("Results:")
+            # print(msg)
+            decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
+            all_frame_data.append(decoded_frame)
+            if num_of_results == 2:
+                    if break_loop:
+                        break
+                # printframe(db, msg)
+                # break
             # break
+    except canlib.CanNoMsg:
+            # if ticktime is not None:
+            print("No Message to Read")
     except KeyboardInterrupt:
         print("Stopping")
+        frame = Frame(id_=800, data=bytearray(b'\x04\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+        ch_a.write(frame)
+        ch_a.busOff()
+        ch_a.close()
+        channel_closed = True
+        df = pd.DataFrame(all_frame_data)
+        df.to_csv("brac_test.csv")
         break
+df = pd.DataFrame(all_frame_data)
+df.to_csv("brac_test.csv")
+    # except Exception as e:
+    #     print("Stopping")
+    #     ch_a.busOff()
+    #     ch_a.close()
+    #     break
         #Saving all_frame_data to a csv file using pandas dataframe
         # df = pd.DataFrame(all_frame_data)
         # df.to_csv(filename)
-ch_a.busOff()
-
-
-# After the message has been sent, received and read it is time to inactivate
-# the CAN chip. To do this call .busOff() on both channels that went .busOn()
-# ch_a.busOff()
-
-
-# Lastly, close all channels with close() to finish up.
-ch_a.close()
-# ch_b.close()
-
-# Depending on the situation it is not always necessary or preferable to go of
-# the bus with the channels and, instead only use close(). But this will be
-# talked more about later.
+if not channel_closed:
+    frame = Frame(id_=800, data=bytearray(b'\x04\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+    ch_a.write(frame)
+    ch_a.busOff()
+    ch_a.close()
 
 

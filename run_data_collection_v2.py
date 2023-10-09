@@ -191,7 +191,14 @@ def main(subject_id):
         event, values = window.read()
         if event in (sg.WINDOW_CLOSED, "Exit"):
             break
-        
+            
+        #BREATH SENSOR EVENTS
+        if event == START_BRAC_BUTTON:
+            if DATA_COLLECTION_FOLDER_NAME == '':
+                DATA_COLLECTION_FOLDER_NAME = get_current_time()
+            execute_bash_command_in_terminal(["bash", START_BRAC_BUTTON, DATA_COLLECTION_FOLDER_NAME,subject_id],"breath_sensor")
+
+
         #AUDIO RECORDING EVENTS
         if event == START_RECORD_AUDIO_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':

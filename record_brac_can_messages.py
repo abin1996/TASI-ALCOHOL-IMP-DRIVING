@@ -61,102 +61,99 @@ def get_frame_data(db, frame, start_time, print_to_stdout=False):
 
 
 
-# Firstly, open two CAN channels, one to send the message and one to receive.
-# Note that there needs to be a channel to receive, as otherwise the message
-# can not be sent. In this example the channels are named ch_a and ch_b. To
-# open the channels call on the openChannel method inside of canlib and, as an
-# input put in channel=0 and channel=1. Where 0 and 1 represents the two
-# CANlib channels 0 and 1.
-db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
-ch_a = canlib.openChannel(channel=1)
-ch_a.setBusParams(canlib.canBITRATE_500K)
-ch_a.busOn()
-print("Starting BRAC test")
-frame = Frame(id_=800, data=bytearray(b'\x01\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
-ch_a.write(frame)
+def record_brac(filename):
+    db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
+    ch_a = canlib.openChannel(channel=1)
+    ch_a.setBusParams(canlib.canBITRATE_500K)
+    ch_a.busOn()
+    print("Starting BRAC test")
+    frame = Frame(id_=800, data=bytearray(b'\x01\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+    ch_a.write(frame)
 
-all_frame_data = []
-start_time = datetime.datetime.now()
-latest_brac_count = None
-print("Blow into the sensor")
-num_of_results = 0
-failed_tests = set()
-break_loop = False
-channel_closed = False
-while True:
-    try:
-        msg = ch_a.read(timeout=500)
-        if msg.id == 783:
-            # print("Status:")
-            # print(msg)
-            decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
-            all_frame_data.append(decoded_frame)
-            if not latest_brac_count:
-                print("setting latest_brac_count {}".format(decoded_frame['test_count']))
-                latest_brac_count = decoded_frame['test_count']
-            
-            if decoded_frame['test_failed'] and decoded_frame['test_count'] not in failed_tests:
-                failed_tests.add(decoded_frame['test_count'])
-                if num_of_results > 0:
-                    num_of_results -= 1
-                print("Test FAILED")
-                print("Tests Done: {}".format(num_of_results))
+    all_frame_data = []
+    start_time = datetime.datetime.now()
+    latest_brac_count = None
+    print("Blow into the sensor")
+    num_of_results = 0
+    failed_tests = set()
+    break_loop = False
+    channel_closed = False
+    while True:
+        try:
+            msg = ch_a.read(timeout=500)
+            if msg.id == 783:
+                # print("Status:")
+                # print(msg)
+                decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
+                all_frame_data.append(decoded_frame)
+                if not latest_brac_count:
+                    print("setting latest_brac_count {}".format(decoded_frame['test_count']))
+                    latest_brac_count = decoded_frame['test_count']
+                
+                if decoded_frame['test_failed'] and decoded_frame['test_count'] not in failed_tests:
+                    failed_tests.add(decoded_frame['test_count'])
+                    if num_of_results > 0:
+                        num_of_results -= 1
+                    print("Test FAILED")
+                    print("Tests Done: {}".format(num_of_results))
 
 
-            elif decoded_frame['test_count'] > latest_brac_count:
-                num_of_results += 1
-                print("Tests Done: {}".format(num_of_results))
-                latest_brac_count = decoded_frame['test_count']
-                if num_of_results == 2:
-                    break_loop = True
+                elif decoded_frame['test_count'] > latest_brac_count:
+                    num_of_results += 1
+                    print("Tests Done: {}".format(num_of_results))
+                    latest_brac_count = decoded_frame['test_count']
+                    if num_of_results == 2:
+                        break_loop = True
 
-            if decoded_frame['result_ready']:
-                num_of_results += 1
-                print("Tests Done: {}".format(num_of_results))
-                latest_brac_count = decoded_frame['test_count']
-                if num_of_results == 2:
-                    break_loop = True
+                if decoded_frame['result_ready']:
+                    num_of_results += 1
+                    print("Tests Done: {}".format(num_of_results))
+                    latest_brac_count = decoded_frame['test_count']
+                    if num_of_results == 2:
+                        break_loop = True
 
-            
-            # break
-        if msg.id == 799:
-            # print("Results:")
-            # print(msg)
-            decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
-            all_frame_data.append(decoded_frame)
-            if num_of_results == 2:
-                    if break_loop:
-                        break
-                # printframe(db, msg)
+                
                 # break
-            # break
-    except canlib.CanNoMsg:
-            # if ticktime is not None:
-            print("No Message to Read")
-    except KeyboardInterrupt:
-        print("Stopping")
+            if msg.id == 799:
+                # print("Results:")
+                # print(msg)
+                decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=False)
+                all_frame_data.append(decoded_frame)
+                if num_of_results == 2:
+                        if break_loop:
+                            break
+                    # printframe(db, msg)
+                    # break
+                # break
+        except canlib.CanNoMsg:
+                # if ticktime is not None:
+                print("No Message to Read")
+        except KeyboardInterrupt:
+            print("Stopping")
+            frame = Frame(id_=800, data=bytearray(b'\x04\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+            ch_a.write(frame)
+            ch_a.busOff()
+            ch_a.close()
+            channel_closed = True
+            df = pd.DataFrame(all_frame_data)
+            df.to_csv(filename)
+            break
+    df = pd.DataFrame(all_frame_data)
+    df.to_csv(filename)
+        # except Exception as e:
+        #     print("Stopping")
+        #     ch_a.busOff()
+        #     ch_a.close()
+        #     break
+            #Saving all_frame_data to a csv file using pandas dataframe
+            # df = pd.DataFrame(all_frame_data)
+            # df.to_csv(filename)
+    if not channel_closed:
         frame = Frame(id_=800, data=bytearray(b'\x04\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
         ch_a.write(frame)
         ch_a.busOff()
         ch_a.close()
-        channel_closed = True
-        df = pd.DataFrame(all_frame_data)
-        df.to_csv("brac_test.csv")
-        break
-df = pd.DataFrame(all_frame_data)
-df.to_csv("brac_test.csv")
-    # except Exception as e:
-    #     print("Stopping")
-    #     ch_a.busOff()
-    #     ch_a.close()
-    #     break
-        #Saving all_frame_data to a csv file using pandas dataframe
-        # df = pd.DataFrame(all_frame_data)
-        # df.to_csv(filename)
-if not channel_closed:
-    frame = Frame(id_=800, data=bytearray(b'\x04\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
-    ch_a.write(frame)
-    ch_a.busOff()
-    ch_a.close()
 
-
+if __name__ == "__main__":
+    filename ='/home/iac_user/data_collection_scripts/brac_test.csv'
+    record_brac(filename)

@@ -156,4 +156,4 @@ def record_brac(filename, start_time):
 if __name__ == "__main__":
     start_time = datetime.datetime.now()
     filename ='/home/iac_user/data_collection_scripts/brac_test/brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-    record_brac(filename)
+    record_brac(filename, start_time)

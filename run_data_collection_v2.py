@@ -1,5 +1,4 @@
 import subprocess
-import platform
 import time
 import os
 import signal
@@ -8,41 +7,55 @@ import threading
 import re
 import datetime
 import argparse
+from pathlib import Path
+
+from record_brac_can_messages_window_out import record_brac
 
 DATA_COLLECTION_FOLDER_NAME = ''
 
-START_RECORD_AUDIO_BUTTON = "AUDIO TEST: START RECORD"
-STOP_AUDIO_RECORD_BUTTON = "AUDIO TEST: STOP RECORD"
+HOME_DIR="/home/iac_user/"
+DATA_COLLECTION_DIR="DATA_COLLECTION/"
+BRAC_DIR="brac/"
 
-START_BRAC_BUTTON = "BREATH SENSOR: START RECORD"
+START_RECORD_AUDIO_BUTTON = "AUDIO TEST: START RECORDING"
+STOP_AUDIO_RECORD_BUTTON = "AUDIO TEST: STOP RECORDING"
 
-START_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: START RECORD"
-STOP_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: STOP RECORD"
+START_BRAC_BUTTON = "BREATH SENSOR: START RECORDING"
+
+START_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: START RECORDING"
+STOP_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: STOP RECORDING"
 
 
 ROSCORE_START_SCRIPT = "roscore"
-START_DRIVERS_SCRIPT = "/home/iac_user/start_drivers.sh"
+START_DRIVERS_SCRIPT = "/home/iac_user/data_collection_scripts/start_drivers.sh"
 START_RECORDING_FOR_DRIVING_SCRIPT = "/home/iac_user/data_collection_scripts/start_recording_cam_gps_joy.sh"
 CHECK_RECORDING_FOR_DRVING_SCRIPT = "/home/iac_user/data_collection_scripts/check_recording_v2.sh"
 START_AUDIO_RECORDING_SCRIPT = "/home/iac_user/data_collection_scripts/start_audio_recording.sh"
+START_BRAC_RECORDING_SCRIPT = "/home/iac_user/data_collection_scripts/start_can_recording_brac.sh"
 
 WINDOW_OUTPUT_TEXT= "*"
 # Define the layout of the GUI
+#The buttons for BRAC and AUDIO should be on the left and the buttons for EYE TRACKING AND DRIVING should be on the right
 layout = [
-    [sg.Button(START_BRAC_BUTTON,button_color="green")],
-    # [sg.Button(STOP_BRAC_BUTTON,button_color="red")],
-    [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green")],
-    [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red")],
-    [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green")],
-    [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red")],
+    [sg.Text("Subject: \nSession Name:",font=('Helvetica', 20), key='-TEXT1-', text_color='black')],
+    [sg.Button(START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
+    [sg.VPush()],
+    [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green",font=('Helvetica', 20))],
+    [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red", font=('Helvetica', 20))],
+    [sg.VPush()],
+    [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green",font=('Helvetica', 20))],
+    [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red",font=('Helvetica', 20))],
+    [sg.Button("Exit", font=('Helvetica', 20))],
     [sg.Frame("Output", [[sg.Multiline(disabled=True,size=(150, 30), font=("Courier New", 25), key="-OUTPUT-", background_color="black", text_color="white")]],expand_x=True,expand_y=True)],
-    [sg.Button("Exit")]
+    
 ]
 
 # Create the window
 window = sg.Window("TASI DATA COLLECTION", layout,resizable=True)
 # Global variable to store the running processes in reverse order
 RUNNING_PROCESSES = []
+
+
 
 def get_rec_file_name(string):
     pattern = r"\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}"
@@ -60,15 +73,7 @@ def get_current_time():
 
 # Function to execute the Bash command in a new terminal and capture output
 def execute_bash_command_in_terminal(command, command_type,is_shell=False):
-    if platform.system() == "Windows":
-        terminal_command = f'start cmd /c "{command}"'
-    elif platform.system() == "Linux":
-        terminal_command = f'gnome-terminal -- {command}'
-    elif platform.system() == "Darwin":
-        terminal_command = f'osascript -e \'tell application "Terminal" to do script "{command}"\''
-    else:
-        raise ValueError("Unsupported platform.")
-    print(command)
+    print("Command:",command)
     process = subprocess.Popen(
         command,
         shell=is_shell,
@@ -132,7 +137,7 @@ def check_rec_resp(script_resp,window_text):
         return
     category_data = {}
     current_category = None
-    rec_file_name = get_rec_file_name(script_resp)
+    # rec_file_name = get_rec_file_name(script_resp)
     # display_text = "\nRECORDING FOLDER NAME: {}".format(rec_file_name)
     # window_text += display_text
     # window['-OUTPUT-'].update("RECORDING FOLDER NAME: ",rec_file_name)
@@ -150,24 +155,37 @@ def check_rec_resp(script_resp,window_text):
 
     # print(category_data)
     for category, data in category_data.items():
-        size = float(data["size"].split()[0])
-        bag_number = extract_bag_number(data["path"])
-        data['bag_number'] = bag_number
-        if category == "GPS" and size > 10:
-            data["status"] = "ALL GOOD. GPS FILE SIZE:" +str(size)
-        elif category == "GPS" and size < 10:
-            data["status"] = "ERROR: GPS FILE SIZE TOO LOW. CHECK IF GPS IS RECEIVING SIGNAL ON THE TERMINAL"
-        elif category.startswith("CAMERA") and size > 20:
-            data["status"] = "ALL GOOD. CAMERA FILE SIZE:" +str(size)
-        elif category.startswith("CAMERA") and size < 20:
-            data["status"] = "ERROR: CAMERA FILE SIZE TOO LOW. CHECsizeK THE CAMERA CONNECTIONS AND TERMINAL FOR ERRORS"
+        if category == "CAN-MESSAGES":
+            if "size" not in data:
+                data["status"] = "ERROR: CAN FILE SIZE NOT FOUND. CHECK IF CAN IS RECEIVING SIGNAL ON THE TERMINAL"
+                continue
+            size = float(data["size"])
+            if size/1024 > 4:
+                data["status"] = "ALL GOOD. CAN FILE SIZE:" +str((size / 1024 / 1024)) + "MB"
+            else:
+                data["status"] = "ERROR: CAN FILE SIZE TOO LOW. CHECK IF CAN IS RECEIVING SIGNAL ON THE TERMINAL"
+        else:
+            size = float(data["size"].split()[0])
+            bag_number = extract_bag_number(data["path"])
+            data['bag_number'] = bag_number
+            if category == "GPS" and size > 10:
+                data["status"] = "ALL GOOD. GPS FILE SIZE:" +str(size)
+            elif category == "GPS" and size < 10:
+                data["status"] = "ERROR: GPS FILE SIZE TOO LOW. CHECK IF GPS IS RECEIVING SIGNAL ON THE TERMINAL"
+            elif category.startswith("CAMERA") and size > 20:
+                data["status"] = "ALL GOOD. CAMERA FILE SIZE:" +str(size)
+            elif category.startswith("CAMERA") and size < 20:
+                data["status"] = "ERROR: CAMERA FILE SIZE TOO LOW. CHECsizeK THE CAMERA CONNECTIONS AND TERMINAL FOR ERRORS"
     for category, data in category_data.items():
         status = data.get('status'," ")
-        bag_number = data["bag_number"]
+        bag_number = data.get('bag_number'," ")
         if status.startswith("ERROR"):
             display_text += "\n"+"!!!!!!!!!!  ERROR  !!!!!!!!!!" 
-
-        display_text += "\n" + f"{category} -- Bag Number:{bag_number}, Status: {status}"
+        if bag_number != " ":
+            display_text += "\n" + f"{category} -- Bag Number:{bag_number}, Status: {status}"
+        
+        else:
+            display_text += "\n" + f"{category} -- Status: {status}"
     window_text += display_text
     window['-OUTPUT-'].update(window_text)
 
@@ -177,18 +195,18 @@ def update_output_element(window_text, script_path, subject_id):
         call_bash_script(script_path,window_text, subject_id)
         # Adjust the update interval as needed
 
-def call_and_wait_for_breath_sensor(DATA_COLLECTION_FOLDER_NAME,subject_id):
-    pass
-
-def main(subject_id):
+def main(subject_id, sessionName):
     # Event loop to process events and get button clicks
     global DATA_COLLECTION_FOLDER_NAME
     global RUNNING_PROCESSES
     global WINDOW_OUTPUT_TEXT
     execute_bash_command_in_terminal([ROSCORE_START_SCRIPT],"roscore")
     time.sleep(0.5)
+    #Update the text on the GUI with the subject ID and session name
+    subject_data = f"Subject: {subject_id} \nSession Name: {sessionName}"
     while True:
         event, values = window.read()
+        window['-TEXT1-'].update(subject_data)
         if event in (sg.WINDOW_CLOSED, "Exit"):
             break
             
@@ -196,41 +214,47 @@ def main(subject_id):
         if event == START_BRAC_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
-            execute_bash_command_in_terminal(["bash", START_BRAC_BUTTON, DATA_COLLECTION_FOLDER_NAME,subject_id],"breath_sensor")
-
+            start_time = datetime.datetime.now()
+            parent_folder_brac_path = HOME_DIR + DATA_COLLECTION_DIR + subject_id +  '/' + sessionName + '/' + DATA_COLLECTION_FOLDER_NAME + '/' + BRAC_DIR 
+            output_dir = Path(parent_folder_brac_path)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
+            print("filename:",filename)
+            output_thread = threading.Thread(target=record_brac, args=(filename, start_time, '/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc', window['-OUTPUT-'], subject_id), daemon=True)
+            output_thread.start()  
 
         #AUDIO RECORDING EVENTS
         if event == START_RECORD_AUDIO_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
-            execute_bash_command_in_terminal(['bash', START_AUDIO_RECORDING_SCRIPT, DATA_COLLECTION_FOLDER_NAME, subject_id],"audio_recording",is_shell=False)
-            output_text = "\nSTARTED AUDIO RECORDING IN FOLDER: {}/{}".format(subject_id,DATA_COLLECTION_FOLDER_NAME)
+            execute_bash_command_in_terminal(['bash', START_AUDIO_RECORDING_SCRIPT, DATA_COLLECTION_FOLDER_NAME, subject_id, sessionName],"audio_recording",is_shell=False)
+            output_text = "\nSTARTED AUDIO RECORDING IN FOLDER: {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             WINDOW_OUTPUT_TEXT += output_text
             window['-OUTPUT-'].update(output_text)
         if event == STOP_AUDIO_RECORD_BUTTON:
             kill_running_processes_name("audio_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
-            WINDOW_OUTPUT_TEXT += "\nAUDIO RECORDING HAS BEEN COMPLETED TO FOLDER : {}/{}".format(subject_id,DATA_COLLECTION_FOLDER_NAME)
+            WINDOW_OUTPUT_TEXT += "\nAUDIO RECORDING HAS BEEN COMPLETED TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
 
         #ALLCAMERA RECORDING
         if event == START_RECORDING_DRIVING_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
-            WINDOW_OUTPUT_TEXT += "\nSTARTING VISUAL/DRIVING RECORDING TO FOLDER : {}/{}".format(subject_id,DATA_COLLECTION_FOLDER_NAME)
+            WINDOW_OUTPUT_TEXT += "\nSTARTING VISUAL/DRIVING RECORDING TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
             execute_bash_command_in_terminal(["bash",START_DRIVERS_SCRIPT],"camera_drivers")
             time.sleep(1)
-            execute_bash_command_in_terminal(["bash", START_RECORDING_FOR_DRIVING_SCRIPT, DATA_COLLECTION_FOLDER_NAME,subject_id] ,"all_camera_recording")
-            output_thread = threading.Thread(target=update_output_element, args=(WINDOW_OUTPUT_TEXT, CHECK_RECORDING_FOR_DRVING_SCRIPT, subject_id), daemon=True)
+            execute_bash_command_in_terminal(["bash", START_RECORDING_FOR_DRIVING_SCRIPT, DATA_COLLECTION_FOLDER_NAME,subject_id, sessionName] ,"all_camera_recording")
+            output_thread = threading.Thread(target=update_output_element, args=(WINDOW_OUTPUT_TEXT, CHECK_RECORDING_FOR_DRVING_SCRIPT, subject_id, sessionName), daemon=True)
             output_thread.start()    
         if event == STOP_RECORDING_DRIVING_BUTTON:
-            WINDOW_OUTPUT_TEXT += "\nVISUAL/DRIVING RECORDING COMPLETED"
+            WINDOW_OUTPUT_TEXT += "\nVISUAL/DRIVING RECORDING COMPLETED TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
             kill_running_processes_name("all_camera_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
-            time.sleep(0.5)
+            time.sleep(2)
             break
 
     kill_running_processes(RUNNING_PROCESSES)
@@ -242,13 +266,13 @@ if __name__ == "__main__":
 
         argParser = argparse.ArgumentParser()
         argParser.add_argument("-s", "--subjectID", help="Subject ID",default="Subject_01")
-
+        argParser.add_argument("-n", "--sessionName", help="Session Name",default="Baseline")
         args = argParser.parse_args()
         print("args=%s" % args)
 
         print("args.SubjectID=%s" % args.subjectID)
-
-        main(args.subjectID)
+        print("args.SessionName=%s" % args.sessionName)
+        main(args.subjectID, args.sessionName)
     except:
         kill_running_processes(RUNNING_PROCESSES)
         window.close()

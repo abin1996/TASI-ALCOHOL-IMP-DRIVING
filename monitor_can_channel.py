@@ -54,13 +54,13 @@ def save_can_messages_to_csv(all_frames,save_path, start_timestamp):
     frame_data = {
         'id': [frame.id for frame in all_frames],
         'data': [frame.data for frame in all_frames],
-        # 'dlc': [frame.dlc for frame in frames],
-        # 'flags': [frame.flags for frame in frames],
+        'dlc': [frame.dlc for frame in all_frames],
+        'flags': [frame.flags for frame in all_frames],
         'timestamp': [frame.timestamp for frame in all_frames],
     }
     print("Total Rows: {}", len(all_frames))
     # Specify the maximum number of rows per CSV file
-    max_rows_per_csv = 10000
+    max_rows_per_csv = 100000
     df = pd.DataFrame(frame_data)
     # Split the DataFrame into smaller DataFrames
     small_dfs = [df[i:i + max_rows_per_csv] for i in range(0, len(df), max_rows_per_csv)]
@@ -70,7 +70,7 @@ def save_can_messages_to_csv(all_frames,save_path, start_timestamp):
 
     # Save each smaller DataFrame to a separate CSV file
     for i, small_df in enumerate(small_dfs):
-        output_csv_file = f'/home/iac_user/output_csv_files/output_{i + 1}.csv'
+        output_csv_file = f'/home/iac_user/data_collection_scripts/can_bus_output/brac_output_{i + 1}.csv'
         small_df.to_csv(output_csv_file, index=False)
         print("csv saved as :{}",output_csv_file)
 
@@ -94,10 +94,10 @@ def monitor_channel(channel_number, bitrate, ticktime,save_to_csv, save_path):
             try:
                 
                 frame = ch.read(timeout=int(timeout * 1000))
-                if frame.id in REQUIRED_CAN_ID:
-                    printframe(frame, width)
-                    if save_to_csv:
-                        all_frames.append(frame)
+                # if frame.id in REQUIRED_CAN_ID:
+                printframe(frame, width)
+                if save_to_csv:
+                    all_frames.append(frame)
             except canlib.CanNoMsg:
                 if ticktime is not None:
                     tick_countup += timeout
@@ -129,7 +129,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description="Listen on a CAN channel and print all frames received."
     )
-    parser.add_argument('channel', type=int, default=0, nargs='?')
+    parser.add_argument('channel', type=int, default=1, nargs='?')
     # parser.add_argument(
     #     '--bitrate', '-b', default='500k', help=("Bitrate, one of " + ', '.join(bitrates.keys()))
     # )
@@ -152,4 +152,4 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     print(args.save)
-    monitor_channel(args.channel, bitrates['500K'], args.ticktime, args.save, args.path)
+    monitor_channel(args.channel, bitrates['500K'], args.ticktime, True, args.path)

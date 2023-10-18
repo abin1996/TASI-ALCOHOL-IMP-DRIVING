@@ -97,10 +97,10 @@ def monitor_channel(channel_number, db_name, bitrate, ticktime, filename):
     while True:
         try:
             frame = ch.read(timeout=int(timeout * 1000))
-            if frame.id in [832,705,34,35,37]:
-                frame_data = get_frame_data(db, frame)
-                if frame_data is not None:
-                    all_frame_data.append(frame_data)
+            # if frame.id in [832,705,34,35,37]:
+            frame_data = get_frame_data(db, frame)
+            if frame_data is not None:
+                all_frame_data.append(frame_data)
 
         except canlib.CanNoMsg:
             if ticktime is not None:
@@ -141,6 +141,6 @@ if __name__ == '__main__':
         help=("If greater than zero, display 'tick' every this many seconds"),
     )
     args = parser.parse_args()
-    filename ='/home/iac_user/data_collection_scripts/can_{}.csv'.format(get_current_time())
+    filename ='/home/iac_user/data_collection_scripts/can_bus_output/can_{}.csv'.format(get_current_time())
 
     monitor_channel(args.channel, args.db, bitrates[args.bitrate.upper()], args.ticktime,filename)

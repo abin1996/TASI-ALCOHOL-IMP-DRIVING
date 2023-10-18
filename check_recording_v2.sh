@@ -22,5 +22,6 @@ cd $HOME/DATA_COLLECTION/$SUBJECT/$LATEST_REC/images4/
 rosbag info $(echo $(ls -t | grep .bag | sort -n |tail -2|head -1))
 
 echo **********************CAN-MESSAGES************************
-cd $HOME/DATA_COLLECTION/$SUBJECT/$LATEST_REC/can/
-stat -c "%s" $(echo $(ls -t | grep .csv ))
+python3 $HOME/data_collection_scripts/get_can_bus_recording_size.py $SUBJECT
+# cd $HOME/DATA_COLLECTION/$SUBJECT/$LATEST_REC/can/
+# stat -c "%s" $(echo $(ls -t | grep .csv ))

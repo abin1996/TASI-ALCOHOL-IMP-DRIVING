@@ -104,14 +104,14 @@ def kill_running_processes_name(process_name,RUNNING_PROCESSES):
             break
     RUNNING_PROCESSES.remove(remove_process)
 
-def call_bash_script(script_path, window_text, subject_id):
+def call_bash_script(script_path, window_text, subject_id, sessionName):
     try:
         # Run the Bash script and capture the output
         window['-OUTPUT-'].update(window_text)
         # print("-------- Recording Status --------")
         command = ["bash", script_path, subject_id]
         print(command)
-        result = subprocess.run(["bash", script_path, subject_id], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(["bash", script_path, subject_id, sessionName], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
          # Print the output
         check_rec_resp(result.stdout, window_text)
             
@@ -189,10 +189,10 @@ def check_rec_resp(script_resp,window_text):
     window_text += display_text
     window['-OUTPUT-'].update(window_text)
 
-def update_output_element(window_text, script_path, subject_id):
+def update_output_element(window_text, script_path, subject_id, sessionName):
     while True:
         time.sleep(30)
-        call_bash_script(script_path,window_text, subject_id)
+        call_bash_script(script_path,window_text, subject_id, sessionName)
         # Adjust the update interval as needed
 
 def main(subject_id, sessionName):

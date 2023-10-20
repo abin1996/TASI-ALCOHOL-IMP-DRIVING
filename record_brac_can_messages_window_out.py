@@ -104,6 +104,12 @@ def record_brac(filename, start_time,db, window_output, subject_id):
                     decoded_frame = get_frame_data(db, msg, start_time, print_to_stdout=print_to_stdout)
                     all_frame_data.append(decoded_frame)
                     if latest_estatus != decoded_frame['test_status']:
+                        if decoded_frame['test_status'] == 2:
+                            frame = Frame(id_=800, data=bytearray(b'\x01\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+                            ch_a.write(frame)
+                            time.sleep(0.1)
+                            frame = Frame(id_=800, data=bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
+                            ch_a.write(frame)
                         if decoded_frame['test_status'] == 4 and not break_loop:
                             output_text += "\nBlow into the sensor now..."
                             window_output.update(output_text)

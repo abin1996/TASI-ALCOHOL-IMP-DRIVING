@@ -1,42 +1,3 @@
-import os
-import rosbag
-import cv2
-from cv_bridge import CvBridge, CvBridgeError
-
-
-# /home/iac_user/post-process/test/0-Alcohol/29-09-23_13_57_12
-
-# SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/post-process/test/bag-test"
-# SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/post-process/test/bag-test-output/images'
-
-
-# RECORDING_FOLDER_NAME = '22-09-23_15:25:12'
-
-# SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/" + RECORDING_FOLDER_NAME
-# SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/PROCESSED_DATA_COLLECTION/' + RECORDING_FOLDER_NAME
-count = 0
-def extract(dirs, filename,topic, output_folder, flipped):
-    global count
-    bag = rosbag.Bag(os.path.join(dirs, filename))
-
-    for (topic, msg, t) in bag.read_messages():
-        bridge = CvBridge()
-        try:
-            cv_img = bridge.compressed_imgmsg_to_cv2(msg)
-            print("here")
-        except CvBridgeError as e:
-            print(e)
-            continue
-        if flipped:
-            cv_img = cv2.flip(cv2.flip(cv_img, 1), 0)
-        filename = os.path.join(output_folder, f'frame_{count}_{t}.png')
-        print(filename)
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
-        cv2.imwrite(filename, cv_img)
-        print(count)
-        count += 1
-    bag.close()
-
 
 if __name__ == '__main__': 
     SUB_FOLDER_NAME = 'Driving backward/'
@@ -73,8 +34,8 @@ if __name__ == '__main__':
             
             camera_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/img" + str(image_ind_list[j])
 
-            camera_topic = '/camera' + str(image_ind_list[j])+ '/usb_cam'+str(image_ind_list[j]) +'/image_raw/compressed' 
-            # camera_topic = [camera_topic_str]
+            camera_topic_str = '/camera' + str(image_ind_list[j])+ '/usb_cam'+str(image_ind_list[j]) +'/image_raw/compressed' 
+            camera_topic = [camera_topic_str]
 
             camera_input_folder = SOURCE_CAMERA_BAG_FOLDER
 

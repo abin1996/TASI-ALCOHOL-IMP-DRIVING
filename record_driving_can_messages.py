@@ -71,6 +71,7 @@ def monitor_channel(channel_number, db_name, bitrate, filename):
     start_time = datetime.datetime.now()
     last_updated = start_time - datetime.timedelta(minutes=2)
     time_window = 60
+    file_number = 0
     while True:
 
         try:
@@ -83,8 +84,10 @@ def monitor_channel(channel_number, db_name, bitrate, filename):
                     #Update the CSV file every 60 seconds
                     if datetime.datetime.now() - last_updated > datetime.timedelta(seconds=time_window):
                         last_updated = datetime.datetime.now()
+                        # sequenced_file_name = filename + '_{}'.formart(start_time.strftime('%d-%m-%y_%H-%M-%S')) +'_{}'.format(file_number)
                         save_frame_data_to_csv(filename, all_frame_data, last_updated)
                         all_frame_data = []
+                        # file_number += 1
                         
 
         except canlib.CanNoMsg:

@@ -105,6 +105,8 @@ def record_brac(filename, start_time,db, window_output, subject_id):
                     all_frame_data.append(decoded_frame)
                     if latest_estatus != decoded_frame['test_status']:
                         if decoded_frame['test_status'] == 2:
+                            output_text += "\nSensor Starting now. Please Wait..."
+                            window_output.update(output_text)
                             frame = Frame(id_=800, data=bytearray(b'\x01\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
                             ch_a.write(frame)
                             time.sleep(0.1)

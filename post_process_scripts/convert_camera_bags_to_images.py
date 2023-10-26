@@ -23,14 +23,14 @@ def extract_img(dirs, filename,topic, output_folder, flipped):
         bridge = CvBridge()
         try:
             cv_img = bridge.compressed_imgmsg_to_cv2(msg)
-            print("here")
+            # print("here")
         except CvBridgeError as e:
             print(e)
             continue
         if flipped:
             cv_img = cv2.flip(cv2.flip(cv_img, 1), 0)
         filename = os.path.join(output_folder, f'frame_{count}_{t}.png')
-        print(filename)
+        # print(filename)
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         cv2.imwrite(filename, cv_img)
         print(count)
@@ -79,9 +79,9 @@ if __name__ == '__main__':
     start_time = time.time()
 
 
-    sub_folder_name = 'Driving backward'
-    # sub_folder_name = 'Driving forward'
-    # sub_folder_name = 'Eye Tracking'
+    # sub_folder_name = 'Driving backward'
+    sub_folder_name = 'Driving forward'
+    # sub_folder_name = 'Eye tracking'
     # sub_folder_name = 'Parking'
     
 
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
-    SOURCE_FOLDER = '/home/iac_user/post-process/Post-SubjectLL/Baseline/only_driving/17-10-23_10-50-24'
+    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28'
 
     image_ind_list = [1,2,3,4]
 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         for j in range(num_sub_sub_folder):
             SUB_SUB_FOLDER_IND = str(j+1)
 
-            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/post-process/1017test/Driving/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             camera_input_folder = SOURCE_CAMERA_BAG_FOLDER + '/' + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
@@ -113,10 +113,10 @@ if __name__ == '__main__':
 
             for (root, dirs, files) in os.walk(camera_input_folder):
                 for file in sorted(files):
-                    print(file)
+                    # print(file)
                     extract_img(root, file, camera_topic, camera_output_folder, True)
                     #break  
 
     end_time = time.time()
 
-    print("Overall time taken: ", end_time - start_time)
+    print("Overall time taken: ", end_time - start_time,'seconds')

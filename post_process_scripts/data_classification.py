@@ -182,9 +182,11 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
     # Filter out the single misinput timestamp and duplicated timestamps in timestamp_dt_list
 
     filtered_timestamps = filtered_event_timestamp(event_timestamp_list)
+    # print("Filtered timestamps:", filtered_timestamps)
+
 
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
-
+    files.sort()
     bag_time_list=[]
 
     for file in files:
@@ -200,13 +202,14 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
         bag_ind = bag_ind_string.split('.')[0]
 
-        datetime_str = file.split("_")[1].split(".")[0]
+        datetime_str = file.split("_")[1]
 
         datetime_obj = datetime.strptime(datetime_str,"%Y-%m-%d-%H-%M-%S")
 
-        bag_time_list.append((datetime_obj,bag_ind))
+        bag_time_list.append((datetime_obj,int(bag_ind)))
         # bag_time_list.append((bag_hour,bag_min,bag_sec,bag_ind))
-
+    bag_time_list.sort(key=lambda a: a[1])
+    # print("Bag time List ", bag_time_list)
     event_bag_ind_list=[]
 
     for index, timestamp in enumerate(filtered_timestamps):
@@ -218,7 +221,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         # timestamp = time_info[0]
 
         for i in range(0,len(bag_time_list)):
-
+            # print("Bag Time List: ",bag_time_list[i])
             if i < len(bag_time_list)-1:
                 # # Define the start and end times as strings
                 # start_time_str = bag_time_list[i][0]+':'+bag_time_list[i][1]+':'+bag_time_list[i][2]
@@ -227,9 +230,12 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
                 # # Convert the start and end times to datetime objects
                 # start_time = datetime.strptime(start_time_str, "%H:%M:%S")
                 # end_time = datetime.strptime(end_time_str, "%H:%M:%S")
-
+                # print("TImestamp: ", timestamp)
                 start_time = bag_time_list[i][0]
+                # print("Start Time: ", start_time)
                 end_time = bag_time_list[i+1][0]
+                # print("End Time: ", end_time)
+
 
                 # Check if the timestamp is within the time slot
                 if start_time <= timestamp < end_time:
@@ -276,6 +282,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
     for q in range(0,len(complete_event_bag_ind_list)):
         subtest_ind = q + 1
+        print("q: ",q)
 
         subfolder_name = new_folder_name + '_'+ str(subtest_ind)
 
@@ -285,9 +292,9 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             os.makedirs(event_new_path)
 
             for p in range(len(complete_event_bag_ind_list[q])):
-
+                print("P: ",p)
                 old_A_file_path = os.path.join(folder_path, files[complete_event_bag_ind_list[q][p]])
-
+                print("Path: ", old_A_file_path)
                 new_A_file_path = os.path.join(event_new_path, files[complete_event_bag_ind_list[q][p]])
 
                 shutil.copy2(old_A_file_path, new_A_file_path)
@@ -308,10 +315,10 @@ start_time = time.time()
 # new_directory = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/event_signal"
 
 #10/24 baseline
-# new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25" + "/event_signal"
+new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25" + "/event_signal"
 
 #10/24 70-alcohol
-new_directory = "/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28" + "/event_signal"
+# new_directory = "/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28" + "/event_signal"
 
 
 #10/24 80-alcohol
@@ -327,11 +334,11 @@ joystick_filename = 'joystick.txt'
 # source_folder = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/images4"
 
 #Baseline
-# source_folder = '/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/gps'
+source_folder = '/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/gps'
 
 # 70-alcohol
 # source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
-source_folder = '/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28/gps'
+# source_folder = '/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28/gps'
 
 # 80-alcohol
 # source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
@@ -351,7 +358,8 @@ timestamp_lists = event_timestamp(joystick_filename)
 org_folder_name = source_folder
 
 for i in range(0,len(subfolder_names)):
-
+    # if subfolder_names[i] != "Driving backward":
+    #     continue
     timestamp_list = timestamp_lists[i]
     new_folder_name = subfolder_names[i]
     file_recategory(timestamp_list, org_folder_name, new_folder_name)

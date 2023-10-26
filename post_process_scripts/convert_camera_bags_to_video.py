@@ -78,9 +78,11 @@ def combine_bags_to_video(input_bag_folder, output_video_path, camera_topic):
 if __name__ == '__main__': 
     start_time = time.time()
 
-    sub_folder_name = 'Driving backward'
+
+
+    # sub_folder_name = 'Driving backward'
     # sub_folder_name = 'Driving forward'
-    # sub_folder_name = 'Eye Tracking'
+    sub_folder_name = 'Eye tracking'
     # sub_folder_name = 'Parking'
 
     SUB_FOLDER_NAME = sub_folder_name + '/'
@@ -88,7 +90,7 @@ if __name__ == '__main__':
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
     #TODO: change the subfolder ind into a len(sub_sub_folder)
-    sub_sub_folder_ind_list = [1]
+    sub_sub_folder_ind_list = [2]
 
     for i in range(len(sub_sub_folder_ind_list)):
 
@@ -100,12 +102,24 @@ if __name__ == '__main__':
 
         for j in range(len(image_ind_list)):
             IMAGE_FOLDER = 'images' + str(image_ind_list[j]) + '/'
-
-            SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/post-process/Post-SubjectLL/Baseline/only_driving/17-10-23_10-50-24/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
-    # /home/iac_user/post-process/test/bag-eye-track
+            
+            
+    
     # /media/iac_user/ImDrive_Org/TestLL/Baseline/new_eye_tracking/17-10-23_11-20-48
 
-            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/post-process/1017test/Driving/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            #SubjectAnn
+            #Baseline
+            SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/Baseline/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
+            #70-Alcohol
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
+            #80-Alcohol
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/80-Alcohol/24-10-23_14-22-40/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/80-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
 
             camera1_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video1"
             camera2_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video2"

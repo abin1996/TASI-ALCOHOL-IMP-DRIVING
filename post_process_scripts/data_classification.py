@@ -2,22 +2,19 @@ from datetime import datetime,timedelta
 import os, os.path, shutil
 import time
 
-# from can_classification import can_recategory
-
 def timestamp_to_date(timestamp):
-    timestamp = timestamp
-
     # convert the timestamp to a datetime object in the local timezone
     dt_object = datetime.fromtimestamp(timestamp)
     time = dt_object.time()
     # using __str__()
-    time_string = time.__str__()
+    # time_string = time.__str__()
 
-    hr = time_string.split(':')[0]
-    min = time_string.split(':')[1]
-    sec = time_string.split(':')[2]
+    # hr = time_string.split(':')[0]
+    # min = time_string.split(':')[1]
+    # sec = time_string.split(':')[2]
 
-    return (hr,min,sec)
+    # return (hr,min,sec)
+    return dt_object
 
 def event_timestamp(filename):
     # opens the file, reads and stores each line into a list
@@ -141,57 +138,78 @@ def insert_missing_numbers(lst):
     complete_list = list(range(min_num, max_num + 1))
 
     return complete_list
-# Example usage:
-# source_folder = "./test/org-file"
-# subfolder_names = ["Event A", "Event B", "Event X", "Event Y"]
-# copy_files_to_subfolders(source_folder, subfolder_names)
+
+def filtered_event_timestamp(timestamp_list):
+    # Initialize the list for the filtered timestamps
+    filtered_timestamps = []
+
+    # Iterate through the timestamps and keep the first timestamp with a gap of more than 2 seconds
+    for i in range(len(timestamp_list) - 1):
+        current_time = timestamp_list[i]
+        next_time = timestamp_list[i + 1]
+        time_difference = (next_time - current_time).total_seconds()
+
+        if time_difference <= 2:
+            filtered_timestamps.append(current_time)
+
+    return filtered_timestamps
 
 def file_recategory(timestamp_list, org_folder_name, new_folder_name):
     event_timestamp_list = timestamp_list
     folder_path = org_folder_name + '/'+new_folder_name
 
-    timestamp_dt_list=[]
+    # timestamp_dt_list=[]
 
-    for timestamp in event_timestamp_list:
-        hour, minute, second = timestamp
-        # Define the timestamp as a string
-        timestamp_str = hour+':' + minute +':'+ second
-        # Convert the timestamp to a datetime object
-        timestamp_dt = datetime.strptime(timestamp_str, "%H:%M:%S")
-        timestamp_dt_list.append(timestamp_dt)
+    # for timestamp in event_timestamp_list:
+    #     hour, minute, second = timestamp
+    #     # Define the timestamp as a string
+    #     timestamp_str = hour+':' + minute +':'+ second
+    #     # Convert the timestamp to a datetime object
+    #     timestamp_dt = datetime.strptime(timestamp_str, "%H:%M:%S")
+    #     timestamp_dt_list.append(timestamp_dt)
 
-    # Initialize the list for the filtered timestamps
-    filtered_timestamps = []
+    # # Initialize the list for the filtered timestamps
+    # filtered_timestamps = []
 
-    # Iterate through the timestamps and keep the first timestamp with a gap of more than 2 seconds
-    for i in range(len(timestamp_dt_list) - 1):
-        current_time = timestamp_dt_list[i]
-        next_time = timestamp_dt_list[i + 1]
-        time_difference = (next_time - current_time).total_seconds()
+    # # Iterate through the timestamps and keep the first timestamp with a gap of more than 2 seconds
+    # for i in range(len(timestamp_dt_list) - 1):
+    #     current_time = timestamp_dt_list[i]
+    #     next_time = timestamp_dt_list[i + 1]
+    #     time_difference = (next_time - current_time).total_seconds()
 
-        if time_difference <= 2:
-            filtered_timestamps.append(current_time)
+    #     if time_difference <= 2:
+    #         filtered_timestamps.append(current_time)
     # Filter out the single misinput timestamp and duplicated timestamps in timestamp_dt_list
 
-    files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    filtered_timestamps = filtered_event_timestamp(event_timestamp_list)
+    # print("Filtered timestamps:", filtered_timestamps)
 
+
+    files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    files.sort()
     bag_time_list=[]
 
     for file in files:
-        bag_year = file.split('-')[0]
-        bag_month = file.split('-')[1]
-        bag_date = file.split('-')[2]
-        bag_hour = file.split('-')[3]
-        bag_min = file.split('-')[4]
+        # bag_year = file.split('-')[0]
+        # bag_month = file.split('-')[1]
+        # bag_date = file.split('-')[2]
+        # bag_hour = file.split('-')[3]
+        # bag_min = file.split('-')[4]
         bag_sec_string = file.split('-')[5]
-        bag_sec = bag_sec_string.split('_')[0]
+        # bag_sec = bag_sec_string.split('_')[0]
 
         bag_ind_string = bag_sec_string.split('_')[1]
 
         bag_ind = bag_ind_string.split('.')[0]
 
-        bag_time_list.append((bag_hour,bag_min,bag_sec,bag_ind))
+        datetime_str = file.split("_")[1]
 
+        datetime_obj = datetime.strptime(datetime_str,"%Y-%m-%d-%H-%M-%S")
+
+        bag_time_list.append((datetime_obj,int(bag_ind)))
+        # bag_time_list.append((bag_hour,bag_min,bag_sec,bag_ind))
+    bag_time_list.sort(key=lambda a: a[1])
+    # print("Bag time List ", bag_time_list)
     event_bag_ind_list=[]
 
     for index, timestamp in enumerate(filtered_timestamps):
@@ -200,38 +218,41 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         # timestamp_str = hour+':' + minute +':'+ second
         # Convert the timestamp to a datetime object
         # timestamp = datetime.strptime(timestamp_str, "%H:%M:%S")
+        # timestamp = time_info[0]
 
         for i in range(0,len(bag_time_list)):
-
+            # print("Bag Time List: ",bag_time_list[i])
             if i < len(bag_time_list)-1:
-                # Define the start and end times as strings
-                start_time_str = bag_time_list[i][0]+':'+bag_time_list[i][1]+':'+bag_time_list[i][2]
-                end_time_str = bag_time_list[i+1][0]+':'+bag_time_list[i+1][1]+':'+bag_time_list[i+1][2]
+                # # Define the start and end times as strings
+                # start_time_str = bag_time_list[i][0]+':'+bag_time_list[i][1]+':'+bag_time_list[i][2]
+                # end_time_str = bag_time_list[i+1][0]+':'+bag_time_list[i+1][1]+':'+bag_time_list[i+1][2]
 
-                # Convert the start and end times to datetime objects
-                start_time = datetime.strptime(start_time_str, "%H:%M:%S")
-                end_time = datetime.strptime(end_time_str, "%H:%M:%S")
+                # # Convert the start and end times to datetime objects
+                # start_time = datetime.strptime(start_time_str, "%H:%M:%S")
+                # end_time = datetime.strptime(end_time_str, "%H:%M:%S")
+                # print("TImestamp: ", timestamp)
+                start_time = bag_time_list[i][0]
+                # print("Start Time: ", start_time)
+                end_time = bag_time_list[i+1][0]
+                # print("End Time: ", end_time)
+
 
                 # Check if the timestamp is within the time slot
                 if start_time <= timestamp < end_time:
                     # print(f"The timestamp {timestamp_str} is within the time slot.")
-                    event_bag_ind_list.append(int(bag_time_list[i][3]))
+                    event_bag_ind_list.append(int(bag_time_list[i][1]))
 
                     # event_bag_ind_list.append(int(bag_time_list[i][3])+1)
                     break
             else:
-                # check if the last bag has the intersted timestamp
-                # Define the start and end times as strings
-                start_time_str = bag_time_list[i][0] + ':' + bag_time_list[i][1] + ':' + bag_time_list[i][2]
 
-                # Convert the start and end times to datetime objects
-                start_time = datetime.strptime(start_time_str, "%H:%M:%S")
+                start_time = bag_time_list[i][0]
                 end_time = start_time + timedelta(minutes=1)
 
                 # Check if the timestamp is within the time slot
                 if start_time <= timestamp < end_time:
                     # print(f"The timestamp {timestamp_str} is within the time slot.")
-                    event_bag_ind_list.append(int(bag_time_list[i][3]))
+                    event_bag_ind_list.append(int(bag_time_list[i][1]))
 
                     # event_bag_ind_list.append(int(bag_time_list[i][3])+1)
                     break
@@ -261,6 +282,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
     for q in range(0,len(complete_event_bag_ind_list)):
         subtest_ind = q + 1
+        print("q: ",q)
 
         subfolder_name = new_folder_name + '_'+ str(subtest_ind)
 
@@ -270,9 +292,9 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             os.makedirs(event_new_path)
 
             for p in range(len(complete_event_bag_ind_list[q])):
-
+                print("P: ",p)
                 old_A_file_path = os.path.join(folder_path, files[complete_event_bag_ind_list[q][p]])
-
+                print("Path: ", old_A_file_path)
                 new_A_file_path = os.path.join(event_new_path, files[complete_event_bag_ind_list[q][p]])
 
                 shutil.copy2(old_A_file_path, new_A_file_path)
@@ -290,8 +312,17 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 start_time = time.time()
 # Define the path to the new working directory
 # TODO: change the directory Ffor the event signal file
-new_directory = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/event_signal"
+# new_directory = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/event_signal"
 
+#10/24 baseline
+new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25" + "/event_signal"
+
+#10/24 70-alcohol
+# new_directory = "/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28" + "/event_signal"
+
+
+#10/24 80-alcohol
+# new_directory = "/media/iac_user/ImDrive_Bck/SubjectAnn/80-Alcohol/24-10-23_14-22-40" + "/event_signal"
 
 # Change the working directory
 os.chdir(new_directory)
@@ -300,8 +331,17 @@ joystick_filename = 'joystick.txt'
 
 #TODO: source_folder needs to enumerate all four image folders and the gps folder
 
-source_folder = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/images4"
+# source_folder = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/images4"
 
+#Baseline
+source_folder = '/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/gps'
+
+# 70-alcohol
+# source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
+# source_folder = '/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28/gps'
+
+# 80-alcohol
+# source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
 
 # Based on the joystick instruction:
 # Event A is Eye tracking
@@ -313,12 +353,13 @@ subfolder_names = ["Eye tracking", "Driving backward", "Parking", "Driving forwa
 
 copy_files_to_subfolders(source_folder, subfolder_names)
 timestamp_lists = event_timestamp(joystick_filename)
-print('event timestamp list',timestamp_lists)
+# print('event timestamp list',timestamp_lists)
 
 org_folder_name = source_folder
 
 for i in range(0,len(subfolder_names)):
-
+    # if subfolder_names[i] != "Driving backward":
+    #     continue
     timestamp_list = timestamp_lists[i]
     new_folder_name = subfolder_names[i]
     file_recategory(timestamp_list, org_folder_name, new_folder_name)

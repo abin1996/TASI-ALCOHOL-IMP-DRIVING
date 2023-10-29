@@ -3,9 +3,10 @@
 # able to send a message, Frame also needs to be installed.
 from canlib import canlib, Frame, kvadblib
 import pandas as pd
+import ast
 import datetime
 import time
-import argparse
+import os
 RESULTS = []
 
 def get_frame_data(db, frame, start_time, print_to_stdout=False):
@@ -64,15 +65,42 @@ def get_frame_data(db, frame, start_time, print_to_stdout=False):
 
     return cur_message
 
-def save_to_csv(filename, all_frame_data):
+def filter_brac_sensor(df,start_time, before_or_after, subject_id, sessionName):
+    df['signals'] = df['signals'].apply(ast.literal_eval)
+    df = df[df['signals'].apply(lambda x: len(x) > 2 and x[5][1] != 0.0)]
+    #Remove all sublists in the signals column except the 6th sublist
+    df['signals'] = df['signals'].apply(lambda x: x[5])
+    #Make the second element of list of the signals column as the value of the signals column
+    df['signals'] = df['signals'].apply(lambda x: x[1])
+    #Rename the signals column to BRAC Value
+    df.rename(columns={'signals':'brac_value'}, inplace=True)
+    #There will be two readings for each test. The first reading will be the reading before the test and the second reading will be the reading after the test
+    #Make a single rowed df which has the first reading and the second reading in the same row
+    df['measurement number'] = ['first toyota brac reading', 'second toyota brac reading']
+    df = df.pivot(columns='measurement number', values='brac_value').bfill().iloc[[0],:]
+    df.columns = ['first toyota brac reading', 'second toyota brac reading']
+    df['time'] = [start_time.strftime('%d-%m-%y_%H:%M:%S')]
+    df['before or after'] = [before_or_after]
+    df['subject id'] = [subject_id]
+    df['session name'] = [sessionName]
+    df['ground truth'] = ['fill reading here']
+    return df
+
+def save_to_csv(filename, all_frame_data, root_brac_filename, before_or_after, subject_id, sessionName, start_time):
     df = pd.DataFrame(all_frame_data)
     df.to_csv(filename,columns=['time','frame_id','msg_name','signals', 'raw_data'])
 
+    filtered_df = filter_brac_sensor(df,start_time, before_or_after, subject_id, sessionName)
+    #Appending the rows to the csv file
+    if not os.path.isfile(root_brac_filename):
+        filtered_df.to_csv(root_brac_filename, columns=['time', 'before or after', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
+    else: # else it exists so append without writing the header
+        filtered_df.to_csv(root_brac_filename, mode='a', header=False, columns=['time', 'before or after', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
 
-def record_brac(filename, start_time,db, window_output, subject_id):
+def record_brac(filename, start_time,db, window_output, subject_id, sessionName, before_or_after, root_brac_filename):
     output_text = "Starting BRAC test for Subject {}".format(subject_id)
-    db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
     try:
+        db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
         ch_a = canlib.openChannel(channel=1)
         ch_a.setBusParams(canlib.canBITRATE_500K)
         ch_a.busOn()
@@ -174,10 +202,9 @@ def record_brac(filename, start_time,db, window_output, subject_id):
                 ch_a.busOff()
                 ch_a.close()
                 channel_closed = True
-                save_to_csv(filename, all_frame_data)
+                save_to_csv(filename, all_frame_data, root_brac_filename, before_or_after, subject_id, sessionName, start_time)
                 break
-
-        save_to_csv(filename, all_frame_data)
+        save_to_csv(filename, all_frame_data, root_brac_filename, before_or_after, subject_id, sessionName, start_time)
         if not channel_closed:
             frame = Frame(id_=800, data=bytearray(b'\x00\x00\x00\x00\x00\x00\x00\x00'), flags=canlib.MessageFlag.STD)
             ch_a.write(frame)
@@ -186,36 +213,7 @@ def record_brac(filename, start_time,db, window_output, subject_id):
     except canlib.canError:
         window_output.update("Error in opening the CAN channel. Please check the connection and try again")
         return
-
-
-# if __name__ == "__main__":
-#     start_time = datetime.datetime.now()
-#     filename ='/home/iac_user/data_collection_scripts/brac_test/brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-#     record_brac(filename, start_time)
-
-# if __name__ == '__main__':
-#     start_time = datetime.datetime.now()
-#     parser = argparse.ArgumentParser(
-#         description="Listen on a CAN channel and print all signals received, as specified by a database."
-#     )
-#     parser.add_argument(
-#         '--db',
-#         default="engine_example.dbc",
-#         help=("The database file to look up messages and signals in."),
-#     )
-#     parser.add_argument(
-#         '--filename',
-#         '-f',
-#         type=str,
-#     )
-#     args = parser.parse_args()
-#     if args.filename is None:
-#         filename ='/home/iac_user/data_collection_scripts/brac_test/brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-#     else :
-#         filename = args.filename
-
-#     if args.db is None:
-#         db = kvadblib.Dbc(filename='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc')
-#     else :
-#         db = args.db
-#     record_brac(filename, start_time, db,None) 
+    
+    except Exception as e:
+        window_output.update("Error in CAN channel. Please check the connection and try again")
+        return

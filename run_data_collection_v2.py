@@ -10,18 +10,21 @@ import argparse
 from pathlib import Path
 
 from record_brac_can_messages_window_out import record_brac
-
+from check_data_collection_system import check_system_connection
 DATA_COLLECTION_FOLDER_NAME = ''
 
 HOME_DIR="/home/iac_user/"
 DATA_COLLECTION_DIR="DATA_COLLECTION/"
 BRAC_DIR="brac/"
+BRAC_DBC='/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc'
+
+CHECK_SYSTEM_CONNECTION = "CHECK DEVICE CONNECTION"
 
 START_RECORD_AUDIO_BUTTON = "AUDIO TEST: START RECORDING"
 STOP_AUDIO_RECORD_BUTTON = "AUDIO TEST: STOP RECORDING"
 
-START_BRAC_BUTTON = "BREATH SENSOR: START RECORDING"
-
+BEFORE_DRIVE_START_BRAC_BUTTON = "BEFORE DRIVE BREATH SENSOR: START RECORDING"
+AFTER_DRIVE_START_BRAC_BUTTON = "AFTER DRIVE BREATH SENSOR: START RECORDING"
 START_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: START RECORDING"
 STOP_RECORDING_DRIVING_BUTTON = "EYE TRACKING AND DRIVING TEST: STOP RECORDING"
 
@@ -37,16 +40,23 @@ WINDOW_OUTPUT_TEXT= "*"
 # Define the layout of the GUI
 #The buttons for BRAC and AUDIO should be on the left and the buttons for EYE TRACKING AND DRIVING should be on the right
 layout = [
-    [sg.Text("Subject: \nSession Name:",font=('Helvetica', 20), key='-TEXT1-', text_color='black')],
-    [sg.Button(START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
-    [sg.VPush()],
-    [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green",font=('Helvetica', 20))],
-    [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red", font=('Helvetica', 20))],
-    [sg.VPush()],
-    [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green",font=('Helvetica', 20))],
-    [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red",font=('Helvetica', 20))],
-    [sg.Button("Exit", font=('Helvetica', 20))],
+    [
+        sg.Column([
+            [sg.Frame("Data Collection Information", [[sg.Text("Subject: \nSession Name:",font=('Helvetica', 20), key='-TEXT1-', text_color='black')]])],
+            [sg.Button(CHECK_SYSTEM_CONNECTION,button_color="brown",font=('Helvetica', 20))],
+            [sg.Button(BEFORE_DRIVE_START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
+            # [sg.VPush()],
+            [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green",font=('Helvetica', 20))],
+            [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red", font=('Helvetica', 20))],
+            # [sg.VPush()],
+            [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green",font=('Helvetica', 20))],
+            [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red",font=('Helvetica', 20))],
+            [sg.Button(AFTER_DRIVE_START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
+            [sg.Button("Exit", font=('Helvetica', 20))],]),
+        sg.Column([[sg.Frame("Devices Connection Status", [[sg.Multiline(disabled=True,size=(50, 10), font=("Courier New", 25), key="-DEVICE-", background_color="black", text_color="white")]],expand_x=True,expand_y=True)]], expand_x=True,expand_y=True)
+    ],
     [sg.Frame("Output", [[sg.Multiline(disabled=True,size=(150, 30), font=("Courier New", 25), key="-OUTPUT-", background_color="black", text_color="white")]],expand_x=True,expand_y=True)],
+ 
     
 ]
 
@@ -207,20 +217,47 @@ def main(subject_id, sessionName):
     while True:
         event, values = window.read()
         window['-TEXT1-'].update(subject_data)
+        ret_code = check_system_connection(window['-DEVICE-'])
+
+        if event == CHECK_SYSTEM_CONNECTION:
+            check_system_connection(window['-DEVICE-'])
         if event in (sg.WINDOW_CLOSED, "Exit"):
             break
             
         #BREATH SENSOR EVENTS
-        if event == START_BRAC_BUTTON:
+        if event == BEFORE_DRIVE_START_BRAC_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
             start_time = datetime.datetime.now()
+            root_brac_folder = HOME_DIR + DATA_COLLECTION_DIR + subject_id + '/' + 'combined_brac' + '/'
+            root_brac_filename = root_brac_folder + 'brac_reading_all_sessions.csv'
+            output_dir = Path(root_brac_folder)
+            output_dir.mkdir(parents=True, exist_ok=True)
+
             parent_folder_brac_path = HOME_DIR + DATA_COLLECTION_DIR + subject_id +  '/' + sessionName + '/' + DATA_COLLECTION_FOLDER_NAME + '/' + BRAC_DIR 
             output_dir = Path(parent_folder_brac_path)
             output_dir.mkdir(parents=True, exist_ok=True)
             filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-            print("filename:",filename)
-            output_thread = threading.Thread(target=record_brac, args=(filename, start_time, '/home/iac_user/data_collection_scripts/dadss_breath_sensor_fixed.dbc', window['-OUTPUT-'], subject_id), daemon=True)
+            # print("filename:",filename)
+            output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "before", root_brac_filename), daemon=True)
+            output_thread.start()  
+
+        #BREATH SENSOR EVENTS
+        if event == AFTER_DRIVE_START_BRAC_BUTTON:
+            if DATA_COLLECTION_FOLDER_NAME == '':
+                DATA_COLLECTION_FOLDER_NAME = get_current_time()
+            start_time = datetime.datetime.now()
+            root_brac_folder = HOME_DIR + DATA_COLLECTION_DIR + subject_id + '/' + 'combined_brac' + '/'
+            root_brac_filename = root_brac_folder + 'brac_reading_all_sessions.csv'
+            output_dir = Path(root_brac_folder)
+            output_dir.mkdir(parents=True, exist_ok=True)
+
+            parent_folder_brac_path = HOME_DIR + DATA_COLLECTION_DIR + subject_id +  '/' + sessionName + '/' + DATA_COLLECTION_FOLDER_NAME + '/' + BRAC_DIR 
+            output_dir = Path(parent_folder_brac_path)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
+            # print("filename:",filename)
+            output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "after", root_brac_filename), daemon=True)
             output_thread.start()  
 
         #AUDIO RECORDING EVENTS
@@ -254,8 +291,7 @@ def main(subject_id, sessionName):
             kill_running_processes_name("all_camera_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
-            time.sleep(2)
-            break
+            
 
     kill_running_processes(RUNNING_PROCESSES)
     # Close the window and clean up

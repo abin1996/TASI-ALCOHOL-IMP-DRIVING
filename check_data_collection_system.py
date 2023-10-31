@@ -69,7 +69,7 @@ def check_gps(output_text=None):
     
     return ret_code, output_text
 
-def check_system_connection(window=None):
+def check_system_connection(window=None, check_counter=0):
     ret_code = 0
     output_text = str()
     ret_code_cameras, output_text = check_cameras(output_text)
@@ -80,6 +80,7 @@ def check_system_connection(window=None):
         ret_code = 1
     
     if window is not None:
+        output_text += "\nChecked {} times".format(check_counter)
         window.update(output_text)
     else:
         print(output_text)

@@ -66,7 +66,6 @@ window = sg.Window("TASI DATA COLLECTION", layout,resizable=True)
 RUNNING_PROCESSES = []
 
 
-
 def get_rec_file_name(string):
     pattern = r"\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}"
     match = re.search(pattern, string)
@@ -199,10 +198,13 @@ def check_rec_resp(script_resp,window_text):
     window_text += display_text
     window['-OUTPUT-'].update(window_text)
 
-def update_output_element(window_text, script_path, subject_id, sessionName):
+def update_output_element(window_text, script_path, subject_id, sessionName, stop_check_status_thread):
     while True:
-        time.sleep(30)
+        if stop_check_status_thread():
+            print("Closing Thread for Checking DRIVING Video Recording Status")
+            break
         call_bash_script(script_path,window_text, subject_id, sessionName)
+        time.sleep(30)
         # Adjust the update interval as needed
 
 def main(subject_id, sessionName):
@@ -210,6 +212,9 @@ def main(subject_id, sessionName):
     global DATA_COLLECTION_FOLDER_NAME
     global RUNNING_PROCESSES
     global WINDOW_OUTPUT_TEXT
+    check_counter= 0
+    video_recorded_started = False
+    stop_check_status_thread = False
     execute_bash_command_in_terminal([ROSCORE_START_SCRIPT],"roscore")
     time.sleep(0.5)
     #Update the text on the GUI with the subject ID and session name
@@ -217,10 +222,12 @@ def main(subject_id, sessionName):
     while True:
         event, values = window.read()
         window['-TEXT1-'].update(subject_data)
-        ret_code = check_system_connection(window['-DEVICE-'])
-
+        # check_counter += 1
+        # ret_code = check_system_connection(window['-DEVICE-'], check_counter)
+        
         if event == CHECK_SYSTEM_CONNECTION:
-            check_system_connection(window['-DEVICE-'])
+            check_counter += 1
+            check_system_connection(window['-DEVICE-'], check_counter)
         if event in (sg.WINDOW_CLOSED, "Exit"):
             break
             
@@ -228,6 +235,9 @@ def main(subject_id, sessionName):
         if event == BEFORE_DRIVE_START_BRAC_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
+            check_counter += 1
+            check_system_connection(window['-DEVICE-'], check_counter)
+
             start_time = datetime.datetime.now()
             root_brac_folder = HOME_DIR + DATA_COLLECTION_DIR + subject_id + '/' + 'combined_brac' + '/'
             root_brac_filename = root_brac_folder + 'brac_reading_all_sessions.csv'
@@ -264,33 +274,45 @@ def main(subject_id, sessionName):
         if event == START_RECORD_AUDIO_BUTTON:
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
+            check_counter += 1
+            check_system_connection(window['-DEVICE-'], check_counter)
             execute_bash_command_in_terminal(['bash', START_AUDIO_RECORDING_SCRIPT, DATA_COLLECTION_FOLDER_NAME, subject_id, sessionName],"audio_recording",is_shell=False)
             output_text = "\nSTARTED AUDIO RECORDING IN FOLDER: {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             WINDOW_OUTPUT_TEXT += output_text
-            window['-OUTPUT-'].update(output_text)
+            window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
+
+        #STOP AUDIO RECORDING EVENTS
         if event == STOP_AUDIO_RECORD_BUTTON:
             kill_running_processes_name("audio_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             WINDOW_OUTPUT_TEXT += "\nAUDIO RECORDING HAS BEEN COMPLETED TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
 
-        #ALLCAMERA RECORDING
-        if event == START_RECORDING_DRIVING_BUTTON:
+        #START ALLCAMERA RECORDING
+        if event == START_RECORDING_DRIVING_BUTTON and not video_recorded_started:
+            video_recorded_started = True
+            check_counter += 1
+            check_system_connection(window['-DEVICE-'], check_counter)
             if DATA_COLLECTION_FOLDER_NAME == '':
                 DATA_COLLECTION_FOLDER_NAME = get_current_time()
-            WINDOW_OUTPUT_TEXT += "\nSTARTING VISUAL/DRIVING RECORDING TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
+            WINDOW_OUTPUT_TEXT += "\n\nSTARTING VISUAL/DRIVING RECORDING TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
             execute_bash_command_in_terminal(["bash",START_DRIVERS_SCRIPT],"camera_drivers")
             time.sleep(1)
             execute_bash_command_in_terminal(["bash", START_RECORDING_FOR_DRIVING_SCRIPT, DATA_COLLECTION_FOLDER_NAME,subject_id, sessionName] ,"all_camera_recording")
-            output_thread = threading.Thread(target=update_output_element, args=(WINDOW_OUTPUT_TEXT, CHECK_RECORDING_FOR_DRVING_SCRIPT, subject_id, sessionName), daemon=True)
-            output_thread.start()    
-        if event == STOP_RECORDING_DRIVING_BUTTON:
-            WINDOW_OUTPUT_TEXT += "\nVISUAL/DRIVING RECORDING COMPLETED TO FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
+            check_recording_thread = threading.Thread(target=update_output_element, args=(WINDOW_OUTPUT_TEXT, CHECK_RECORDING_FOR_DRVING_SCRIPT, subject_id, sessionName,lambda : stop_check_status_thread), daemon=True)
+            check_recording_thread.start() 
+
+        #STOP ALLCAMERA RECORDING
+        if event == STOP_RECORDING_DRIVING_BUTTON and video_recorded_started:
+            stop_check_status_thread = True
+            WINDOW_OUTPUT_TEXT += "\nVISUAL/DRIVING RECORDING HAS BEEN COMPLETED TO THE FOLDER : {}/{}/{}".format(subject_id,sessionName,DATA_COLLECTION_FOLDER_NAME)
             window['-OUTPUT-'].update(WINDOW_OUTPUT_TEXT)
             kill_running_processes_name("all_camera_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
+            video_recorded_started = False
+            # check_recording_thread.join()
             
 
     kill_running_processes(RUNNING_PROCESSES)

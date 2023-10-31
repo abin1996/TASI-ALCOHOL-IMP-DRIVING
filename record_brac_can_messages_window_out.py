@@ -80,22 +80,24 @@ def filter_brac_sensor(df,start_time, before_or_after, subject_id, sessionName):
     df = df.pivot(columns='measurement number', values='brac_value').bfill().iloc[[0],:]
     df.columns = ['first toyota brac reading', 'second toyota brac reading']
     df['time'] = [start_time.strftime('%d-%m-%y_%H:%M:%S')]
-    df['before or after'] = [before_or_after]
+    df['before or after driving'] = [before_or_after]
     df['subject id'] = [subject_id]
     df['session name'] = [sessionName]
     df['ground truth'] = ['fill reading here']
     return df
 
 def save_to_csv(filename, all_frame_data, root_brac_filename, before_or_after, subject_id, sessionName, start_time):
+    # print('before saving')
     df = pd.DataFrame(all_frame_data)
     df.to_csv(filename,columns=['time','frame_id','msg_name','signals', 'raw_data'])
-
-    filtered_df = filter_brac_sensor(df,start_time, before_or_after, subject_id, sessionName)
+    # print('saved')
+    saved_df = pd.read_csv(filename)
+    filtered_df = filter_brac_sensor(saved_df, start_time, before_or_after, subject_id, sessionName)
     #Appending the rows to the csv file
     if not os.path.isfile(root_brac_filename):
-        filtered_df.to_csv(root_brac_filename, columns=['time', 'before or after', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
+        filtered_df.to_csv(root_brac_filename, columns=['time','subject id','session name', 'before or after driving', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
     else: # else it exists so append without writing the header
-        filtered_df.to_csv(root_brac_filename, mode='a', header=False, columns=['time', 'before or after', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
+        filtered_df.to_csv(root_brac_filename, mode='a', header=False, columns=['time','subject id','session name', 'before or after driving', 'first toyota brac reading', 'second toyota brac reading','ground truth'])
 
 def record_brac(filename, start_time,db, window_output, subject_id, sessionName, before_or_after, root_brac_filename):
     output_text = "Starting BRAC test for Subject {}".format(subject_id)
@@ -215,5 +217,6 @@ def record_brac(filename, start_time,db, window_output, subject_id, sessionName,
         return
     
     except Exception as e:
-        window_output.update("Error in CAN channel. Please check the connection and try again")
+        print(e)
+        window_output.update("Error in BrAC sensing. Please check the connection and try again")
         return

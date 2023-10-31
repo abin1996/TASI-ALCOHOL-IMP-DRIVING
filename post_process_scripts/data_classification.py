@@ -276,20 +276,21 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
     print('complete bag index:', complete_event_bag_ind_list)
 
-    global event_new_path
+    # global event_new_path
 
        # create the csv file for each session
     event_timestamp_paired = [] # Initialize the list for paried timestamps. The list would have the format:[[event1_start_timestamp,event1_end_timestamp],[e2_start,e2_end],...]
 
-    for j in range(0, len(filtered_timestamps), 2):
-        sub_lst = filtered_timestamps[i:i + 2]  # Get two elements from the current position
+    for k in range(0, len(filtered_timestamps), 2):
+        sub_lst = filtered_timestamps[k:k + 2]  # Get two elements from the current position
         event_timestamp_paired.append(sub_lst)  # Append the sublist to the result list
 
 
     for q in range(0,len(complete_event_bag_ind_list)):
-        bag_start_time = bag_time_list[complete_event_bag_ind_list[k][0]][0]
+        bag_start_time = bag_time_list[complete_event_bag_ind_list[q][0]][0]
 
-        event_begin_time, event_finish_time = event_timestamp_paired[k]
+        event_begin_time, event_finish_time = event_timestamp_paired[q]
+        print('q:',q)
 
         # Calculate the time differences
         video_start_time = event_begin_time - bag_start_time
@@ -299,11 +300,14 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         video_start_time_str = str(video_start_time)
         video_stop_time_str = str(video_stop_time)
 
+
+
+        print('Bag start time:',bag_start_time)
+        print('Event start time:', event_begin_time)
+        print('Event end time:', event_finish_time)
+        print('..............')
         print('Video start time:',video_start_time_str)
         print('Video end time:', video_stop_time_str)
-
-
-
 
         subtest_ind = q + 1
         # print("q: ",q)
@@ -323,21 +327,6 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
                 shutil.copy2(old_A_file_path, new_A_file_path)
 
-    subfolder_files = os.listdir(folder_path)
-
-    for file in subfolder_files:
-        if file.endswith(".bag"):
-            file_path = os.path.join(folder_path, file)
-            os.remove(file_path)
-
- 
-
-    for k in range(len(complete_event_bag_ind_list)):
-        
-        
-        # Define the CSV file path
-
-        #TODO: CHANGE THE FOLDER TO THE VIDEO OUTPUT FOLDER
         csv_file_path = event_new_path +'/'+ "event_timestamp.csv"
 
         # Create the CSV file and write the data
@@ -347,8 +336,36 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             
             writer.writeheader()
             writer.writerow({'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str})
+        
+        print(f"Event start and end time saved to '{csv_file_path}'.")
+        print('..............')
 
-        print(f"Event time differences saved to '{csv_file_path}'.")
+    subfolder_files = os.listdir(folder_path)
+
+    for file in subfolder_files:
+        if file.endswith(".bag"):
+            file_path = os.path.join(folder_path, file)
+            os.remove(file_path)
+
+ 
+
+    # for k in range(len(complete_event_bag_ind_list)):
+        
+        
+    #     # Define the CSV file path
+
+    #     #TODO: CHANGE THE FOLDER TO THE VIDEO OUTPUT FOLDER
+    #     csv_file_path = event_new_path +'/'+ "event_timestamp.csv"
+
+    #     # Create the CSV file and write the data
+    #     with open(csv_file_path, mode='w', newline='') as csv_file:
+    #         fieldnames = ['Event Start Time', 'Event Stop Time']
+    #         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            
+    #         writer.writeheader()
+    #         writer.writerow({'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str})
+
+    #     print(f"Event time differences saved to '{csv_file_path}'.")
 
 
     print('------------------------------------------------------------')

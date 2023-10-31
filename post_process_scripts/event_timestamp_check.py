@@ -150,8 +150,3 @@ if __name__ == '__main__':
         timestamp_check(EVENTS[i],event_timestamps,SOURCE_FOLDER)
 
     print('Timestamp check finished')
-
-
-
-
-

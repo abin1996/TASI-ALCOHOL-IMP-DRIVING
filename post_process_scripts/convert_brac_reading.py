@@ -5,6 +5,7 @@ import datetime
 #This is done to remove all the rows with no signal value
 def filter_brac_sensor_and_save(input_path, output_path):
     df = pd.read_csv(input_path)
+    print(df)
     df['signals'] = df['signals'].apply(ast.literal_eval)
     df = df[df['signals'].apply(lambda x: len(x) > 2 and x[5][1] != 0.0)]
     #Remove all sublists in the signals column except the 6th sublist
@@ -27,6 +28,6 @@ def filter_brac_sensor_and_save(input_path, output_path):
     df.to_csv(output_path,columns=['time', 'before or after', 'first toyota brac reading', 'second toyota brac reading','ground truth'], index=False)
 
 if __name__ == '__main__':
-    input_path = "/home/iac_user/data_collection_scripts/brac_test/brac_16-10-23_18-58-43.csv"
+    input_path = "/home/iac_user/data_collection_scripts/brac_test/brac_30-10-23_18-29-16.csv"
     output_path = "brac_sensor_processed.csv"
     filter_brac_sensor_and_save(input_path, output_path)

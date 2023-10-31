@@ -1,6 +1,7 @@
 from datetime import datetime,timedelta
 import os, os.path, shutil
 import time
+import csv
 
 def timestamp_to_date(timestamp):
     # convert the timestamp to a datetime object in the local timezone
@@ -182,7 +183,8 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
     # Filter out the single misinput timestamp and duplicated timestamps in timestamp_dt_list
 
     filtered_timestamps = filtered_event_timestamp(event_timestamp_list)
-    # print("Filtered timestamps:", filtered_timestamps)
+    # print("Filtered timestamps:", filtered_timestamps)new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + "/26-10-23_12-27-01" + "/event_signal"
+
 
 
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
@@ -223,14 +225,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         for i in range(0,len(bag_time_list)):
             # print("Bag Time List: ",bag_time_list[i])
             if i < len(bag_time_list)-1:
-                # # Define the start and end times as strings
-                # start_time_str = bag_time_list[i][0]+':'+bag_time_list[i][1]+':'+bag_time_list[i][2]
-                # end_time_str = bag_time_list[i+1][0]+':'+bag_time_list[i+1][1]+':'+bag_time_list[i+1][2]
 
-                # # Convert the start and end times to datetime objects
-                # start_time = datetime.strptime(start_time_str, "%H:%M:%S")
-                # end_time = datetime.strptime(end_time_str, "%H:%M:%S")
-                # print("TImestamp: ", timestamp)
                 start_time = bag_time_list[i][0]
                 # print("Start Time: ", start_time)
                 end_time = bag_time_list[i+1][0]
@@ -269,6 +264,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         sublist = event_bag_ind_list[i:i + 2]  # Get two elements from the current position
         event_bag_ind_list_paired.append(sublist)  # Append the sublist to the result list
 
+
     # Print the resulting list of sublists
     # print('paired bag ind',event_bag_ind_list_paired)
 
@@ -280,9 +276,37 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
     print('complete bag index:', complete_event_bag_ind_list)
 
+    global event_new_path
+
+       # create the csv file for each session
+    event_timestamp_paired = [] # Initialize the list for paried timestamps. The list would have the format:[[event1_start_timestamp,event1_end_timestamp],[e2_start,e2_end],...]
+
+    for j in range(0, len(filtered_timestamps), 2):
+        sub_lst = filtered_timestamps[i:i + 2]  # Get two elements from the current position
+        event_timestamp_paired.append(sub_lst)  # Append the sublist to the result list
+
+
     for q in range(0,len(complete_event_bag_ind_list)):
+        bag_start_time = bag_time_list[complete_event_bag_ind_list[k][0]][0]
+
+        event_begin_time, event_finish_time = event_timestamp_paired[k]
+
+        # Calculate the time differences
+        video_start_time = event_begin_time - bag_start_time
+        video_stop_time = event_finish_time - bag_start_time
+
+        # Format the time differences as strings
+        video_start_time_str = str(video_start_time)
+        video_stop_time_str = str(video_stop_time)
+
+        print('Video start time:',video_start_time_str)
+        print('Video end time:', video_stop_time_str)
+
+
+
+
         subtest_ind = q + 1
-        print("q: ",q)
+        # print("q: ",q)
 
         subfolder_name = new_folder_name + '_'+ str(subtest_ind)
 
@@ -292,7 +316,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             os.makedirs(event_new_path)
 
             for p in range(len(complete_event_bag_ind_list[q])):
-                print("P: ",p)
+                # print("P: ",p)
                 old_A_file_path = os.path.join(folder_path, files[complete_event_bag_ind_list[q][p]])
                 print("Path: ", old_A_file_path)
                 new_A_file_path = os.path.join(event_new_path, files[complete_event_bag_ind_list[q][p]])
@@ -306,6 +330,27 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             file_path = os.path.join(folder_path, file)
             os.remove(file_path)
 
+ 
+
+    for k in range(len(complete_event_bag_ind_list)):
+        
+        
+        # Define the CSV file path
+
+        #TODO: CHANGE THE FOLDER TO THE VIDEO OUTPUT FOLDER
+        csv_file_path = event_new_path +'/'+ "event_timestamp.csv"
+
+        # Create the CSV file and write the data
+        with open(csv_file_path, mode='w', newline='') as csv_file:
+            fieldnames = ['Event Start Time', 'Event Stop Time']
+            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+            
+            writer.writeheader()
+            writer.writerow({'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str})
+
+        print(f"Event time differences saved to '{csv_file_path}'.")
+
+
     print('------------------------------------------------------------')
 
 
@@ -318,11 +363,22 @@ start_time = time.time()
 new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25" + "/event_signal"
 
 #10/24 70-alcohol
-# new_directory = "/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28" + "/event_signal"
+# new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/70-Alcohol/26-10-23_11-41-54" + "/event_signal"
+
+
+#TODO:NEED TO CHANGE THE SUBJECT ID FOR EACH DATA COLLECTION!  
+
+SUBJECT_ID = 'Subject01'
+
+ALCOHOL_LEVEL = 'Baseline'
+
+# ALCOHOL_LEVEL = '70-Alcohol'
+
+# ALCOHOL_LEVEL = '80-Alcohol'
 
 
 #10/24 80-alcohol
-# new_directory = "/media/iac_user/ImDrive_Bck/SubjectAnn/80-Alcohol/24-10-23_14-22-40" + "/event_signal"
+# new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + "/26-10-23_12-27-01" + "/event_signal"
 
 # Change the working directory
 os.chdir(new_directory)
@@ -331,17 +387,17 @@ joystick_filename = 'joystick.txt'
 
 #TODO: source_folder needs to enumerate all four image folders and the gps folder
 
-# source_folder = "/media/iac_user/ImDrive_Org/Org-Data/TestLL/Baseline/only_driving/17-10-23_10-50-24/images4"
+source_folder = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/gps"
 
 #Baseline
-source_folder = '/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/gps'
+# source_folder = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/26-10-23_10-21-30/images4'
 
 # 70-alcohol
 # source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
-# source_folder = '/media/iac_user/ImDrive_Org/SubjectAnn/70-Alcohol/24-10-23_13-49-28/gps'
+# source_folder = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/26-10-23_11-41-54/images4'
 
 # 80-alcohol
-# source_folder = '/media/iac_user/ImDrive_Bck/SubjectAnn/70-Alcohol/24-10-23_13-49-28/images4'
+# source_folder = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/26-10-23_12-27-01/images4'
 
 # Based on the joystick instruction:
 # Event A is Eye tracking

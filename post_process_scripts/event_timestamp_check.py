@@ -134,7 +134,7 @@ if __name__ == '__main__':
     # new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/event_signal"
 
     
-    new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25" + "/event_signal"
+    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01" + "/event_signal"
 
     # Change the working directory
     os.chdir(new_directory)

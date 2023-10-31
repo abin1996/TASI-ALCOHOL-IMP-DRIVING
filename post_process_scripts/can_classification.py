@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     # new_directory is the location of the event_signal
     # new_directory = "D:/HZTs_file/Impaired-Driving/TestLL/Baseline/only_driving/17-10-23_10-50-24/event_signal"
-    new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/event_signal"
+    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/event_signal"
 
     # Change the working directory
     os.chdir(new_directory)
@@ -159,8 +159,8 @@ if __name__ == '__main__':
     # output_folder_name = 'D:/HZTs_file/Impaired-Driving/Post-SubjectLL/Baseline/only_driving/17-10-23_10-50-24/can/'
 
 
-    CSV_SOURCE_FILE = '/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/can/can_messages_24-10-23_13-49-28.csv'
-    output_folder_name = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/'
+    CSV_SOURCE_FILE = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/can/can_messages_26-10-23_10-21-30.csv'
+    output_folder_name = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/Baseline/'
 
     for i in range(len(timestamp_lists)):
         event_timestamps = timestamp_lists[i]

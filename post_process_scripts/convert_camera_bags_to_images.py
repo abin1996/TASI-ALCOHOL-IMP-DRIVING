@@ -117,6 +117,23 @@ if __name__ == '__main__':
                     extract_img(root, file, camera_topic, camera_output_folder, True)
                     #break  
 
+
+        # debug
+        # SUB_SUB_FOLDER_IND = str(3)
+
+        # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
+        # camera_input_folder = SOURCE_CAMERA_BAG_FOLDER + '/' + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
+        # camera_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + '/images/' + IMAGE_FOLDER
+
+        # camera_topic = ['/camera' + str(image_ind_list[i])+ '/usb_cam'+str(image_ind_list[i]) +'/image_raw/compressed' ]
+
+        # for (root, dirs, files) in os.walk(camera_input_folder):
+        #     for file in sorted(files):
+        #         # print(file)
+        #         extract_img(root, file, camera_topic, camera_output_folder, True)
+        #         #break  
     end_time = time.time()
 
     print("Overall time taken: ", end_time - start_time,'seconds')

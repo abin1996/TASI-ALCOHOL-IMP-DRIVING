@@ -90,7 +90,9 @@ if __name__ == '__main__':
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
     #TODO: change the subfolder ind into a len(sub_sub_folder)
-    sub_sub_folder_ind_list = [2]
+    # sub_sub_folder_ind_list = [4,5,6]
+
+    sub_sub_folder_ind_list = [1]
 
     for i in range(len(sub_sub_folder_ind_list)):
 
@@ -107,22 +109,39 @@ if __name__ == '__main__':
     
     # /media/iac_user/ImDrive_Org/TestLL/Baseline/new_eye_tracking/17-10-23_11-20-48
 
-            #SubjectAnn
+            #Subject01
+
+            #TODO:NEED TO CHANGE THE SUBJECT ID FOR EACH DATA COLLECTION!  
+            
+            SUBJECT_ID = 'Subject01'
+
+            ALCOHOL_LEVEL = 'Baseline'
+
+            # ALCOHOL_LEVEL = '70-Alcohol'
+
+            # ALCOHOL_LEVEL = '80-Alcohol'
+
+            #debug
+            SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + "/26-10-23_10-21-30/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
+
             #Baseline
-            SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/Baseline/24-10-23_12-43-25/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
-            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/Baseline/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/Baseline/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+
 
             #70-Alcohol
-            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
-            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/70-Alcohol/26-10-23_11-41-54/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             #80-Alcohol
-            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/SubjectAnn/80-Alcohol/24-10-23_14-22-40/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
-            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/80-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/80-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
 
-            camera1_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video1"
-            camera2_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video2"
+            camera1_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video_front"
+            camera2_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video_driver"
             camera1_topic = '/camera1/usb_cam1/image_raw/compressed'
             camera2_topic = '/camera2/usb_cam2/image_raw/compressed'
             # camera1_input_folder = SOURCE_CAMERA_BAG_FOLDER + "/images1"
@@ -130,26 +149,27 @@ if __name__ == '__main__':
             camera1_input_folder = SOURCE_CAMERA_BAG_FOLDER 
             camera2_input_folder = SOURCE_CAMERA_BAG_FOLDER 
 
-            camera3_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video3"
-            camera4_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video4"
-            camera3_topic = '/camera3/usb_cam3/image_raw/compressed'
-            camera4_topic = '/camera4/usb_cam4/image_raw/compressed'
-            # camera3_input_folder = SOURCE_CAMERA_BAG_FOLDER + "/images3"
-            # camera4_input_folder = SOURCE_CAMERA_BAG_FOLDER + "/images4"
-            camera3_input_folder = SOURCE_CAMERA_BAG_FOLDER
-            camera4_input_folder = SOURCE_CAMERA_BAG_FOLDER
+
+            if sub_folder_name != 'Eye tracking':
+                camera3_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video_right"
+                camera4_output_folder = SAVE_FOLDER_FOR_CAMERA_IMAGES + "/videos/video_left"
+                camera3_topic = '/camera3/usb_cam3/image_raw/compressed'
+                camera4_topic = '/camera4/usb_cam4/image_raw/compressed'
+                # camera3_input_folder = SOURCE_CAMERA_BAG_FOLDER + "/images3"
+                # camera4_input_folder = SOURCE_CAMERA_BAG_FOLDER + "/images4"
+                camera3_input_folder = SOURCE_CAMERA_BAG_FOLDER
+                camera4_input_folder = SOURCE_CAMERA_BAG_FOLDER
 
             opt_files=[f for f in os.listdir(camera1_input_folder) if f[-4:] == ".bag"]
             opt_files=sorted(opt_files)	
             os.makedirs(SAVE_FOLDER_FOR_CAMERA_IMAGES+"/videos",exist_ok=True)
 
             combine_bags_to_video(camera1_input_folder,camera1_output_folder+".mp4",camera1_topic)
-
             combine_bags_to_video(camera2_input_folder,camera2_output_folder+".mp4",camera2_topic)
-
-            combine_bags_to_video(camera3_input_folder,camera3_output_folder+".mp4",camera3_topic)
-
-            combine_bags_to_video(camera4_input_folder,camera4_output_folder+".mp4",camera4_topic)  
+            
+            if sub_folder_name != 'Eye tracking':
+                combine_bags_to_video(camera3_input_folder,camera3_output_folder+".mp4",camera3_topic)
+                combine_bags_to_video(camera4_input_folder,camera4_output_folder+".mp4",camera4_topic)  
 
             print(SAVE_FOLDER_FOR_CAMERA_IMAGES, 'video generated')
             print('---------------------------------------------')

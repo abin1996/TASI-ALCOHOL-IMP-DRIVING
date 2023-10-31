@@ -101,15 +101,15 @@ if __name__ == '__main__':
     start_time = time.time()
 
     # sub_folder_name = 'Driving backward'
-    sub_folder_name = 'Driving forward'
-    # sub_folder_name = 'Eye tracking'
+    # sub_folder_name = 'Driving forward'
+    sub_folder_name = 'Eye tracking'
     # sub_folder_name = 'Parking'
     
     SUB_FOLDER_NAME = sub_folder_name + '/'
 
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
-    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/gps'
+    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01/gps'
 
     SOURCE_GPS_BAG_FOLDER = SOURCE_FOLDER +'/' + sub_folder_name
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     for i in range(num_sub_sub_folder):
             SUB_SUB_FOLDER_IND = str(i+1)
 
-            SAVE_FOLDER_FOR_GPS = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_GPS = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/80-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             gps_input_folder = SOURCE_GPS_BAG_FOLDER + "/" + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
             

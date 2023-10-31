@@ -105,7 +105,7 @@ def event_timestamp(filename):
 def copy_files_to_subfolders(source_folder, subfolder_names):
     # Ensure the source folder exists
     if not os.path.exists(source_folder):
-        print(f"The source folder '{source_folder}' does not exist.")
+        print("The source folder '{}' does not exist.".format(source_folder))
         return
 
     # Create subfolders if they don't already exist

@@ -122,8 +122,8 @@ if __name__ == '__main__':
             # ALCOHOL_LEVEL = '80-Alcohol'
 
             #debug
-            SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + "/26-10-23_10-21-30/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
-            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + "/26-10-23_10-21-30/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/' + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
 
             #Baseline
@@ -132,8 +132,8 @@ if __name__ == '__main__':
 
 
             #70-Alcohol
-            # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/70-Alcohol/26-10-23_11-41-54/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
-            # SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SOURCE_CAMERA_BAG_FOLDER = "/mnt/InternalDrive1/Impaired_Driving_Data_Collection/Subject01/70-Alcohol/26-10-23_11-41-54/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/mnt/InternalDrive1/Impaired_Driving_Post_Processing/Subject01/70-Alcohol/26-10-23_11-41-54/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             #80-Alcohol
             # SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01/" + IMAGE_FOLDER + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME +SUB_SUB_FOLDER_IND
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 
             opt_files=[f for f in os.listdir(camera1_input_folder) if f[-4:] == ".bag"]
             opt_files=sorted(opt_files)	
-            os.makedirs(SAVE_FOLDER_FOR_CAMERA_IMAGES+"/videos",exist_ok=True)
+            os.makedirs(SAVE_FOLDER_FOR_CAMERA_IMAGES+"/videos")
 
             combine_bags_to_video(camera1_input_folder,camera1_output_folder+".mp4",camera1_topic)
             combine_bags_to_video(camera2_input_folder,camera2_output_folder+".mp4",camera2_topic)

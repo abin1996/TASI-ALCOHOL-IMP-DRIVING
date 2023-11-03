@@ -99,6 +99,8 @@ def filtered_event_timestamp(timestamp_list):
         if time_difference <= 2:
             filtered_timestamps.append(current_time)
 
+    filtered_timestamps = [timestamp for j, timestamp in enumerate(filtered_timestamps) if j == 0 or (timestamp - filtered_timestamps[j-1]).total_seconds() > 1]
+
     return filtered_timestamps
 
 
@@ -143,10 +145,20 @@ def can_recategory(source_file,timestamp_ranges,save_file_path):
 
 
 if __name__ == '__main__':
+           
+    SUBJECT_ID = 'Subject02'
+
+    # ALCOHOL_LEVEL = 'Baseline'
+
+    # ALCOHOL_LEVEL = '70-Alcohol'
+
+    ALCOHOL_LEVEL = '80-Alcohol'
+
+    TIMESTAMP = '31-10-23_12-27-13'
 
     # new_directory is the location of the event_signal
     # new_directory = "D:/HZTs_file/Impaired-Driving/TestLL/Baseline/only_driving/17-10-23_10-50-24/event_signal"
-    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/event_signal"
+    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/" + SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + TIMESTAMP + "/event_signal"
 
     # Change the working directory
     os.chdir(new_directory)
@@ -155,17 +167,20 @@ if __name__ == '__main__':
 
     EVENTS = ['Eye tracking','Driving backward','Parking','Driving forward']
 
-    # CSV_SOURCE_FILE = 'D:/HZTs_file/Impaired-Driving/Post-SubjectLL/Baseline/only_driving/17-10-23_10-50-24/can/can_test.csv'
-    # output_folder_name = 'D:/HZTs_file/Impaired-Driving/Post-SubjectLL/Baseline/only_driving/17-10-23_10-50-24/can/'
-
-
-    CSV_SOURCE_FILE = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/can/can_messages_26-10-23_10-21-30.csv'
-    output_folder_name = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/Baseline/'
+    CSV_SOURCE_FILE = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject02/80-Alcohol/31-10-23_12-27-13/can/can_messages_31-10-23_12-27-13.csv'
+    output_folder_name = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/' + SUBJECT_ID +'/'+ ALCOHOL_LEVEL + '/'
 
     for i in range(len(timestamp_lists)):
         event_timestamps = timestamp_lists[i]
 
         filtered_list = filtered_event_timestamp(event_timestamps)
+
+        # delete the wrong timestamps in Parking session
+        # delete_session_name = 'Parking'
+        # delete_timestamp_ind = [4,5,6]
+
+        # if EVENTS[i] == delete_session_name:
+        #     filtered_list = [timestamp for i, timestamp in enumerate(filtered_list) if i not in delete_timestamp_ind]
 
         paired_filtered_list = [filtered_list[i:i+2] for i in range(0, len(filtered_list), 2)]
 

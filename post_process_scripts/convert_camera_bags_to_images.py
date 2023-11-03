@@ -79,8 +79,8 @@ if __name__ == '__main__':
     start_time = time.time()
 
 
-    # sub_folder_name = 'Driving backward'
-    sub_folder_name = 'Driving forward'
+    sub_folder_name = 'Driving backward'
+    # sub_folder_name = 'Driving forward'
     # sub_folder_name = 'Eye tracking'
     # sub_folder_name = 'Parking'
     
@@ -89,21 +89,24 @@ if __name__ == '__main__':
 
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
-    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28'
+    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30'
 
     image_ind_list = [1,2,3,4]
+
+    # IMAGE_FOLDER_NAME = ['image_driver/','image_front/','image_right/','image_left/']
 
     for i in range(len(image_ind_list)):
         IMAGE_FOLDER = 'images' + str(image_ind_list[i]) + '/'
 
         SOURCE_CAMERA_BAG_FOLDER = SOURCE_FOLDER +'/'+ IMAGE_FOLDER + sub_folder_name
 
-        num_sub_sub_folder = len([folder for folder in os.listdir(SOURCE_CAMERA_BAG_FOLDER) if os.path.isdir(os.path.join(SOURCE_CAMERA_BAG_FOLDER, folder))])
+        # num_sub_sub_folder = len([folder for folder in os.listdir(SOURCE_CAMERA_BAG_FOLDER) if os.path.isdir(os.path.join(SOURCE_CAMERA_BAG_FOLDER, folder))])
+        num_sub_sub_folder =1
 
         for j in range(num_sub_sub_folder):
             SUB_SUB_FOLDER_IND = str(j+1)
 
-            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/POST_PROCESS/SubjectAnn/70-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_CAMERA_IMAGES = '/media/iac_user/ImDrive_Bck/POST_PROCESS(DO NOT DELETE)/Subject01/Baseline/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             camera_input_folder = SOURCE_CAMERA_BAG_FOLDER + '/' + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 

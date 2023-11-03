@@ -100,6 +100,17 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
+    SUBJECT_ID = 'Subject02'
+
+    # ALCOHOL_LEVEL = 'Baseline'
+
+    # ALCOHOL_LEVEL = '70-Alcohol'
+
+    ALCOHOL_LEVEL = '80-Alcohol'
+
+    TIMESTAMP = '31-10-23_12-27-13'
+
+
     # sub_folder_name = 'Driving backward'
     # sub_folder_name = 'Driving forward'
     sub_folder_name = 'Eye tracking'
@@ -109,7 +120,7 @@ if __name__ == '__main__':
 
     SUB_SUB_FOLDER_NAME = sub_folder_name +'_'
 
-    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01/gps'
+    SOURCE_FOLDER = '/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/'+ SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + TIMESTAMP + '/gps'
 
     SOURCE_GPS_BAG_FOLDER = SOURCE_FOLDER +'/' + sub_folder_name
 
@@ -118,12 +129,62 @@ if __name__ == '__main__':
     for i in range(num_sub_sub_folder):
             SUB_SUB_FOLDER_IND = str(i+1)
 
-            SAVE_FOLDER_FOR_GPS = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/Subject01/80-Alcohol/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
+            SAVE_FOLDER_FOR_GPS = '/home/iac_user/POST_PROCESS(DO NOT DELETE)/'+ SUBJECT_ID + '/' + ALCOHOL_LEVEL + '/' + SUB_FOLDER_NAME + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
 
             gps_input_folder = SOURCE_GPS_BAG_FOLDER + "/" + SUB_SUB_FOLDER_NAME + SUB_SUB_FOLDER_IND
             
             extract_gps(gps_input_folder,SAVE_FOLDER_FOR_GPS)
 
+            # Add the vehicle speed in the generated csv file
+
+
+            # TODO: Modify and debug the code
+            # Define the column indices (0-based) for J, K, and Q
+            j_column = 9  # Replace with the index of the Jth column (0-based)
+            k_column = 10  # Replace with the index of the Kth column (0-based)
+            q_column = 16  # Replace with the index where you want to add the new column (0-based)
+
+            CSV_FOLDER = SAVE_FOLDER_FOR_GPS + '/gps'
+
+            
+            for item in os.listdir(CSV_FOLDER):
+                item_path = os.path.join(CSV_FOLDER, item)
+                
+                # Check if the item is a subfolder
+                if os.path.isdir(item_path):
+                    # If it is a subfolder, iterate through its contents
+                    for subitem in os.listdir(item_path):
+                    # for filename in os.listdir(subitem_path):
+                        if subitem.endswith("_slash_tcpvel.csv"):
+                            csv_file_path = os.path.join(item_path, subitem)
+
+                            updated_rows = []
+
+                            with open(csv_file_path, 'r') as csv_file:
+                                reader = csv.reader(csv_file)
+                                header = next(reader)
+
+                                # Add the new column header
+                                header.insert(q_column, 'vehicle speed')
+
+                                updated_rows.append(header)
+
+                                for row in reader:
+                                    if len(row) <= max(j_column, k_column):
+                                        updated_rows.append(row)
+                                    else:
+                                        j_value = float(row[j_column])
+                                        k_value = float(row[k_column])
+                                        q_value = j_value ** 2 + k_value ** 2
+                                        row.insert(q_column, str(q_value))
+                                        updated_rows.append(row)
+
+                            # Write the updated rows back to the CSV file
+                            with open(csv_file_path, 'w', newline='') as csv_file:
+                                writer = csv.writer(csv_file)
+                                writer.writerows(updated_rows)
+
+                    print("CSV files in the folder updated with 'vehicle speed' and new values in the Qth column.")
 
     print("GPS files generated")
 

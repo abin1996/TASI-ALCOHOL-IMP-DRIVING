@@ -21,6 +21,17 @@ def paired_filtered_event_timestamp(timestamp_list):
         if time_difference <= 2:
             filtered_timestamps.append(current_time)
 
+    # Remove the same mistaken input when the time difference between the two timestamps are less than or equal to 1s
+    # Which also means if pushing the wrong button, need to wait for 2s to double click again
+    # for j in range(len(filtered_timestamps)-1):
+    #     current_timestamp = filtered_timestamps[j]
+    #     next_timestamp = filtered_timestamps[j+1]
+    #     timestamp_difference = (next_timestamp - current_timestamp).total_seconds()
+
+    #     if timestamp_difference <= 1:
+    #         filtered_timestamps.remove(next_timestamp)
+    filtered_timestamps = [timestamp for j, timestamp in enumerate(filtered_timestamps) if j == 0 or (timestamp - filtered_timestamps[j-1]).total_seconds() > 1]
+
     paired_filtered_list = [filtered_timestamps[i:i + 2] for i in range(0, len(filtered_timestamps), 2)]
 
     return paired_filtered_list
@@ -103,6 +114,14 @@ def timestamp_check(EVENT_NAME, timestamp_list,output_folder_path):
 
     event_timestamp_list = paired_filtered_event_timestamp(timestamp_list)
 
+
+    # delete_session_name = 'Parking'
+    # delete_timestamp_ind = [2,3,4]
+
+    # if EVENT_NAME == delete_session_name:
+    #     event_timestamp_list = [timestamp for i, timestamp in enumerate(event_timestamp_list) if i not in delete_timestamp_ind]
+
+
     for i in range(len(event_timestamp_list)):
         sub_session_name_str = EVENT_NAME + '_' + str(i + 1)
 
@@ -125,6 +144,8 @@ def timestamp_check(EVENT_NAME, timestamp_list,output_folder_path):
             print('Missing one timestamp from controller input!')
         print('-------------------------')
 
+
+
     print('-------------------------')
 
 
@@ -134,7 +155,7 @@ if __name__ == '__main__':
     # new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/event_signal"
 
     
-    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/80-Alcohol/26-10-23_12-27-01" + "/event_signal"
+    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject02/Baseline/31-10-23_10-16-52" + "/event_signal"
 
     # Change the working directory
     os.chdir(new_directory)

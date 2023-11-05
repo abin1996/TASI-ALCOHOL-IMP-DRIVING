@@ -5,6 +5,7 @@ import json
 import sys
 import rosbag
 import pandas as pd
+import datetime
 from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name
 
 
@@ -23,7 +24,6 @@ def perform_data_classification(subject_id, alcohol_session_name, timestamped_fo
    
 def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
 
-    image_folder_index = data_classification_folder_type[-1]
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
     for sub_category in sub_categories_to_classify:
         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
@@ -33,7 +33,6 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
         
         for sub_category_run_number in range(1, sub_category_runs+1):
             save_folder_for_camera_images = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
-            
             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
             camera_output_folder = os.path.join(save_folder_for_camera_images, image_processed_folder_name(data_classification_folder_type))
             is_camera_flipped = True if data_classification_folder_type == "images1" else False
@@ -41,6 +40,15 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
             frame_gaps_list = []
             prev_frame = None
             prev_frame_time = 0
+
+            # Read event_timestamp.csv from camera_input_folder and get the start and stop time of the session from the first row in the column named Start Timestamp and Stop Timestamp
+            event_timestamp_csv_path = os.path.join(camera_input_folder, "event_timestamp.csv")
+            event_timestamp_df = pd.read_csv(event_timestamp_csv_path)
+            #Read start and stop time as datetime objects
+            start_time = datetime.datetime.strptime(event_timestamp_df["Start Timestamp"][0], '%Y-%m-%d %H:%M:%S')
+            stop_time = datetime.datetime.strptime(event_timestamp_df["Stop Timestamp"][0], '%Y-%m-%d %H:%M:%S')
+
+            print("Start time: " + str(start_time) + ", Stop time: " + str(stop_time))
             if os.path.exists(camera_output_folder):
                 for file in os.listdir(camera_output_folder):
                     file_path = os.path.join(camera_output_folder, file)
@@ -51,7 +59,7 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
                         bag_num = (file.split('_')[2]).split('.')[0]
                         bag = rosbag.Bag(os.path.join(root, file))
                         # print("Number of frames in bag number " + bag_num + " : " + str(missing_frames_in_bag))
-                        frame_gaps, session_frames_count, prev_frame, prev_frame_time, total_missing_frames = extract_images_from_bag(bag, camera_output_folder, is_camera_flipped, bag_num, session_frames_count, prev_frame, prev_frame_time)
+                        frame_gaps, session_frames_count, prev_frame, prev_frame_time, total_missing_frames = extract_images_from_bag(bag, camera_output_folder, is_camera_flipped, bag_num, start_time, stop_time, session_frames_count, prev_frame, prev_frame_time)
                         print("Duration bag number " + bag_num + " : " + str(bag.get_end_time() - bag.get_start_time()) + ", Missing frames: " + str(total_missing_frames))
                         frame_gaps_list.extend(frame_gaps)
                         bag.close()
@@ -76,8 +84,8 @@ if __name__ == '__main__':
             if run['execute_data_classification'] == True:
                 perform_data_classification(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path)
             
-            if "execute_image_extraction" in run:
-                target_folder_parent_path = run['execute_image_extraction']['target_folder_path']
+            if run["execute_image_extraction"] == True and "target_folder_path" in run:
+                target_folder_parent_path = run['target_folder_path']
                 perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path)
         
         end_time = time.time()

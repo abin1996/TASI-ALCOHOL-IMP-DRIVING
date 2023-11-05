@@ -240,10 +240,10 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
             # Create the CSV file and write the data
             with open(csv_file_path, mode='w', newline='') as csv_file:
-                fieldnames = ['Event name','Event Start Time', 'Event Stop Time']
+                fieldnames = ['Event name','Event Start Time', 'Event Stop Time', 'Start Timestamp', 'Stop Timestamp']
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
-                writer.writerow({'Event name': event_name,'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str})
+                writer.writerow({'Event name': event_name,'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str, 'Start Timestamp': event_begin_time, 'Stop Timestamp': event_finish_time})
             
             print(f"Event start and end time saved to '{csv_file_path}'.")
             print('..............')
@@ -255,7 +255,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             os.remove(file_path)
     print('------------------------------------------------------------')
 
-def extract_images_from_bag(bag, output_folder, flipped, bag_number, session_count, prev_frame, prev_frame_time):
+def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time, stop_time, session_count, prev_frame, prev_frame_time):
     total_missing_frames = 0
     frame_gaps_list = []
     #Time between each fram is 33 ms (30 fps). If the time between last and current frame is more than 35 ms, then there is a missing frame. 
@@ -266,6 +266,13 @@ def extract_images_from_bag(bag, output_folder, flipped, bag_number, session_cou
     os.makedirs(output_folder, exist_ok=True)
 
     for (topic, msg, t) in bag.read_messages():
+        print("Date time: ", datetime.utcfromtimestamp(t.to_sec()))
+        print("Start time: ", start_time)
+        print("Stop time: ", stop_time)
+        # if datetime.fromtimestamp(t.to_sec()) < start_time:
+        #     continue
+        # if datetime.fromtimestamp(t.to_sec()) > stop_time:
+        #     break
         bridge = CvBridge()
         try:
             cv_img = bridge.compressed_imgmsg_to_cv2(msg)

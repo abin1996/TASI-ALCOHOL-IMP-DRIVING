@@ -1,0 +1,57 @@
+[{
+    "execute_data_classification":false,
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "gps",
+    "sub_categories_to_classify": ["Eye tracking", "Driving backward", "Parking", "Driving forward"]
+},
+{
+    "execute_data_classification":false,
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images1",
+    "sub_categories_to_classify": ["Driving backward"],
+    "execute_image_extraction": {
+        "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/"        
+    }
+},
+{
+    "execute_data_classification":false,
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images2",
+    "sub_categories_to_classify": ["Driving backward"],
+    "execute_image_extraction": {
+        "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/"        
+    }
+},
+{
+    "execute_data_classification":false,
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images3",
+    "sub_categories_to_classify": ["Driving backward"],
+    "execute_image_extraction": {
+        "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/"        
+    }
+},
+{
+    "execute_data_classification":false,
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images4",
+    "sub_categories_to_classify": ["Driving backward"],
+    "execute_image_extraction": {
+        "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/"        
+    }
+}]

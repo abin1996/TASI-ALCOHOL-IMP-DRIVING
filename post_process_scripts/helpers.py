@@ -268,9 +268,9 @@ def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time,
 
         time_milli = t.to_nsec() / 1e9
         timestamp_obj = datetime.fromtimestamp(time_milli)
-        print("Date time: ", datetime.fromtimestamp(time_milli))
-        print("Start time: ", start_time)
-        print("Stop time: ", stop_time)
+        # print("Date time: ", datetime.fromtimestamp(time_milli))
+        # print("Start time: ", start_time)
+        # print("Stop time: ", stop_time)
         if timestamp_obj < start_time:
             print("Skipping frame")
             continue

@@ -1,54 +1,56 @@
 [{
     "execute_data_classification":false,
-    "execute_image_extraction": false,
+    "execute_gps_extraction": false,
+    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
     "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
     "subject_id": "Subject01",
     "alcohol_session_name": "Baseline",
     "timestamped_folder_name": "26-10-23_10-21-30",
     "data_classification_folder_type": "gps",
-    "sub_categories_to_classify": ["Eye tracking", "Driving backward", "Parking", "Driving forward"]
-},
-{
-    "execute_data_classification":false,
-    "execute_image_extraction": true,
-    "sub_categories_to_classify": ["Driving backward"],
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images1",
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/"        
-},
-{
-    "execute_data_classification":false,
-    "execute_image_extraction": true,
-    "sub_categories_to_classify": ["Driving backward"],
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images2",
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/" 
+    "sub_categories_to_classify": ["Driving backward"]
+
 },
 {
     "execute_data_classification":false,
     "execute_image_extraction": false,
     "sub_categories_to_classify": ["Driving backward"],
+    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
     "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
     "subject_id": "Subject01",
     "alcohol_session_name": "Baseline",
     "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images3",
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/" 
+    "data_classification_folder_type": "images1"
 },
 {
     "execute_data_classification":false,
     "execute_image_extraction": false,
     "sub_categories_to_classify": ["Driving backward"],
+    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
     "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
     "subject_id": "Subject01",
     "alcohol_session_name": "Baseline",
     "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images4",
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/" 
+    "data_classification_folder_type": "images2"
+},
+{
+    "execute_data_classification":false,
+    "execute_image_extraction": false,
+    "sub_categories_to_classify": ["Driving backward"],
+    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images3"
+},
+{
+    "execute_data_classification":false,
+    "execute_image_extraction": false,
+    "sub_categories_to_classify": ["Driving backward"],
+    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
+    "source_folder_path": "/home/iac_user/DATA_COLLECTION/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "Baseline",
+    "timestamped_folder_name": "26-10-23_10-21-30",
+    "data_classification_folder_type": "images4"
 }]

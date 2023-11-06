@@ -7,6 +7,9 @@ from cv_bridge import CvBridge, CvBridgeError
 import cv2
 import rospy
 import pytz
+import pandas as pd
+import math
+
 def timestamp_to_date(timestamp):
     # convert the timestamp to a datetime object in the local timezone
     dt_object = datetime.fromtimestamp(timestamp)
@@ -268,14 +271,11 @@ def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time,
 
         time_milli = t.to_nsec() / 1e9
         timestamp_obj = datetime.fromtimestamp(time_milli)
-        # print("Date time: ", datetime.fromtimestamp(time_milli))
-        # print("Start time: ", start_time)
-        # print("Stop time: ", stop_time)
         if timestamp_obj < start_time:
-            print("Skipping frame")
+            # print("Skipping frame")
             continue
         if timestamp_obj > stop_time:
-            print("Stopping frame extraction for the bag")
+            # print("Stopping frame extraction for the bag")
             break
         bridge = CvBridge()
         try:
@@ -320,3 +320,83 @@ def image_processed_folder_name(image_folder_name):
     elif image_folder_name == 'images4':
         image_processed_folder_name = 'image_left'
     return image_processed_folder_name
+
+def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
+
+    listOfBagFiles = [f for f in os.listdir(input_folder) if f[-4:] == ".bag"]  # get list of only bag files in current dir.
+    numberOfFiles = str(len(listOfBagFiles))
+    print("Reading " + numberOfFiles + " bagfile(s) in source directory:")
+    count = 0
+    for bagFile in sorted(listOfBagFiles):
+        count += 1
+        print("Reading file " + str(count) + " of  " + numberOfFiles + ": " + bagFile)
+        bag = rosbag.Bag(input_folder+"/" + bagFile)
+        listOfTopics = bag.get_type_and_topic_info()[1].keys()
+        os.makedirs(target_folder,exist_ok=True)
+        for topicName in listOfTopics:
+            
+            # Create a new CSV file for each topic
+            filename = os.path.join(target_folder, topicName.replace('/', '_slash_') + '.csv')
+            # print("Writing topic " + topicName + " to " + filename)
+            firstIteration = is_empty_csv(filename) 
+            with open(filename, 'a+', newline='') as csvfile:
+                filewriter = csv.writer(csvfile, delimiter=',')
+                 # allows header row
+                for subtopic, msg, t in bag.read_messages(topicName):
+                    time_milli = t.to_nsec() / 1e9
+                    timestamp_obj = datetime.fromtimestamp(time_milli)
+                    if timestamp_obj < start_time:
+                        # print("Skipping frame")
+                        continue
+                    if timestamp_obj > stop_time:
+                        # print("Stopping frame extraction for the bag")
+                        break
+                    # parse data from this instant
+                    msgString = str(msg)
+                    msgList = msgString.split('\n')
+                    instantaneousListOfData = []
+                    for nameValuePair in msgList:
+                        splitPair = nameValuePair.split(':')
+                        for i in range(len(splitPair)):  # should be 0 to 1
+                            splitPair[i] = splitPair[i].strip()
+                        instantaneousListOfData.append(splitPair)
+                    if firstIteration:  # header
+                        headers = ["rosbagTimestamp"]  # first column header
+                        for pair in instantaneousListOfData:
+                            headers.append(pair[0])
+                        if topicName == "/tcpvel":
+                            headers.append("Vehicle Speed")
+                        filewriter.writerow(headers)
+                        firstIteration = False
+
+                    values = [str(t)]  # first column will have rosbag timestamp
+                    for pair in instantaneousListOfData:
+                        if len(pair) > 1:
+                            values.append(pair[1])
+                    if topicName == "/tcpvel":
+                        values.append(get_vehicle_speed(values[9], values[10]))
+                    filewriter.writerow(values)
+        bag.close()
+    print("Done reading all " + numberOfFiles + " bag files.")
+
+def get_event_start_stop_time(input_folder):
+    # Read event_timestamp.csv from camera_input_folder and get the start and stop time of the session from the first row in the column named Start Timestamp and Stop Timestamp
+    event_timestamp_csv_path = os.path.join(input_folder, "event_timestamp.csv")
+    event_timestamp_df = pd.read_csv(event_timestamp_csv_path)
+    #Read start and stop time as datetime objects
+    start_time = datetime.strptime(event_timestamp_df["Start Timestamp"][0], '%Y-%m-%d %H:%M:%S')
+    stop_time = datetime.strptime(event_timestamp_df["Stop Timestamp"][0], '%Y-%m-%d %H:%M:%S')
+    return start_time, stop_time
+
+def is_empty_csv(path):
+    if not os.path.exists(path):
+        return True
+    with open(path) as csvfile:
+        reader = csv.reader(csvfile)
+        for i, _ in enumerate(reader):
+            if i:  # found the second row
+                return False
+    return True
+
+def get_vehicle_speed(x_vel, y_vel):
+    return math.sqrt(float(x_vel)**2 + float(y_vel)**2)

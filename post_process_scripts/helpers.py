@@ -261,18 +261,22 @@ def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time,
     #Time between each fram is 33 ms (30 fps). If the time between last and current frame is more than 35 ms, then there is a missing frame. 
     #When there is a missing frame, use the last frame to fill the missing frame. Record the number of missing frames in a list as a tuple (start_of_missing_frame, end_of_missing_frame, number_of_missing_frames)
     missing_frame_count = 0
-    
     #Create the output folder if it doesn't exist. If it does exist, then delete all the files in the folder
     os.makedirs(output_folder, exist_ok=True)
 
     for (topic, msg, t) in bag.read_messages():
-        print("Date time: ", datetime.utcfromtimestamp(t.to_sec()))
+
+        time_milli = t.to_nsec() / 1e9
+        timestamp_obj = datetime.fromtimestamp(time_milli)
+        print("Date time: ", datetime.fromtimestamp(time_milli))
         print("Start time: ", start_time)
         print("Stop time: ", stop_time)
-        # if datetime.fromtimestamp(t.to_sec()) < start_time:
-        #     continue
-        # if datetime.fromtimestamp(t.to_sec()) > stop_time:
-        #     break
+        if timestamp_obj < start_time:
+            print("Skipping frame")
+            continue
+        if timestamp_obj > stop_time:
+            print("Stopping frame extraction for the bag")
+            break
         bridge = CvBridge()
         try:
             cv_img = bridge.compressed_imgmsg_to_cv2(msg)

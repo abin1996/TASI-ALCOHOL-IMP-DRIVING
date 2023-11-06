@@ -9,28 +9,24 @@ import datetime
 from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video
 
 
-
+#DATA CLASSIFICATION
 def perform_data_classification(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path): 
-
     joystick_file_path = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, "event_signal/joystick.txt")
     timestamp_lists_all_subcategories = event_timestamp(joystick_file_path)
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
     copy_files_to_subfolders(source_folder, sub_categories_to_classify)
-    
     for sub_category in sub_categories_to_classify:
         timestamp_list = timestamp_lists_all_subcategories[sub_category]
         file_recategory(timestamp_list, source_folder, sub_category)
     print('Data recategory finished')
-   
-def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
 
+#IMAGE EXTRACTION   
+def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
     for sub_category in sub_categories_to_classify:
         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
-        
         sub_category_folder = os.path.join(source_folder, sub_category)
         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
-        
         for sub_category_run_number in range(1, sub_category_runs+1):
             save_folder_for_camera_images = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
@@ -60,6 +56,7 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
             df = pd.DataFrame(frame_gaps_list, columns =['Bag Number', 'Start of missing frame','Number of Missing Frames', 'Time interval'])
             df.to_csv(os.path.join(save_folder_for_camera_images, image_processed_folder_name(data_classification_folder_type) + "_missing_frames.csv"), index=False)
 
+#GPS EXTRACTION
 def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
     for sub_category in sub_categories_to_classify:
@@ -78,6 +75,7 @@ def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_
                     os.remove(file_path) 
             extract_gps_to_csv(gps_input_folder, gps_output_folder, start_time, stop_time)
 
+#VIDEO EXTRACTION
 def perform_video_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
     for sub_category in sub_categories_to_classify:

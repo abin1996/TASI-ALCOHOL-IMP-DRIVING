@@ -6,7 +6,7 @@ import sys
 import rosbag
 import pandas as pd
 import datetime
-from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time
+from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video
 
 
 
@@ -78,6 +78,24 @@ def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_
                     os.remove(file_path) 
             extract_gps_to_csv(gps_input_folder, gps_output_folder, start_time, stop_time)
 
+def perform_video_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
+    source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+    for sub_category in sub_categories_to_classify:
+        target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
+        sub_category_folder = os.path.join(source_folder, sub_category)
+        sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
+        
+        for sub_category_run_number in range(1, sub_category_runs+1):
+            save_folder_for_video = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
+            video_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
+            video_output_folder = os.path.join(save_folder_for_video, "videos")
+            start_time, stop_time = get_event_start_stop_time(video_input_folder)
+            if os.path.exists(video_output_folder):
+                for file in os.listdir(video_output_folder):
+                    file_path = os.path.join(video_output_folder, file)
+                    os.remove(file_path) 
+            extract_bags_to_video(video_input_folder, video_output_folder, data_classification_folder_type, start_time, stop_time)
+
 if __name__ == '__main__':
     # Read the arguments from the json file who's path is given as the first argument
     start_time = time.time()
@@ -102,6 +120,9 @@ if __name__ == '__main__':
                 target_folder_parent_path = run['target_folder_path']
                 perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path)
 
+            if "execute_video_extraction" in run and run["execute_video_extraction"] == True:
+                target_folder_parent_path = run['target_folder_path']
+                perform_video_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path)
         end_time = time.time()
         execution_time = end_time - start_time
         print('Execution time',execution_time)

@@ -10,6 +10,11 @@ import pytz
 import pandas as pd
 import math
 
+
+VIDEO_FRAMERATE = 30
+MJPEG_VIDEO = 1
+RAWIMAGE_VIDEO = 2
+VIDEO_CONVERTER_TO_USE = "ffmpeg" 
 def timestamp_to_date(timestamp):
     # convert the timestamp to a datetime object in the local timezone
     dt_object = datetime.fromtimestamp(timestamp)
@@ -312,9 +317,9 @@ def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time,
 
 def image_processed_folder_name(image_folder_name):
     if image_folder_name == 'images1':
-        image_processed_folder_name = 'image_driver'
-    elif image_folder_name == 'images2':
         image_processed_folder_name = 'image_front'
+    elif image_folder_name == 'images2':
+        image_processed_folder_name = 'image_driver'
     elif image_folder_name == 'images3':
         image_processed_folder_name = 'image_right'
     elif image_folder_name == 'images4':
@@ -400,3 +405,57 @@ def is_empty_csv(path):
 
 def get_vehicle_speed(x_vel, y_vel):
     return math.sqrt(float(x_vel)**2 + float(y_vel)**2)
+
+def processed_video_name(image_folder_name):
+    if image_folder_name == 'images1':
+        image_processed_folder_name = 'video_front'
+    elif image_folder_name == 'images2':
+        image_processed_folder_name = 'video_driver'
+    elif image_folder_name == 'images3':
+        image_processed_folder_name = 'video_right'
+    elif image_folder_name == 'images4':
+        image_processed_folder_name = 'video_left'
+    return image_processed_folder_name
+
+def extract_bags_to_video(input_bag_folder, output_video_path, data_classification_folder_type, start_time, stop_time):
+    # Initialize video writer
+    codec = cv2.VideoWriter_fourcc('M','J','P','G')  # Use appropriate codec
+    fps = VIDEO_FRAMERATE  # Frames per second
+    video_writer = None
+    bridge = CvBridge()
+    counter = 0
+    index = data_classification_folder_type[-1]
+    camera_topic = "/camera{}/usb_cam{}/image_raw/compressed".format(index, index)
+    os.makedirs(output_video_path,exist_ok=True)
+    filename = os.path.join(output_video_path, processed_video_name(data_classification_folder_type) + '.mp4')
+    for bag_file in sorted(os.listdir(input_bag_folder)):
+        counter +=1 
+        if counter == 15:
+            break
+        if bag_file.endswith(".bag"):
+            bag_path = os.path.join(input_bag_folder, bag_file)
+            bag = rosbag.Bag(bag_path)
+            print("Processing:", bag_path)
+
+            for _, msg, t in bag.read_messages(topics=[camera_topic]):
+                time_milli = t.to_nsec() / 1e9
+                timestamp_obj = datetime.fromtimestamp(time_milli)
+                if timestamp_obj < start_time:
+                    # print("Skipping frame")
+                    continue
+                if timestamp_obj > stop_time:
+                    # print("Stopping frame extraction for the bag")
+                    break
+                frame = bridge.compressed_imgmsg_to_cv2(msg)
+                frame = cv2.flip(frame, -1)
+                if video_writer is None:
+                    height, width, _ = frame.shape
+                    video_writer = cv2.VideoWriter(filename, codec, fps, (width, height))
+                video_writer.write(frame)
+            bag.close()
+
+    if video_writer is not None:
+        video_writer.release()
+        print("Video conversion complete. Output file:", filename)
+    else:
+        print("No bag files found for conversion.")

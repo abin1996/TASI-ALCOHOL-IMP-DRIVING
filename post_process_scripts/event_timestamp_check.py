@@ -111,7 +111,7 @@ def event_timestamp(filename):
 
 def timestamp_check(EVENT_NAME, timestamp_list,output_folder_path):
 
-
+    # event_timestamp_list contains all the timestamps of the event A,B,X,Y
     event_timestamp_list = paired_filtered_event_timestamp(timestamp_list)
 
 
@@ -133,6 +133,10 @@ def timestamp_check(EVENT_NAME, timestamp_list,output_folder_path):
             print('Start time of',sub_session_name_str,'is:')
             print(start_time)
 
+            #TODO: print the line number of the target timestamp
+            # print('Line number of start time in joystick.txt',sub_session_name_str,'is:')
+            # print(start_time)
+
             print('End time of',sub_session_name_str,'is:')
             print(end_time)
 
@@ -153,7 +157,6 @@ if __name__ == '__main__':
 
     # new_directory = "F:/SubjectAnn/Baseline/24-10-23_12-43-25/event_signal"
     # new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/event_signal"
-
     
     new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject02/Baseline/31-10-23_10-16-52" + "/event_signal"
 

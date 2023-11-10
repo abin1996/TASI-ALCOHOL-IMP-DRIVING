@@ -7,7 +7,10 @@ import rosbag
 import pandas as pd
 import datetime
 from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video
-
+from lane_detection import distance2lane
+from p_transform import p_transform
+from PIL import Image
+import cv2
 
 #DATA CLASSIFICATION
 def perform_data_classification(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path): 
@@ -30,7 +33,7 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
         for sub_category_run_number in range(1, sub_category_runs+1):
             save_folder_for_camera_images = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
-            camera_output_folder = os.path.join(save_folder_for_camera_images, image_processed_folder_name(data_classification_folder_type))
+            camera_output_folder = os.path.join(save_folder_for_camera_images, "images",image_processed_folder_name(data_classification_folder_type))
             is_camera_flipped = True if data_classification_folder_type == "images1" else False
             session_frames_count = 0
             frame_gaps_list = []
@@ -54,7 +57,7 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
             
             #Store the number of missing frames every bag in a csv using pandas
             df = pd.DataFrame(frame_gaps_list, columns =['Bag Number', 'Start of missing frame','Number of Missing Frames', 'Time interval'])
-            df.to_csv(os.path.join(save_folder_for_camera_images, image_processed_folder_name(data_classification_folder_type) + "_missing_frames.csv"), index=False)
+            df.to_csv(os.path.join(save_folder_for_camera_images, "images", image_processed_folder_name(data_classification_folder_type) + "_missing_frames.csv"), index=False)
 
 #GPS EXTRACTION
 def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
@@ -94,6 +97,67 @@ def perform_video_extraction(subject_id, alcohol_session_name, timestamped_folde
                     os.remove(file_path) 
             extract_bags_to_video(video_input_folder, video_output_folder, data_classification_folder_type, start_time, stop_time)
 
+# #LANE DEVIATION CALCULATION
+# def perform_lane_deviation_calculation(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_to_classify, target_folder_parent_path, lane_deviation_parameters):
+#     perform_perspective_transformation(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_to_classify, target_folder_parent_path,lane_deviation_parameters)
+
+
+#PERFORM PERSPECTIVE TRANSFORMATION
+def perform_lane_deviation_calculation(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_to_classify, target_folder_parent_path, lane_deviation_parameters):
+    image_folder_name = image_processed_folder_name(data_classification_folder_type)
+    skip_perpective_transformation = lane_deviation_parameters['skip_perpective_transformation']
+    top_left = lane_deviation_parameters['corner_points']['top_left']
+    top_right = lane_deviation_parameters['corner_points']['top_right']
+    bottom_left = lane_deviation_parameters['corner_points']['bottom_left']
+    bottom_right = lane_deviation_parameters['corner_points']['bottom_right']
+    corner_positions = [top_left, top_right, bottom_left, bottom_right]
+    calibration_img_path = lane_deviation_parameters['calibration_img_path']
+    # calibration_img = Image.open(calibration_img_path)
+    calibration_img = cv2.imread(calibration_img_path)
+    print(calibration_img)
+    source_folder = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name)
+    if image_folder_name == "image_left":
+        flipped = True
+    for sub_category in sub_categories_to_classify:
+        sub_category_folder = os.path.join(source_folder, sub_category)
+        sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
+        for sub_category_run_number in range(1, sub_category_runs + 1):
+            camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"images", image_folder_name)
+            camera_output_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"images",image_folder_name + "_transformed")
+            lane_deviation_output = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"lane_deviation")
+            if not skip_perpective_transformation:
+                p_transform(corner_positions, calibration_img, camera_input_folder, camera_output_folder, flipped)
+            distance2lane(camera_output_folder,lane_deviation_output, image_folder_name)
+            
+
+def combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_name, sub_categories_to_classify, target_folder_parent_path):
+    source_folder = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name)
+    for sub_category in sub_categories_to_classify:
+        sub_category_folder = os.path.join(source_folder, sub_category)
+        sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
+        for sub_category_run_number in range(1, sub_category_runs + 1):
+            lane_deviation_output_left = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"lane_deviation", "image_left_distance_to_lane.csv")
+            lane_deviation_output_right = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"lane_deviation", "image_left_distance_to_lane.csv")
+
+            if os.path.exists(lane_deviation_output_left) and not os.path.exists(lane_deviation_output_right):
+                lane_deviation_output_combined = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number),"lane_deviation", "distance_to_lane_combined.csv")
+                df_left = pd.read_csv(lane_deviation_output_left)
+                df_right = pd.read_csv(lane_deviation_output_right)
+                df_combined = pd.concat([df_left, df_right], axis=1)
+                df_combined.to_csv(lane_deviation_output_combined, index=False)
+                print("Lane deviation output combined for", sub_category, "-", sub_category_run_number)
+
+# #DISTANCE_TO_LANE CALCULATION
+# def perform_distance_to_lane_calculation(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path):
+#     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+#     for sub_category in sub_categories_to_classify:
+#         sub_category_folder = os.path.join(source_folder, sub_category)
+#         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
+#         for sub_category_run_number in range(1, sub_category_runs+1):
+#             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
+#             distance2lane(camera_input_folder)
+
+
 if __name__ == '__main__':
     # Read the arguments from the json file who's path is given as the first argument
     start_time = time.time()
@@ -121,6 +185,14 @@ if __name__ == '__main__':
             if "execute_video_extraction" in run and run["execute_video_extraction"] == True:
                 target_folder_parent_path = run['target_folder_path']
                 perform_video_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path)
+            
+            if "execute_lane_deviation_calculation" in run and run["execute_lane_deviation_calculation"] == True:
+                target_folder_parent_path = run['target_folder_path']
+                lane_deviation_parameters = run['lane_deviation_parameters']
+                sub_categories_for_lane_deviation = run['lane_deviation_parameters']['sub_categories_for_lane_deviation']
+                perform_lane_deviation_calculation(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_for_lane_deviation, target_folder_parent_path, lane_deviation_parameters)
+                combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_name, sub_categories_to_classify, target_folder_parent_path)
+        
         end_time = time.time()
         execution_time = end_time - start_time
         print('Execution time',execution_time)

@@ -321,9 +321,9 @@ def image_processed_folder_name(image_folder_name):
     elif image_folder_name == 'images2':
         image_processed_folder_name = 'image_driver'
     elif image_folder_name == 'images3':
-        image_processed_folder_name = 'image_right'
-    elif image_folder_name == 'images4':
         image_processed_folder_name = 'image_left'
+    elif image_folder_name == 'images4':
+        image_processed_folder_name = 'image_right'
     return image_processed_folder_name
 
 def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):

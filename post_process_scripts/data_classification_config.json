@@ -11,7 +11,7 @@
 
 },
 {
-    "execute_data_classification":true,
+    "execute_data_classification":false,
     "execute_image_extraction": false,
     "execute_video_extraction": true,
     "sub_categories_to_classify": ["Driving backward"],

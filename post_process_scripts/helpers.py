@@ -417,6 +417,17 @@ def processed_video_name(image_folder_name):
         image_processed_folder_name = 'video_left'
     return image_processed_folder_name
 
+def get_video_file_name(data_classification_folder_type):
+    if data_classification_folder_type == 'images1':
+        image_processed_folder_name = 'video_front.mp4'
+    elif data_classification_folder_type == 'images2':
+        image_processed_folder_name = 'video_driver.mp4'
+    elif data_classification_folder_type == 'images3':
+        image_processed_folder_name = 'video_right.mp4'
+    elif data_classification_folder_type == 'images4':
+        image_processed_folder_name = 'video_left.mp4'
+    return image_processed_folder_name
+
 def extract_bags_to_video(input_bag_folder, output_video_path, data_classification_folder_type, start_time, stop_time):
     # Initialize video writer
     codec = cv2.VideoWriter_fourcc('M','J','P','G')  # Use appropriate codec

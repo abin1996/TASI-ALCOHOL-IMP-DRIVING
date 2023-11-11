@@ -1,0 +1,61 @@
+[{
+    "execute_data_classification":true,
+    "execute_gps_extraction": true,
+    "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+    "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "70-Alcohol",
+    "timestamped_folder_name": "26-10-23_11-41-54",
+    "data_classification_folder_type": "gps",
+    "sub_categories_to_classify": ["Driving backward", "Driving forward"]
+
+},
+{
+    "execute_data_classification":true,
+    "execute_image_extraction": true,
+    "execute_video_extraction": true,
+    "use_images_for_video_extraction": true,
+    "sub_categories_to_classify": ["Driving backward", "Driving forward", "Parking", "Eye tracking"],
+    "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+    "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "70-Alcohol",
+    "timestamped_folder_name": "26-10-23_11-41-54",
+    "data_classification_folder_type": "images1"
+},
+{
+    "execute_data_classification":true,
+    "execute_image_extraction": true,
+    "execute_video_extraction": true,
+    "sub_categories_to_classify": ["Driving backward","Driving forward", "Parking", "Eye tracking"],
+    "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+    "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "70-Alcohol",
+    "timestamped_folder_name": "26-10-23_11-41-54",
+    "data_classification_folder_type": "images2"
+},
+{
+    "execute_data_classification":true,
+    "execute_image_extraction": true,
+    "execute_video_extraction": true,
+    "sub_categories_to_classify": ["Driving backward","Driving forward","Parking"],
+    "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+    "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "70-Alcohol",
+    "timestamped_folder_name": "26-10-23_11-41-54",
+    "data_classification_folder_type": "images3"
+},
+{
+    "execute_data_classification":true,
+    "execute_image_extraction": true,
+    "execute_video_extraction": true,
+    "sub_categories_to_classify": ["Driving backward","Driving forward","Parking"],
+    "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+    "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+    "subject_id": "Subject01",
+    "alcohol_session_name": "70-Alcohol",
+    "timestamped_folder_name": "26-10-23_11-41-54",
+    "data_classification_folder_type": "images4"
+}]

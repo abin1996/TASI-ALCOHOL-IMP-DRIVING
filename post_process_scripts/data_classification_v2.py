@@ -6,7 +6,7 @@ import sys
 import rosbag
 import pandas as pd
 import datetime
-from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video
+from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video, get_video_file_name
 
 
 #DATA CLASSIFICATION
@@ -89,9 +89,11 @@ def perform_video_extraction(subject_id, alcohol_session_name, timestamped_folde
             video_output_folder = os.path.join(save_folder_for_video, "videos")
             start_time, stop_time = get_event_start_stop_time(video_input_folder)
             if os.path.exists(video_output_folder):
+                existing_video_filename = get_video_file_name(data_classification_folder_type)
                 for file in os.listdir(video_output_folder):
-                    file_path = os.path.join(video_output_folder, file)
-                    os.remove(file_path) 
+                    if file == existing_video_filename:
+                        file_path = os.path.join(video_output_folder, file)
+                        os.remove(file_path) 
             extract_bags_to_video(video_input_folder, video_output_folder, data_classification_folder_type, start_time, stop_time)
 
 if __name__ == '__main__':

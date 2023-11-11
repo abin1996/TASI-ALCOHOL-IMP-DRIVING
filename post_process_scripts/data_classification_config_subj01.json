@@ -27,6 +27,9 @@
 {
     "execute_data_classification":false,
     "execute_image_extraction": false,
+    "execute_video_extraction": false,
+    "execute_lane_deviation_calculation": false,
+    "use_images_for_video_extraction": false,
     "sub_categories_to_classify": ["Driving backward", "Driving forward"],
     "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
     "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
@@ -38,8 +41,10 @@
 {
     "execute_data_classification":false,
     "execute_image_extraction": false,
-    "execute_lane_deviation_calculation": true,
-    "sub_categories_to_classify": ["Driving backward","Driving forward"],
+    "execute_video_extraction": false,
+    "execute_lane_deviation_calculation": false,
+    "use_images_for_video_extraction": true,
+    "sub_categories_to_classify": ["Driving backward"],
     "lane_deviation_parameters":{
         "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_left_cali.png",
         "corner_points": {
@@ -61,7 +66,9 @@
 {
     "execute_data_classification":false,
     "execute_image_extraction": false,
+    "execute_video_extraction": false,
     "execute_lane_deviation_calculation": true,
+    "use_images_for_video_extraction": true,
     "sub_categories_to_classify": ["Driving backward"],
     "lane_deviation_parameters":{
         "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_right_cali.png",
@@ -72,7 +79,7 @@
             "bottom_right": [947, 542]
         },
         "sub_categories_for_lane_deviation": ["Driving backward"],
-        "skip_perpective_transformation": false
+        "skip_perpective_transformation": true
     },
     "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
     "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",

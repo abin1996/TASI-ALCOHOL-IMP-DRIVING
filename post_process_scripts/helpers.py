@@ -9,7 +9,7 @@ import rospy
 import pytz
 import pandas as pd
 import math
-
+import re
 
 VIDEO_FRAMERATE = 30
 MJPEG_VIDEO = 1
@@ -412,9 +412,9 @@ def processed_video_name(image_folder_name):
     elif image_folder_name == 'images2':
         image_processed_folder_name = 'video_driver'
     elif image_folder_name == 'images3':
-        image_processed_folder_name = 'video_right'
-    elif image_folder_name == 'images4':
         image_processed_folder_name = 'video_left'
+    elif image_folder_name == 'images4':
+        image_processed_folder_name = 'video_right'
     return image_processed_folder_name
 
 def get_video_file_name(data_classification_folder_type):
@@ -423,9 +423,9 @@ def get_video_file_name(data_classification_folder_type):
     elif data_classification_folder_type == 'images2':
         image_processed_folder_name = 'video_driver.mp4'
     elif data_classification_folder_type == 'images3':
-        image_processed_folder_name = 'video_right.mp4'
-    elif data_classification_folder_type == 'images4':
         image_processed_folder_name = 'video_left.mp4'
+    elif data_classification_folder_type == 'images4':
+        image_processed_folder_name = 'video_right.mp4'
     return image_processed_folder_name
 
 def extract_bags_to_video(input_bag_folder, output_video_path, data_classification_folder_type, start_time, stop_time):
@@ -468,5 +468,37 @@ def extract_bags_to_video(input_bag_folder, output_video_path, data_classificati
     if video_writer is not None:
         video_writer.release()
         print("Video conversion complete. Output file:", filename)
+    else:
+        print("No bag files found for conversion.")
+
+# Function to extract timestamp from a filename
+def extract_timestamp(filename):
+    match = re.search(r"bag_\d+_frame_\d+_(\d+)", filename)    
+    if match:
+        return int(match.group(1))
+    return None
+
+def extract_images_to_video(input_bag_folder, output_video_path, data_classification_folder_type):
+    # Initialize video writer
+    codec = cv2.VideoWriter_fourcc('M','J','P','G')  # Use appropriate codec
+    fps = VIDEO_FRAMERATE  # Frames per second
+    video_writer = None
+    os.makedirs(output_video_path,exist_ok=True)
+    video_filename = os.path.join(output_video_path, processed_video_name(data_classification_folder_type) + '.mp4')
+    png_files = [filename for filename in os.listdir(input_bag_folder) if filename.endswith(".png") and filename.startswith("bag")]
+    sorted_png_files = sorted(png_files, key=lambda filename: extract_timestamp(filename))
+    for img_filename in sorted_png_files:
+        img_path = os.path.join(input_bag_folder, img_filename)
+        # print("Processing:", img_path)
+        frame = cv2.imread(img_path)
+        frame = cv2.flip(frame, 0)
+        if video_writer is None:
+            height, width, _ = frame.shape
+            video_writer = cv2.VideoWriter(video_filename, codec, fps, (width, height))
+        video_writer.write(frame)
+
+    if video_writer is not None:
+        video_writer.release()
+        print("Video conversion complete. Output file:", video_filename)
     else:
         print("No bag files found for conversion.")

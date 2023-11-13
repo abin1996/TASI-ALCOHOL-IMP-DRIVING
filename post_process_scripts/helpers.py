@@ -263,7 +263,135 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             os.remove(file_path)
     print('------------------------------------------------------------')
 
-def extract_images_from_bag(bag, output_folder, flipped, bag_number, start_time, stop_time, session_count, prev_frame, prev_frame_time):
+def extract_images_from_bag(input_folder, output_folder, flipped, start_time, stop_time):
+
+    #Create the output folder if it doesn't exist. If it does exist, then delete all the files in the folder
+    os.makedirs(output_folder, exist_ok=True)
+    session_count = 0
+    for (root, dirs, files) in os.walk(input_folder):
+        for file in sorted(files):
+            if file.endswith(".bag"):
+                bag_number = (file.split('_')[2]).split('.')[0]
+                bag = rosbag.Bag(os.path.join(root, file))
+                for (topic, msg, t) in bag.read_messages():
+
+                    time_milli = t.to_nsec() / 1e9
+                    timestamp_obj = datetime.fromtimestamp(time_milli)
+                    if timestamp_obj < start_time:
+                        # print("Skipping frame")
+                        continue
+                    if timestamp_obj > stop_time:
+                        # print("Stopping frame extraction for the bag")
+                        break
+                    bridge = CvBridge()
+                    try:
+                        cv_img = bridge.compressed_imgmsg_to_cv2(msg)
+                    except CvBridgeError as e:
+                        print(e)
+                        continue
+                    if flipped:
+                        cv_img = cv2.flip(cv2.flip(cv_img, 1), 0)
+                    else:
+                        cv_img = cv2.flip(cv_img, 0)        
+                    session_count += 1
+                    filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{t}.png')
+                    print(filename)
+                    cv2.imwrite(filename, cv_img)
+                bag.close()
+    return 
+# Function to extract timestamp from a filename
+def extract_timestamp_from_filename(filename):
+    match = re.search(r"bag_\d+_frame_\d+_(\d+)", filename)    
+    if match:
+        return int(match.group(1))/10e5
+    return None
+
+def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_folder_path, secondary_image_folder_path_name,secondary_image_folder_path, parent_folder):
+
+    #Take the first image from the primary image folder and the secondary image folder and compare their timestamps.
+    #If the timestamp of one of the image is greater than the other image by 33ms, then use the previous image of the image with the greater timestamp to fill the missing image. 
+    #Give the image the timestamp of the image with the smaller timestamp. Also note the generated frame in table with the frame name and the whether it was for primary or secondary image
+    #Repeat the process for the rest of the images in the primary and secondary image folders
+    print(primary_image_folder_name)
+    print(secondary_image_folder_path_name)
+    primary_image_files = [f for f in os.listdir(primary_image_folder_path) if f.lower().endswith(".png")]
+    secondary_image_files = [f for f in os.listdir(secondary_image_folder_path) if f.lower().endswith(".png")]
+    primary_image_files = sorted(primary_image_files, key=lambda filename: extract_timestamp_from_filename(filename))
+    secondary_image_files = sorted(secondary_image_files, key=lambda filename: extract_timestamp_from_filename(filename))
+    primary_image_count = 1
+    secondary_image_count = 1
+    prim_generated_image_count = 0
+    sec_generated_image_count = 0
+    prev_primary_image = None
+    prev_secondary_image = None
+    prev_primary_image_time = 0
+    prev_secondary_image_time = 0
+    primary_folder_generated_frames_list = []
+    secondary_folder_generated_frames_list = []
+    print(len(primary_image_files))
+    print(len(secondary_image_files))
+    total_time_diff = 0
+    while primary_image_count < len(primary_image_files) and secondary_image_count < len(secondary_image_files):
+        primary_image_filename = primary_image_files[primary_image_count]
+        secondary_image_filename = secondary_image_files[secondary_image_count]
+        primary_image_path = os.path.join(primary_image_folder_path, primary_image_filename)
+        secondary_image_path = os.path.join(secondary_image_folder_path, secondary_image_filename)
+        primary_image_time = extract_timestamp_from_filename(primary_image_filename)
+        secondary_image_time = extract_timestamp_from_filename(secondary_image_filename)
+        time_diff = primary_image_time - secondary_image_time
+        primary_time_diff = primary_image_time - prev_primary_image_time
+        total_time_diff += abs(time_diff)
+        # print("Primary time diff:", primary_time_diff)
+        # print("prim:",primary_image_filename, "sec:",secondary_image_filename, "time diff:", time_diff)
+
+        if time_diff <= 33 and time_diff >= -33:
+            primary_image_count += 1
+            prev_primary_image_time = primary_image_time
+            secondary_image_count += 1
+        elif time_diff > 33:
+            #Generate a frame for the primary image
+            secondary_image_count += 1
+            generated_frame_time = int(secondary_image_time*1000000)
+            # generated_frame_time = f'{generated_frame_time:.18f}'
+            filename = os.path.join(primary_image_folder_path, f'bag_{primary_image_filename.split("_")[1]}_frame_{primary_image_filename.split("_")[3]}_{generated_frame_time}.png')
+            print(filename + ": Generated frame Primary")
+            prim_generated_image_count += 1
+            prev_img = cv2.imread(primary_image_path)
+            cv2.imwrite(filename, prev_img)
+            primary_folder_generated_frames_list.append(filename)
+        elif time_diff < -33:
+            #Generate a frame for the secondary image
+            primary_image_count += 1
+            prev_primary_image_time = primary_image_time
+            generated_frame_time = int(primary_image_time*1000000)
+            filename = os.path.join(secondary_image_folder_path, f'bag_{secondary_image_filename.split("_")[1]}_frame_{secondary_image_filename.split("_")[3]}_{generated_frame_time}.png')
+            print(filename + ": Generated frame Secondary")
+            sec_generated_image_count += 1
+            prev_img = cv2.imread(secondary_image_path)
+            cv2.imwrite(filename, prev_img)
+            secondary_folder_generated_frames_list.append(filename)
+    # Store the primary_folder_generated_frames_list and secondary_folder_generated_frames_list in a csv file
+    # Create the CSV file and write the data
+    with open(os.path.join(primary_image_folder_path, primary_image_folder_name+ "_generated_frames.csv"), mode='w', newline='') as csv_file:
+        fieldnames = ['Filename']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for filename in primary_folder_generated_frames_list:
+            writer.writerow({'Filename': filename})
+    with open(os.path.join(secondary_image_folder_path, secondary_image_folder_path_name+"_generated_frames.csv"), mode='w', newline='') as csv_file:
+        fieldnames = ['Filename']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+        for filename in secondary_folder_generated_frames_list:
+            writer.writerow({'Filename': filename})
+    print(primary_image_count)
+    print(secondary_image_count)
+    print("Primary generated frames: ", prim_generated_image_count)
+    print("Secondary generated frames: ", sec_generated_image_count)
+    print("Avg time difference: ", total_time_diff/primary_image_count)
+
+
+def extract_images_from_bag_with_gen(bag, output_folder, flipped, bag_number, start_time, stop_time, session_count, prev_frame, prev_frame_time):
     total_missing_frames = 0
     frame_gaps_list = []
     #Time between each fram is 33 ms (30 fps). If the time between last and current frame is more than 35 ms, then there is a missing frame. 
@@ -491,7 +619,7 @@ def extract_images_to_video(input_bag_folder, output_video_path, data_classifica
         img_path = os.path.join(input_bag_folder, img_filename)
         # print("Processing:", img_path)
         frame = cv2.imread(img_path)
-        frame = cv2.flip(frame, 0)
+        # frame = cv2.flip(frame, 0)
         if video_writer is None:
             height, width, _ = frame.shape
             video_writer = cv2.VideoWriter(video_filename, codec, fps, (width, height))

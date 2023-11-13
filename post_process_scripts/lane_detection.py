@@ -25,7 +25,7 @@ def extract_timestamp(filename):
 def timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(timestamp / 1e9)  # Convert nanoseconds to seconds
 
-def distance2lane(image_folder, output_csv_folder_path, image_folder_name):
+def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greyscale_plot=False):
     if not os.path.exists(output_csv_folder_path):
         os.makedirs(output_csv_folder_path, exist_ok=True)
     csv_filename = image_folder_name + '_distance_to_lane.csv'
@@ -73,7 +73,7 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name):
             grey_values = []
             horizontal_pos = []
             # 4. Iterate through horizontal positions and calculate gray value sums
-            for horizontal in range(0, 1450):
+            for horizontal in range(0, num_trans_hor_pixel):
                 gray_sum = sum(gray_image[start_vertical:end_vertical, horizontal])
                 grey_values.append(gray_sum)
                 horizontal_pos.append(horizontal)
@@ -81,39 +81,87 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name):
             # grey_values now contains the sums of grayscale values for each horizontal position in the specified vertical range.
             # print(grey_values)
 
-            # # Create the plot
-            plt.plot(horizontal_pos, grey_values)
-            plt.xlabel('Horizontal Position')
-            plt.ylabel('Grey Value')
-            plt.title('Grey Value Plot')
-            # Show the plot
-            # plt.show()
-            # plt.pause(1)
+            # Sliding window parameters
+            window_width = 100
+            window_interval = 1
 
-            # if grey_values:
-            largest_value = max(grey_values)
+            # Calculate the sum of values for each window with a 100-unit interval
+            window_sums = [sum(grey_values[i:i + window_width]) for i in
+                           range(0, len(grey_values) - window_width + 1, window_interval)]
 
-            # Calculate the threshold value (80% of the largest value)
-            threshold_value_1 = 0.85 * largest_value
-            threshold_value_2 = 0.75 * largest_value
+            # Find the index of the window with the largest sum
+            largest_sum_index = max(range(len(window_sums)), key=window_sums.__getitem__)
 
-            # Find the corresponding x position when the gray value is between 75% and 85% of the largest value
-            indices = [i for i, x in enumerate(grey_values) if threshold_value_2 <= x <= threshold_value_1]
+            # Print the horizontal position of the largest sum window and the second-largest sum window
+            print('Horizontal position of the largest sum window:', horizontal_pos[largest_sum_index * window_interval])
 
-                # if indices:
-            detected_lane_width = ((max(indices) - min(indices))*dpp_hor)/10
+            if greyscale_plot:
+                # Plot the sliding window with the largest sum-up value
+                plt.plot(horizontal_pos, grey_values, label='Gray Values')
+                plt.axvspan(
+                    horizontal_pos[largest_sum_index * window_interval],
+                    horizontal_pos[largest_sum_index * window_interval] + window_width,
+                    color='red', alpha=0.3, label='Max Sliding Window'
+                )
 
-            # print('max ind:', max(indices))
-            # print('min ind:', min(indices))
 
-            print('Detected lane width is',round(detected_lane_width,2), 'cm')
+                # Add labels and title
+                plt.xlabel('Horizontal Position')
+                plt.ylabel('Gray Value Sum')
+                plt.title('Sliding Window with the Maximum Value')
+                plt.legend()
 
-            cam_to_lane_center  = (max(indices) + min(indices))/2 *dpp_hor/10
+                # Show the plot
+                plt.show()
 
-            veh_to_lane_center = cam_to_lane_center + veh_width/20 + 10
+            # Exclude the largest sum window from grey_values
+            excluded_window_start = max(0, largest_sum_index * window_interval)
+            excluded_window_end = min(len(grey_values), excluded_window_start + window_width)
+            # Exclude the values between excluded_window_start and excluded_window_end from grey_values
+            for i in range(excluded_window_start, excluded_window_end):
+                if i < len(grey_values):
+                    grey_values[i] = 0
 
-            print('Vehicle to boundary lane is',round(veh_to_lane_center,2) , 'cm')
-            print('---------------')
+            # Calculate the sum of values for each window with a 100-unit interval in the modified grey_values
+            new_window_sums = [sum(grey_values[i:i + window_width]) for i in
+                               range(0, len(grey_values) - window_width + 1, window_interval)]
+
+            # Find the index of the window with the largest sum in the modified grey_values
+            new_largest_value_index = max(range(len(new_window_sums)), key=new_window_sums.__getitem__)
+            # Print the horizontal position of the largest sum window and the second-largest sum window
+            print('Horizontal position of the second largest sum window:', horizontal_pos[new_largest_value_index * window_interval])
+
+            print("----------")
+
+
+            if greyscale_plot:
+                # Plot the sliding window with the largest value in the modified grey_values
+                plt.plot(horizontal_pos, grey_values, label='Gray Values')
+                plt.axvspan(
+                    horizontal_pos[new_largest_value_index * window_interval],
+                    horizontal_pos[new_largest_value_index * window_interval] + window_width,
+                    color='blue', alpha=0.3, label='New Max Sliding Window'
+                )
+
+                # Add labels and title
+                plt.xlabel('Horizontal Position')
+                plt.ylabel('Gray Value Sum')
+                plt.title('Sliding Window with the Second Largest Value')
+                plt.legend()
+                # Show the plot
+                plt.show()
+
+            if abs(largest_sum_index* window_interval - new_largest_value_index * window_interval) <= 1.5*window_width:
+                #the largest and the second largest value is next to each other
+                veh_to_lane_center = 500
+            else:
+
+
+                cam_to_lane_center = largest_sum_index * dpp_hor / 10
+                veh_to_lane_center = cam_to_lane_center + veh_width / 20 + 10
+                print("Veh to lane center:", veh_to_lane_center, "cm")
+
+           
 
             # Create a dictionary to store data for this image
             data_dict = {

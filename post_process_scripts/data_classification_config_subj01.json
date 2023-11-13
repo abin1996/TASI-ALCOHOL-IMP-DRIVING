@@ -1,90 +1,102 @@
-[{
-    "execute_data_classification":false,
-    "execute_gps_extraction": false,
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "gps",
-    "sub_categories_to_classify": ["Driving backward", "Parking"]
-
-},
 {
-    "execute_data_classification":false,
-    "execute_image_extraction": false,
-    "execute_video_extraction": false,
-    "execute_lane_deviation_calculation": false,
-    "use_images_for_video_extraction": false,
-    "sub_categories_to_classify": ["Driving backward", "Driving forward"],
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images1"
-},
-{
-    "execute_data_classification":false,
-    "execute_image_extraction": false,
-    "execute_video_extraction": false,
-    "execute_lane_deviation_calculation": false,
-    "use_images_for_video_extraction": false,
-    "sub_categories_to_classify": ["Driving backward", "Driving forward"],
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images2"
-},
-{
-    "execute_data_classification":false,
-    "execute_image_extraction": false,
-    "execute_video_extraction": false,
-    "execute_lane_deviation_calculation": false,
-    "use_images_for_video_extraction": true,
-    "sub_categories_to_classify": ["Driving backward"],
-    "lane_deviation_parameters":{
-        "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_left_cali.png",
-        "corner_points": {
-            "top_left": [175, 132],
-            "top_right": [865, 261],
-            "bottom_left": [145, 674],
-            "bottom_right": [887, 598]
-        },
-        "sub_categories_for_lane_deviation": ["Driving backward"],
-        "skip_perpective_transformation": true
+    "base_config": {
+        "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
+        "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
+        "subject_id": "Subject01",
+        "alcohol_session_name": "Baseline",
+        "timestamped_folder_name": "26-10-23_10-21-30"
     },
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images3"
-},
-{
-    "execute_data_classification":false,
-    "execute_image_extraction": false,
-    "execute_video_extraction": false,
-    "execute_lane_deviation_calculation": true,
-    "use_images_for_video_extraction": true,
-    "sub_categories_to_classify": ["Driving backward"],
-    "lane_deviation_parameters":{
-        "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_right_cali.png",
-        "corner_points": {
-            "top_left": [229, 162],
-            "top_right": [948, 199],
-            "bottom_left": [253, 689],
-            "bottom_right": [947, 542]
+    "execution_specific_config": {
+        "gps": {
+            "execute_data_classification": false,
+            "execute_gps_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward"
+            ]
         },
-        "sub_categories_for_lane_deviation": ["Driving backward"],
-        "skip_perpective_transformation": true
-    },
-    "target_folder_path": "/home/iac_user/POST_PROCESSED_DATA/",
-    "source_folder_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/",
-    "subject_id": "Subject01",
-    "alcohol_session_name": "Baseline",
-    "timestamped_folder_name": "26-10-23_10-21-30",
-    "data_classification_folder_type": "images4"
-}]
+        "images3": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": true,
+            "sub_categories_to_classify": [
+                "Driving backward"
+            ],
+            "lane_deviation_parameters": {
+                "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_left_cali.png",
+                "corner_points": {
+                    "top_left": [
+                        146,
+                        45
+                    ],
+                    "top_right": [
+                        887,
+                        122
+                    ],
+                    "bottom_left": [
+                        175,
+                        587
+                    ],
+                    "bottom_right": [
+                        864,
+                        458
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images4": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": true,
+            "sub_categories_to_classify": [
+                "Driving backward"
+            ],
+            "lane_deviation_parameters": {
+                "calibration_img_path": "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject01/Baseline/26-10-23_10-21-30/subj01_right_cali.png",
+                "corner_points": {
+                    "top_left": [
+                        229,
+                        162
+                    ],
+                    "top_right": [
+                        948,
+                        199
+                    ],
+                    "bottom_left": [
+                        253,
+                        689
+                    ],
+                    "bottom_right": [
+                        947,
+                        542
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images1": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward"
+            ]
+        },
+        "images2": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward"
+            ]
+        }
+    }
+}

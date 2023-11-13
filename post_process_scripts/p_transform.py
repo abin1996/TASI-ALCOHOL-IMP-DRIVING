@@ -24,14 +24,14 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
     if not os.path.exists(output_folder):
             os.makedirs(output_folder, exist_ok=True)
 
-    if flip_image:
-    # todo: flip the img if the image is for left calibration
-    # Flip the image horizontally
-        calibration_img = cv2.flip(calibration_img, -1) # Pay attention the command may be FLIP_TOP_BOTTOM to have the sedired orientation
-        print('flipped image')
+    # if flip_image:
+    # # todo: flip the img if the image is for left calibration
+    # # Flip the image horizontally
+    #     calibration_img = cv2.flip(calibration_img, 1) # Pay attention the command may be FLIP_TOP_BOTTOM to have the sedired orientation
+        # print('flipped image')
     # Save the flipped image
-        filename = os.path.join(output_folder,"flipped_left_cam_cali_img.png")
-        print(filename)
+        # filename = os.path.join(output_folder,"flipped_left_cam_cali_img.png")
+        # print(filename)
         # cv2.imwrite(filename, calibration_img)
         # flipped_image.save(os.path.join(output_folder,"Flipped_left_cam_cali_img.png"))
 
@@ -65,9 +65,9 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
     dpp_hor = mat_hor_len / num_trans_hor_pixel
     # print('horizontal dpp:', dpp_hor, 'mm')
     filename = os.path.join(output_folder,"Transformed_image.jpg")
-    # print(filename)
+    print(filename)
     
-    # cv2.imwrite(filename, result)
+    cv2.imwrite(filename, result)
     print('saved transformed image')
     if not os.path.exists(output_folder):
         os.makedirs(output_folder, exist_ok=True)

@@ -6,7 +6,7 @@ import sys
 import rosbag
 import pandas as pd
 import datetime
-from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video, get_video_file_name,extract_images_to_video, sync_primary_and_secondary_images
+from helpers import event_timestamp, copy_files_to_subfolders, file_recategory, extract_images_from_bag, image_processed_folder_name, extract_gps_to_csv, get_event_start_stop_time, extract_bags_to_video, get_video_file_name,extract_images_to_video, sync_primary_and_secondary_images,filtered_event_timestamp, extract_can_for_sub_category
 from lane_detection import distance2lane
 from p_transform import p_transform
 from PIL import Image
@@ -33,7 +33,7 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
         for sub_category_run_number in range(1, sub_category_runs+1):
             save_folder_for_camera_images = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
-            camera_output_folder = os.path.join(save_folder_for_camera_images, "images",image_processed_folder_name(data_classification_folder_type))
+            camera_output_folder = os.path.join(save_folder_for_camera_images, "images", image_processed_folder_name(data_classification_folder_type))
             is_camera_flipped = True if data_classification_folder_type == "images1" else False
             start_time, stop_time = get_event_start_stop_time(camera_input_folder)
             if os.path.exists(camera_output_folder):
@@ -90,42 +90,20 @@ def perform_image_sync(subject_id, alcohol_session_name, target_folder_path):
                         parent_folder = os.path.join(source_folder, sub_category, sub_category + '_' + str(sub_category_run_number), "images")
                         sync_primary_and_secondary_images(primary_sync_ref_image, primary_sync_ref_image_path, img_folder, secondary_sync_ref_image_path, parent_folder)
 
+#CAN EXTRACTION
+def perform_can_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
+    source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+    joystick_file_path = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, "event_signal/joystick.txt")
+    timestamp_lists_all_subcategories = event_timestamp(joystick_file_path)
+    can_file_name = os.listdir(source_folder)[0]
+    can_input_file_path = os.path.join(source_folder, can_file_name)
+    for sub_category in sub_categories_to_classify:
+        timestamp_list = timestamp_lists_all_subcategories[sub_category]
+        filtered_timestamps = filtered_event_timestamp(timestamp_list)
+        paired_filtered_list = [filtered_timestamps[i:i+2] for i in range(0, len(filtered_timestamps), 2)]
+        target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category, sub_category)
+        extract_can_for_sub_category(can_input_file_path, target_folder_path, paired_filtered_list)
 
-# #IMAGE EXTRACTION   
-# def perform_image_extraction_for_camera_with_gen(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
-#     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
-#     for sub_category in sub_categories_to_classify:
-#         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
-#         sub_category_folder = os.path.join(source_folder, sub_category)
-#         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
-#         for sub_category_run_number in range(1, sub_category_runs+1):
-#             save_folder_for_camera_images = os.path.join(target_folder_path, sub_category + '_' + str(sub_category_run_number))
-#             camera_input_folder = os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number))
-#             camera_output_folder = os.path.join(save_folder_for_camera_images, "images",image_processed_folder_name(data_classification_folder_type))
-#             is_camera_flipped = True if data_classification_folder_type == "images1" else False
-#             session_frames_count = 0
-#             frame_gaps_list = []
-#             prev_frame = None
-#             prev_frame_time = 0
-#             start_time, stop_time = get_event_start_stop_time(camera_input_folder)
-#             if os.path.exists(camera_output_folder):
-#                 for file in os.listdir(camera_output_folder):
-#                     file_path = os.path.join(camera_output_folder, file)
-#                     os.remove(file_path) 
-#             for (root, dirs, files) in os.walk(camera_input_folder):
-#                 for file in sorted(files):
-#                     if file.endswith(".bag"):
-#                         bag_num = (file.split('_')[2]).split('.')[0]
-#                         bag = rosbag.Bag(os.path.join(root, file))
-#                         # print("Number of frames in bag number " + bag_num + " : " + str(missing_frames_in_bag))
-#                         frame_gaps, session_frames_count, prev_frame, prev_frame_time, total_missing_frames = extract_images_from_bag(bag, camera_output_folder, is_camera_flipped, bag_num, start_time, stop_time, session_frames_count, prev_frame, prev_frame_time)
-#                         print("Duration bag number " + bag_num + " : " + str(bag.get_end_time() - bag.get_start_time()) + ", Missing frames: " + str(total_missing_frames))
-#                         frame_gaps_list.extend(frame_gaps)
-#                         bag.close()
-            
-#             #Store the number of missing frames every bag in a csv using pandas
-#             df = pd.DataFrame(frame_gaps_list, columns =['Bag Number', 'Start of missing frame','Number of Missing Frames', 'Time interval'])
-#             df.to_csv(os.path.join(save_folder_for_camera_images, "images", image_processed_folder_name(data_classification_folder_type) + "_missing_frames.csv"), index=False)
 
 #GPS EXTRACTION
 def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
@@ -255,8 +233,11 @@ if __name__ == '__main__':
         target_folder_path = base_config['target_folder_path']
         dict_of_runs = config['execution_specific_config']
         for data_classification_folder_type, run in dict_of_runs.items():
-            if run['execute_data_classification'] == True:
+            if "execute_data_classification" in run and run['execute_data_classification'] == True:
                 perform_data_classification(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, run['sub_categories_to_classify'], source_folder_path)
+
+            if "execute_can_extraction" in run and run["execute_can_extraction"] == True:
+                perform_can_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, run['sub_categories_to_classify'], source_folder_path, target_folder_path)
 
             if "execute_gps_extraction" in run and run["execute_gps_extraction"] == True:
                 perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, run['sub_categories_to_classify'], source_folder_path, target_folder_path)
@@ -266,7 +247,7 @@ if __name__ == '__main__':
         
         
         # if not image_sync_completed(subject_id, alcohol_session_name,target_folder_path):
-        perform_image_sync(subject_id, alcohol_session_name, target_folder_path)
+        # perform_image_sync(subject_id, alcohol_session_name, target_folder_path)
         for data_classification_folder_type, run in dict_of_runs.items():
             if "execute_video_extraction" in run and run["execute_video_extraction"] == True:
                 perform_video_extraction_using_frames(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, run['sub_categories_to_classify'], source_folder_path, target_folder_path)

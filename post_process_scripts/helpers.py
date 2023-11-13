@@ -141,6 +141,43 @@ def filtered_event_timestamp(timestamp_list):
     filtered_timestamps = [timestamp for j, timestamp in enumerate(filtered_timestamps) if j == 0 or (timestamp - filtered_timestamps[j-1]).total_seconds() > 1]
     return filtered_timestamps
 
+def extract_can_for_sub_category(source_file,save_file_path, timestamp_ranges):
+    data = pd.read_csv(source_file)
+    data['time'] = pd.to_datetime(data['time'], format='%d-%m-%y_%H:%M:%S.%f')
+# Iterate through each timestamp range and create separate CSV files
+
+    for i in range(len(timestamp_ranges)):
+        EVENT_IND = i+1
+        if len(timestamp_ranges[i]) == 2:
+            start,end = timestamp_ranges[i]
+            start_timestamp = pd.to_datetime(start)
+            end_timestamp = pd.to_datetime(end)
+
+            # Filter the data within the timestamp range
+            filtered_data = data[(data["time"] >= start_timestamp) & (data["time"] <= end_timestamp)]
+            # print(filtered_data)
+
+            # Define the user-defined directory and file name
+            user_defined_directory = save_file_path + "_" + str(EVENT_IND) + "/can/"  # Replace with your directory
+
+            output_file_name = "can_data.csv"
+
+            # Define the complete file path
+            output_file_path = os.path.join(user_defined_directory, output_file_name)
+            
+            if os.path.exists(user_defined_directory):
+                for file in os.listdir(user_defined_directory):
+                    file_path = os.path.join(user_defined_directory, file)
+                    os.remove(file_path) 
+            if not os.path.exists(user_defined_directory):
+                os.makedirs(user_defined_directory, exist_ok=True)  # Create the directory if it doesn't exist
+
+            # # Create a new CSV file for the filtered data
+            filtered_data.to_csv(output_file_path, index=False)
+            print("CAN CSV file have been created at: ",output_file_path)
+        else:
+            print('Session',str(EVENT_IND),'Missing one controller button input')
+
 def file_recategory(timestamp_list, org_folder_name, new_folder_name):
     event_timestamp_list = timestamp_list
     folder_path = org_folder_name + '/'+ new_folder_name

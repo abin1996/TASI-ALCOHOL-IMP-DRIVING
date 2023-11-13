@@ -7,6 +7,12 @@
         "timestamped_folder_name": "26-10-23_10-21-30"
     },
     "execution_specific_config": {
+        "can": {
+            "execute_can_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward", "Driving forward", "Parking"
+            ]
+        },
         "gps": {
             "execute_data_classification": false,
             "execute_gps_extraction": false,
@@ -18,7 +24,7 @@
             "execute_data_classification": false,
             "execute_image_extraction": false,
             "execute_video_extraction": false,
-            "execute_lane_deviation_calculation": true,
+            "execute_lane_deviation_calculation": false,
             "sub_categories_to_classify": [
                 "Driving backward"
             ],
@@ -52,7 +58,7 @@
             "execute_data_classification": false,
             "execute_image_extraction": false,
             "execute_video_extraction": false,
-            "execute_lane_deviation_calculation": true,
+            "execute_lane_deviation_calculation": false,
             "sub_categories_to_classify": [
                 "Driving backward"
             ],

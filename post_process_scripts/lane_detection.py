@@ -86,14 +86,42 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greys
             window_interval = 1
 
             # Calculate the sum of values for each window with a 100-unit interval
-            window_sums = [sum(grey_values[i:i + window_width]) for i in
-                           range(0, len(grey_values) - window_width + 1, window_interval)]
+            # window_sums = [sum(grey_values[i:i + window_width]) for i in
+            #                range(0, len(grey_values) - window_width + 1, window_interval)]
+            #
+            # # Find the index of the window with the largest sum
+            # largest_sum_index = max(range(len(window_sums)), key=window_sums.__getitem__)
+
+            # Print the horizontal position of the largest sum window and the second-largest sum window
+            # print('Horizontal position of the largest sum window:', horizontal_pos[largest_sum_index * window_interval])
+
+            # Calculate the sum of values for three sliding windows at the same time
+            window_sums = [
+                sum(grey_values[i:i + window_width-1]) +
+                sum(grey_values[i + window_width :i + 2 * window_width -1]) +
+                sum(grey_values[i + 2 * window_width :i + 3 * window_width -1])
+                for i in range(0, len(grey_values) - 3 * window_width -1, window_interval)
+            ]
 
             # Find the index of the window with the largest sum
             largest_sum_index = max(range(len(window_sums)), key=window_sums.__getitem__)
 
-            # Print the horizontal position of the largest sum window and the second-largest sum window
+            # Calculate the horizontal positions of the left and right windows adjacent to the largest window
+            left_window_pos = largest_sum_index * window_interval - window_width
+            right_window_pos = left_window_pos + 2 * window_width
+
+            # Check if the largest sum window is at the first window width position
+            if left_window_pos == 0:
+                left_window_pos = None
+
+            # Check if the largest sum window is at the last window width position
+            if right_window_pos >= len(horizontal_pos):
+                right_window_pos = None
+
+            # Print the horizontal position of the largest sum window and the positions of adjacent left and right windows
             print('Horizontal position of the largest sum window:', horizontal_pos[largest_sum_index * window_interval])
+            print('Horizontal position of the left window:', left_window_pos)
+            print('Horizontal position of the right window:', right_window_pos)
 
             if greyscale_plot:
                 # Plot the sliding window with the largest sum-up value

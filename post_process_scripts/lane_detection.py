@@ -51,19 +51,40 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greys
         if filename.endswith(('.jpg', '.png', '.jpeg')):  # Ensure you only process image files
 
             # image_path = os.path.join(image_folder, filename)
-            # Load the image
-            image = cv2.imread(full_path)
+                       image = cv2.imread(full_path)
 
             # Extract the timestamp from the filename
             timestamp = extract_timestamp(filename)
             # Convert the timestamp to a datetime object
             datetime_obj = timestamp_to_datetime(timestamp)
 
-            # print('Imgage:',full_path)
+            print('Imgage:',full_path)
             # print('Timestamp:', timestamp)
 
             # 1. Convert the RGB image to grayscale
             gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+            # define a kernel size and apply Gaussian smoothing
+            kernel_size = 3
+            blur_gray = gaussian_blur(gray_image, kernel_size)
+
+            # output_path = full_path + '_greyscale'
+            # Save the transformed image
+            # cv2.imwrite(output_path, gray_image)
+
+            # define our parameters for Canny and apply
+            # Otu's threshold selection method
+            high_threshold, thresh_im = cv2.threshold(blur_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            low_threshold = 0.5 * high_threshold
+            # low_threshold = 50
+            # high_threshold = 150
+            edges = canny(blur_gray, low_threshold, high_threshold)
+
+            # print('EDGES:',edges)
+            if greyscale_plot:
+                plt.figure()
+                plt.imshow(thresh_im)
+                plt.show()
 
             # 2. Define the vertical position range
             start_vertical = 450
@@ -72,6 +93,9 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greys
             # 3. Create an empty list to store the gray values
             grey_values = []
             horizontal_pos = []
+
+            gray_image = thresh_im
+
             # 4. Iterate through horizontal positions and calculate gray value sums
             for horizontal in range(0, num_trans_hor_pixel):
                 gray_sum = sum(gray_image[start_vertical:end_vertical, horizontal])
@@ -92,8 +116,44 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greys
             # Find the index of the window with the largest sum
             largest_sum_index = max(range(len(window_sums)), key=window_sums.__getitem__)
 
-            # Print the horizontal position of the largest sum window and the second-largest sum window
+            # Calculate the horizontal positions of the left and right windows adjacent to the largest window
+            left_window_pos = largest_sum_index * window_interval - window_width
+            right_window_pos = left_window_pos + 2* window_width
+
+            # Calculate the sum of the window on the left side of the maximum sliding window
+            max_left = sum(grey_values[left_window_pos - window_width:left_window_pos])
+
+            # Calculate the sum of the window on the right side of the maximum sliding window
+            max_right = sum(grey_values[right_window_pos + 1:right_window_pos + window_width + 1])
+
+            # Save the maximum sum value as max_window
+            max_window = window_sums[largest_sum_index]
+
+            # Check if the max window is on the left boundary of the horizontal axis
+            if left_window_pos <= 0:
+                max_left = None
+
+            # Check if the max window is on the right boundary of the horizontal axis
+            if right_window_pos >= len(horizontal_pos) - 1:
+                max_right = None
+
+            if max_left != None:
+                diff_left = abs(max_window - max_left)
+
+            if max_right != None:
+                diff_right = abs(max_window - max_right)
+
+            # Print the horizontal position of the largest sum window and the positions of adjacent left and right windows
+            print('Horizontal position of the left window:', left_window_pos)
             print('Horizontal position of the largest sum window:', horizontal_pos[largest_sum_index * window_interval])
+            print('Horizontal position of the right window:', right_window_pos)
+
+            print(f'Sum of the window on the left side: {max_left}, Left differece: {diff_left}')
+            print('Maximum sum value:', max_window)
+            print(f'Sum of the window on the right side: {max_right}, Right differece: {diff_right}')
+            print('------------------------------')
+
+
 
             if greyscale_plot:
                 # Plot the sliding window with the largest sum-up value
@@ -114,64 +174,52 @@ def distance2lane(image_folder, output_csv_folder_path, image_folder_name, greys
                 # Show the plot
                 plt.show()
 
-            # Exclude the largest sum window from grey_values
-            excluded_window_start = max(0, largest_sum_index * window_interval)
-            excluded_window_end = min(len(grey_values), excluded_window_start + window_width)
-            # Exclude the values between excluded_window_start and excluded_window_end from grey_values
-            for i in range(excluded_window_start, excluded_window_end):
-                if i < len(grey_values):
-                    grey_values[i] = 0
+            #TODO: CHANGE THE CONDITION TO EXCLUDE THE BOUNDARY CASE
+            # max_grey_value_ind = largest_sum_index * window_interval + window_width//2
+            # max_grey_value_ind = largest_sum_index * window_interval
 
-            # Calculate the sum of values for each window with a 100-unit interval in the modified grey_values
-            new_window_sums = [sum(grey_values[i:i + window_width]) for i in
-                               range(0, len(grey_values) - window_width + 1, window_interval)]
+            filter_thr = 0.5
 
-            # Find the index of the window with the largest sum in the modified grey_values
-            new_largest_value_index = max(range(len(new_window_sums)), key=new_window_sums.__getitem__)
-            # Print the horizontal position of the largest sum window and the second-largest sum window
-            print('Horizontal position of the second largest sum window:', horizontal_pos[new_largest_value_index * window_interval])
-
-            print("----------")
-
-
-            if greyscale_plot:
-                # Plot the sliding window with the largest value in the modified grey_values
-                plt.plot(horizontal_pos, grey_values, label='Gray Values')
-                plt.axvspan(
-                    horizontal_pos[new_largest_value_index * window_interval],
-                    horizontal_pos[new_largest_value_index * window_interval] + window_width,
-                    color='blue', alpha=0.3, label='New Max Sliding Window'
-                )
-
-                # Add labels and title
-                plt.xlabel('Horizontal Position')
-                plt.ylabel('Gray Value Sum')
-                plt.title('Sliding Window with the Second Largest Value')
-                plt.legend()
-                # Show the plot
-                plt.show()
-
-            if abs(largest_sum_index* window_interval - new_largest_value_index * window_interval) <= 1.5*window_width:
-                #the largest and the second largest value is next to each other
+            if diff_left/max_window<= filter_thr or diff_right/max_window <= filter_thr:
+                #indicates no huge difference between the max window and the neighbor windows
                 veh_to_lane_center = 500
-            else:
+                print("Veh to lane center:", veh_to_lane_center, "cm (NO LANE DETECTED!)")
 
-
+            elif max_left == None and diff_right/max_window >= filter_thr:
                 cam_to_lane_center = largest_sum_index * dpp_hor / 10
                 veh_to_lane_center = cam_to_lane_center + veh_width / 20 + 10
                 print("Veh to lane center:", veh_to_lane_center, "cm")
 
-           
-
+            elif max_right == None and diff_left/max_window >= filter_thr:
+                cam_to_lane_center = largest_sum_index * dpp_hor / 10
+                veh_to_lane_center = cam_to_lane_center + veh_width / 20 + 10
+                print("Veh to lane center:", veh_to_lane_center, "cm")
+            else:
+                cam_to_lane_center = largest_sum_index * dpp_hor / 10
+                veh_to_lane_center = cam_to_lane_center + veh_width / 20 + 10
+                print("Veh to lane center:", veh_to_lane_center, "cm")
+            #
             # Create a dictionary to store data for this image
             data_dict = {
                 'Date time': datetime_obj,
-                'Timestamp':timestamp,
+                'Timestamp': timestamp,
                 'Distance_to_Lane (cm)': veh_to_lane_center
             }
-
             data_list.append(data_dict)
 
+
+    # Save the data as a CSV file
+    csv_file_path = os.path.join(folder_path, 'distance_to_lane_v3.csv')
+
+    with open(csv_file_path, mode='w', newline='') as csv_file:
+        fieldnames = ['Date time', 'Timestamp','Distance_to_Lane (cm)']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for data_dict in data_list:
+            writer.writerow(data_dict)
+
+    print('CSV file saved:', csv_file_path)
     
     # Save the data as a CSV file
     csv_file_path = os.path.join(output_csv_folder_path, csv_filename)

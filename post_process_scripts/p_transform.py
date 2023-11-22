@@ -4,8 +4,9 @@ import time
 import os
 import pandas as pd
 from PIL import Image
+import logging
 
-
+log = logging.getLogger(__name__)
 def p_transform(corner_positions, calibration_img, input_folder, output_folder, flip_image):
     '''''''''
     The corner_postions must follow the order: TOP LEFT -----> TOP RIGHT ------> BOTTOM LEFT -----> BOTTOM RIGHT
@@ -25,15 +26,14 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
             os.makedirs(output_folder, exist_ok=True)
 
     # if flip_image:
-    # # todo: flip the img if the image is for left calibration
-    # # Flip the image horizontally
-    #     calibration_img = cv2.flip(calibration_img, 1) # Pay attention the command may be FLIP_TOP_BOTTOM to have the sedired orientation
-        # print('flipped image')
-    # Save the flipped image
-        # filename = os.path.join(output_folder,"flipped_left_cam_cali_img.png")
-        # print(filename)
-        # cv2.imwrite(filename, calibration_img)
-        # flipped_image.save(os.path.join(output_folder,"Flipped_left_cam_cali_img.png"))
+    # # # todo: flip the img if the image is for left calibration
+    # # # Flip the image horizontally
+    # #     calibration_img = cv2.flip(calibration_img, 1) # Pay attention the command may be FLIP_TOP_BOTTOM to have the sedired orientation
+    #     # print('flipped image')
+    # # Save the flipped image
+    #     filename = os.path.join(output_folder,"flipped_left_cam_cali_img.png")
+    #     print(filename)
+    #     cv2.imwrite(filename, calibration_img)
 
     # todo: read the coordinates from the corner_positions input
     pt1_x, pt1_y = corner_positions[0]
@@ -65,10 +65,10 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
     dpp_hor = mat_hor_len / num_trans_hor_pixel
     # print('horizontal dpp:', dpp_hor, 'mm')
     filename = os.path.join(output_folder,"Transformed_image.jpg")
-    print(filename)
+    log.debug(filename)
     
     cv2.imwrite(filename, result)
-    print('saved transformed image')
+    log.debug('saved transformed image')
     if not os.path.exists(output_folder):
         os.makedirs(output_folder, exist_ok=True)
     png_files = [f for f in os.listdir(input_folder) if f.lower().endswith(".png")]
@@ -86,9 +86,9 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
         # Save the transformed image
         cv2.imwrite(output_path, transformed_image)
 
-        print(f"Transformed and saved: {output_path}")
+        log.debug(f"Transformed and saved: {output_path}")
 
-    print("All files transformed and saved.")
+    log.info("All files transformed and saved for {}".format(input_folder))
 
 
 if __name__ == "__main__":

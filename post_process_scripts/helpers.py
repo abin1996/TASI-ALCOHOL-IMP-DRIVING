@@ -10,11 +10,14 @@ import pytz
 import pandas as pd
 import math
 import re
+import logging
 
 VIDEO_FRAMERATE = 30
 MJPEG_VIDEO = 1
 RAWIMAGE_VIDEO = 2
-VIDEO_CONVERTER_TO_USE = "ffmpeg" 
+VIDEO_CONVERTER_TO_USE = "ffmpeg"
+
+log = logging.getLogger(__name__)
 def timestamp_to_date(timestamp):
     # convert the timestamp to a datetime object in the local timezone
     dt_object = datetime.fromtimestamp(timestamp)
@@ -218,10 +221,6 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
                     event_bag_ind_list.append(int(bag_time_list[i][1]))
                     break
 
-
-    print(new_folder_name,':')
-    print('Event bag index:', event_bag_ind_list)
-
     # Initialize an empty list to store the sublists
     event_bag_ind_list_paired = []
 
@@ -236,7 +235,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
         complete_lst = insert_missing_numbers(lst)
         complete_event_bag_ind_list.append(complete_lst)
 
-    print('Complete bag index:', complete_event_bag_ind_list)
+    log.debug('Complete bag index: {}'.format(complete_event_bag_ind_list))
     # create the csv file for each session
     event_timestamp_paired = [] # Initialize the list for paried timestamps. The list would have the format:[[event1_start_timestamp,event1_end_timestamp],[e2_start,e2_end],...]
 
@@ -249,7 +248,6 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
         if len(event_timestamp_paired[q]) == 2:
             event_begin_time, event_finish_time = event_timestamp_paired[q]
-            print('q:',q)
 
             # Calculate the time differences
             video_start_time = event_begin_time - bag_start_time
@@ -258,12 +256,11 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
             # Format the time differences as strings
             video_start_time_str = str(video_start_time)
             video_stop_time_str = str(video_stop_time)
-            print('Bag start time:',bag_start_time)
-            print('Event start time:', event_begin_time)
-            print('Event end time:', event_finish_time)
-            print('..............')
-            print('Video start time:',video_start_time_str)
-            print('Video end time:', video_stop_time_str)
+            log.debug('Bag start time: {}'.format(bag_start_time))
+            log.debug('Event start time:{}'.format(event_begin_time))
+            log.debug('Event end time:{}'.format(event_finish_time))
+            log.debug('Video start time:{}'.format(video_start_time_str))
+            log.debug('Video end time:{}'.format(video_stop_time_str))
 
             subtest_ind = q + 1
             subfolder_name = new_folder_name + '_'+ str(subtest_ind)
@@ -289,18 +286,16 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
                 writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerow({'Event name': event_name,'Event Start Time': video_start_time_str, 'Event Stop Time': video_stop_time_str, 'Start Timestamp': event_begin_time, 'Stop Timestamp': event_finish_time})
-            
-            print(f"Event start and end time saved to '{csv_file_path}'.")
-            print('..............')
+
+            log.debug("Event start and end time saved to {}".format(csv_file_path))
 
     subfolder_files = os.listdir(folder_path)
     for file in subfolder_files:
         if file.endswith(".bag"):
             file_path = os.path.join(folder_path, file)
             os.remove(file_path)
-    print('------------------------------------------------------------')
 
-def extract_images_from_bag(input_folder, output_folder, flipped, start_time, stop_time):
+def extract_images_from_bag(input_folder, output_folder, is_camera_flipped_vert, is_camera_flipped_hor, start_time, stop_time):
 
     #Create the output folder if it doesn't exist. If it does exist, then delete all the files in the folder
     os.makedirs(output_folder, exist_ok=True)
@@ -323,16 +318,22 @@ def extract_images_from_bag(input_folder, output_folder, flipped, start_time, st
                     bridge = CvBridge()
                     try:
                         cv_img = bridge.compressed_imgmsg_to_cv2(msg)
+                        if is_camera_flipped_hor:
+                            cv_img = cv2.flip(cv_img, 1)
+                        if is_camera_flipped_vert:
+                            cv_img = cv2.flip(cv_img, 0)
                     except CvBridgeError as e:
-                        print(e)
+                        log.error(e)
                         continue
-                    if flipped:
-                        cv_img = cv2.flip(cv2.flip(cv_img, 1), 0)
-                    else:
-                        cv_img = cv2.flip(cv_img, 0)        
+
+
+                    # if flipped:
+                    #     cv_img = cv2.flip(cv_img, -1)
+                    # else:
+                    #     cv_img = cv2.flip(cv_img, -1)
                     session_count += 1
                     filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{t}.png')
-                    print(filename)
+                    # print(filename)
                     cv2.imwrite(filename, cv_img)
                 bag.close()
     return 
@@ -349,8 +350,8 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
     #If the timestamp of one of the image is greater than the other image by 33ms, then use the previous image of the image with the greater timestamp to fill the missing image. 
     #Give the image the timestamp of the image with the smaller timestamp. Also note the generated frame in table with the frame name and the whether it was for primary or secondary image
     #Repeat the process for the rest of the images in the primary and secondary image folders
-    print(primary_image_folder_name)
-    print(secondary_image_folder_path_name)
+    log.debug(primary_image_folder_name)
+    log.debug(secondary_image_folder_path_name)
     primary_image_files = [f for f in os.listdir(primary_image_folder_path) if f.lower().endswith(".png")]
     secondary_image_files = [f for f in os.listdir(secondary_image_folder_path) if f.lower().endswith(".png")]
     primary_image_files = sorted(primary_image_files, key=lambda filename: extract_timestamp_from_filename(filename))
@@ -365,8 +366,8 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
     prev_secondary_image_time = 0
     primary_folder_generated_frames_list = []
     secondary_folder_generated_frames_list = []
-    print(len(primary_image_files))
-    print(len(secondary_image_files))
+    log.debug(len(primary_image_files))
+    log.debug(len(secondary_image_files))
     total_time_diff = 0
     while primary_image_count < len(primary_image_files) and secondary_image_count < len(secondary_image_files):
         primary_image_filename = primary_image_files[primary_image_count]
@@ -391,7 +392,7 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
             generated_frame_time = int(secondary_image_time*1000000)
             # generated_frame_time = f'{generated_frame_time:.18f}'
             filename = os.path.join(primary_image_folder_path, f'bag_{primary_image_filename.split("_")[1]}_frame_{primary_image_filename.split("_")[3]}_{generated_frame_time}.png')
-            print(filename + ": Generated frame Primary")
+            # print(filename + ": Generated frame Primary")
             prim_generated_image_count += 1
             prev_img = cv2.imread(primary_image_path)
             cv2.imwrite(filename, prev_img)
@@ -402,7 +403,7 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
             prev_primary_image_time = primary_image_time
             generated_frame_time = int(primary_image_time*1000000)
             filename = os.path.join(secondary_image_folder_path, f'bag_{secondary_image_filename.split("_")[1]}_frame_{secondary_image_filename.split("_")[3]}_{generated_frame_time}.png')
-            print(filename + ": Generated frame Secondary")
+            # print(filename + ": Generated frame Secondary")
             sec_generated_image_count += 1
             prev_img = cv2.imread(secondary_image_path)
             cv2.imwrite(filename, prev_img)
@@ -421,85 +422,21 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
         writer.writeheader()
         for filename in secondary_folder_generated_frames_list:
             writer.writerow({'Filename': filename})
-    print(primary_image_count)
-    print(secondary_image_count)
-    print("Primary generated frames: ", prim_generated_image_count)
-    print("Secondary generated frames: ", sec_generated_image_count)
-    print("Avg time difference: ", total_time_diff/primary_image_count)
-
-
-def extract_images_from_bag_with_gen(bag, output_folder, flipped, bag_number, start_time, stop_time, session_count, prev_frame, prev_frame_time):
-    total_missing_frames = 0
-    frame_gaps_list = []
-    #Time between each fram is 33 ms (30 fps). If the time between last and current frame is more than 35 ms, then there is a missing frame. 
-    #When there is a missing frame, use the last frame to fill the missing frame. Record the number of missing frames in a list as a tuple (start_of_missing_frame, end_of_missing_frame, number_of_missing_frames)
-    missing_frame_count = 0
-    #Create the output folder if it doesn't exist. If it does exist, then delete all the files in the folder
-    os.makedirs(output_folder, exist_ok=True)
-
-    for (topic, msg, t) in bag.read_messages():
-
-        time_milli = t.to_nsec() / 1e9
-        timestamp_obj = datetime.fromtimestamp(time_milli)
-        if timestamp_obj < start_time:
-            # print("Skipping frame")
-            continue
-        if timestamp_obj > stop_time:
-            # print("Stopping frame extraction for the bag")
-            break
-        bridge = CvBridge()
-        try:
-            cv_img = bridge.compressed_imgmsg_to_cv2(msg)
-        except CvBridgeError as e:
-            print(e)
-            continue
-        if flipped:
-            cv_img = cv2.flip(cv2.flip(cv_img, 1), 0)
-        
-        if prev_frame_time != 0:
-            time_diff = float(t.to_sec() - prev_frame_time.to_sec())
-            # print(time_diff)
-            if time_diff > 0.044:
-                missing_frame_count = int(time_diff/0.044)
-                total_missing_frames += missing_frame_count
-                frame_gaps_list.append((bag_number, session_count, missing_frame_count, time_diff))
-                for i in range(missing_frame_count):
-                    session_count += 1
-                    generated_frame_time = datetime.utcfromtimestamp(prev_frame_time.to_sec()) + timedelta(milliseconds=33*(i+1))
-                    generated_frame_time = rospy.Time.from_sec(generated_frame_time.replace(tzinfo=pytz.UTC).timestamp())
-                    filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{generated_frame_time}.png')
-                    print(filename + ": Generated frame")
-                    cv2.imwrite(filename, prev_frame)
-                    
-        session_count += 1
-        filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{t}.png')
-        print(filename)
-        cv2.imwrite(filename, cv_img)
-        prev_frame_time = t
-        prev_frame = cv_img
-    
-    return frame_gaps_list, session_count,  prev_frame, prev_frame_time, total_missing_frames
-
-def image_processed_folder_name(image_folder_name):
-    if image_folder_name == 'images1':
-        image_processed_folder_name = 'image_front'
-    elif image_folder_name == 'images2':
-        image_processed_folder_name = 'image_driver'
-    elif image_folder_name == 'images3':
-        image_processed_folder_name = 'image_left'
-    elif image_folder_name == 'images4':
-        image_processed_folder_name = 'image_right'
-    return image_processed_folder_name
+    log.debug(primary_image_count)
+    log.debug(secondary_image_count)
+    log.debug('Primary generated frames: {}'.format(prim_generated_image_count))
+    log.debug('Secondary generated frames: {}'.format(sec_generated_image_count))
+    log.debug('Avg time difference: {}'.format(total_time_diff/primary_image_count))
 
 def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
 
     listOfBagFiles = [f for f in os.listdir(input_folder) if f[-4:] == ".bag"]  # get list of only bag files in current dir.
     numberOfFiles = str(len(listOfBagFiles))
-    print("Reading " + numberOfFiles + " bagfile(s) in source directory:")
+    log.debug("Reading " + numberOfFiles + " bagfile(s) in source directory:")
     count = 0
     for bagFile in sorted(listOfBagFiles):
         count += 1
-        print("Reading file " + str(count) + " of  " + numberOfFiles + ": " + bagFile)
+        log.debug("Reading file " + str(count) + " of  " + numberOfFiles + ": " + bagFile)
         bag = rosbag.Bag(input_folder+"/" + bagFile)
         listOfTopics = bag.get_type_and_topic_info()[1].keys()
         os.makedirs(target_folder,exist_ok=True)
@@ -547,7 +484,7 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
                         values.append(get_vehicle_speed(values[9], values[10]))
                     filewriter.writerow(values)
         bag.close()
-    print("Done reading all " + numberOfFiles + " bag files.")
+    log.debug("Done reading all " + numberOfFiles + " bag files.")
 
 def get_event_start_stop_time(input_folder):
     # Read event_timestamp.csv from camera_input_folder and get the start and stop time of the session from the first row in the column named Start Timestamp and Stop Timestamp
@@ -577,9 +514,9 @@ def processed_video_name(image_folder_name):
     elif image_folder_name == 'images2':
         image_processed_folder_name = 'video_driver'
     elif image_folder_name == 'images3':
-        image_processed_folder_name = 'video_left'
-    elif image_folder_name == 'images4':
         image_processed_folder_name = 'video_right'
+    elif image_folder_name == 'images4':
+        image_processed_folder_name = 'video_left'
     return image_processed_folder_name
 
 def get_video_file_name(data_classification_folder_type):
@@ -588,53 +525,21 @@ def get_video_file_name(data_classification_folder_type):
     elif data_classification_folder_type == 'images2':
         image_processed_folder_name = 'video_driver.mp4'
     elif data_classification_folder_type == 'images3':
-        image_processed_folder_name = 'video_left.mp4'
-    elif data_classification_folder_type == 'images4':
         image_processed_folder_name = 'video_right.mp4'
+    elif data_classification_folder_type == 'images4':
+        image_processed_folder_name = 'video_left.mp4'
     return image_processed_folder_name
 
-def extract_bags_to_video(input_bag_folder, output_video_path, data_classification_folder_type, start_time, stop_time):
-    # Initialize video writer
-    codec = cv2.VideoWriter_fourcc('M','J','P','G')  # Use appropriate codec
-    fps = VIDEO_FRAMERATE  # Frames per second
-    video_writer = None
-    bridge = CvBridge()
-    counter = 0
-    index = data_classification_folder_type[-1]
-    camera_topic = "/camera{}/usb_cam{}/image_raw/compressed".format(index, index)
-    os.makedirs(output_video_path,exist_ok=True)
-    filename = os.path.join(output_video_path, processed_video_name(data_classification_folder_type) + '.mp4')
-    for bag_file in sorted(os.listdir(input_bag_folder)):
-        counter +=1 
-        if counter == 15:
-            break
-        if bag_file.endswith(".bag"):
-            bag_path = os.path.join(input_bag_folder, bag_file)
-            bag = rosbag.Bag(bag_path)
-            print("Processing:", bag_path)
-
-            for _, msg, t in bag.read_messages(topics=[camera_topic]):
-                time_milli = t.to_nsec() / 1e9
-                timestamp_obj = datetime.fromtimestamp(time_milli)
-                if timestamp_obj < start_time:
-                    # print("Skipping frame")
-                    continue
-                if timestamp_obj > stop_time:
-                    # print("Stopping frame extraction for the bag")
-                    break
-                frame = bridge.compressed_imgmsg_to_cv2(msg)
-                frame = cv2.flip(frame, -1)
-                if video_writer is None:
-                    height, width, _ = frame.shape
-                    video_writer = cv2.VideoWriter(filename, codec, fps, (width, height))
-                video_writer.write(frame)
-            bag.close()
-
-    if video_writer is not None:
-        video_writer.release()
-        print("Video conversion complete. Output file:", filename)
-    else:
-        print("No bag files found for conversion.")
+def image_processed_folder_name(image_folder_name):
+    if image_folder_name == 'images1':
+        image_processed_folder_name = 'image_front'
+    elif image_folder_name == 'images2':
+        image_processed_folder_name = 'image_driver'
+    elif image_folder_name == 'images3':
+        image_processed_folder_name = 'image_right'
+    elif image_folder_name == 'images4':
+        image_processed_folder_name = 'image_left'
+    return image_processed_folder_name
 
 # Function to extract timestamp from a filename
 def extract_timestamp(filename):
@@ -664,6 +569,18 @@ def extract_images_to_video(input_bag_folder, output_video_path, data_classifica
 
     if video_writer is not None:
         video_writer.release()
-        print("Video conversion complete. Output file:", video_filename)
+        log.debug("Video conversion complete. Output file: {}".format(video_filename))
     else:
-        print("No bag files found for conversion.")
+        log.error("No bag files found for conversion.")
+
+def get_lane_deviation(left_lane_dist, right_lane_distance):
+    half_lane_width = 180
+    if left_lane_dist == 500 and right_lane_distance == 500:
+        deviation = 500
+    elif left_lane_dist == 500:
+       deviation = right_lane_distance - half_lane_width
+    elif right_lane_distance == 500:
+        deviation = half_lane_width - left_lane_dist
+    else:
+        deviation = (right_lane_distance - left_lane_dist)/2
+    return deviation

@@ -177,9 +177,10 @@ def extract_can_for_sub_category(source_file,save_file_path, timestamp_ranges):
 
             # # Create a new CSV file for the filtered data
             filtered_data.to_csv(output_file_path, index=False)
-            print("CAN CSV file have been created at: ",output_file_path)
+            log.debug("CAN CSV file have been created at: {}".format(output_file_path))
         else:
-            print('Session',str(EVENT_IND),'Missing one controller button input')
+            log.debug("Session {}: Missing one controller button input".format(str(EVENT_IND)))
+
 
 def file_recategory(timestamp_list, org_folder_name, new_folder_name):
     event_timestamp_list = timestamp_list
@@ -441,9 +442,15 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
         listOfTopics = bag.get_type_and_topic_info()[1].keys()
         os.makedirs(target_folder,exist_ok=True)
         for topicName in listOfTopics:
-            
+            if topicName == "/tcptime":
+                continue
             # Create a new CSV file for each topic
-            filename = os.path.join(target_folder, topicName.replace('/', '_slash_') + '.csv')
+            file_topic_name = "gps.csv"
+            if topicName == "/tcpvel":
+                file_topic_name = "velocity_data.csv"
+            if topicName == "/tcpfix":
+                file_topic_name = "position_data.csv"
+            filename = os.path.join(target_folder, file_topic_name)
             # print("Writing topic " + topicName + " to " + filename)
             firstIteration = is_empty_csv(filename) 
             with open(filename, 'a+', newline='') as csvfile:
@@ -470,19 +477,27 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
                     if firstIteration:  # header
                         headers = ["rosbagTimestamp"]  # first column header
                         for pair in instantaneousListOfData:
-                            headers.append(pair[0])
+                            if pair[0] not in ['header','seq','stamp','secs','nsecs','frame_id']:
+                                headers.append(pair[0])
                         if topicName == "/tcpvel":
                             headers.append("Vehicle Speed")
                         filewriter.writerow(headers)
                         firstIteration = False
 
-                    values = [str(t)]  # first column will have rosbag timestamp
+                    values = [str(t)] # first column will have rosbag timestamp
+                    i=0
                     for pair in instantaneousListOfData:
-                        if len(pair) > 1:
-                            values.append(pair[1])
+                        if i not in [1, 2, 3, 4, 5, 6]:
+                            if len(pair) > 1:
+                                values.append(pair[1])
+                        i += 1
                     if topicName == "/tcpvel":
-                        values.append(get_vehicle_speed(values[9], values[10]))
-                    filewriter.writerow(values)
+                        values.append(get_vehicle_speed(values[3], values[4]))
+                    #Add each value 6 times to the csv file. Increment the timestamp by 33 milliseconds each time. The timestamp is t variable
+                    for i in range(6):
+                        t += rospy.Duration.from_sec(0.033)
+                        values[0] = str(t)
+                        filewriter.writerow(values)
         bag.close()
     log.debug("Done reading all " + numberOfFiles + " bag files.")
 

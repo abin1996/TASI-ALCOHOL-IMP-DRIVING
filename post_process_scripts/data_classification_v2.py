@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 log_file_path = os.path.join(os.getcwd(), "post_process_logs")
 if not os.path.exists(log_file_path):
     os.makedirs(log_file_path, exist_ok=True)
-log_filename = log_file_path + '/post_process_' + datetime.datetime.now().strftime('%H_%M_%d_%m_%Y.log')
+log_filename = log_file_path + '/post_process_' + datetime.datetime.now().strftime('%d-%m-%Y_%H_%M_%S.log')
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filename=log_filename, filemode='w')
 
 
@@ -262,5 +262,5 @@ if __name__ == '__main__':
                 combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_name, run['sub_categories_to_classify'], target_folder_path)
 
         end_time = time.time()
-        execution_time = (end_time - start_time)/60
+        execution_time = int((end_time - start_time)/60)
         log.info('Execution time: {} mins'.format(execution_time))

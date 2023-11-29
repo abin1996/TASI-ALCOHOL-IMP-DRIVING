@@ -6,10 +6,9 @@ import time
 import string
 import shutil
 
-RECORDING_FOLDER_NAME = '11-08-23_15:24:04'
-
-SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/" + RECORDING_FOLDER_NAME
-SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/PROCESSED_DATA_COLLECTION/' + RECORDING_FOLDER_NAME
+RECORDING_FOLDER_NAME = '16-11-23_14-44-40'
+SOURCE_CAMERA_BAG_FOLDER = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/SubjectGPS/Baseline/" + RECORDING_FOLDER_NAME
+SAVE_FOLDER_FOR_CAMERA_IMAGES = "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/" + RECORDING_FOLDER_NAME
 # verify correct input arguments: 1 or 2
 # if len(sys.argv) > 2:
 #     print("invalid number of arguments: " + str(len(sys.argv)))

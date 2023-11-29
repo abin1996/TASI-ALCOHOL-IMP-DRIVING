@@ -100,15 +100,15 @@ if __name__ == '__main__':
 
     start_time = time.time()
 
-    SUBJECT_ID = 'Subject02'
+    SUBJECT_ID = 'SubjectGPS'
 
-    # ALCOHOL_LEVEL = 'Baseline'
+    ALCOHOL_LEVEL = 'Baseline'
 
     # ALCOHOL_LEVEL = '70-Alcohol'
 
-    ALCOHOL_LEVEL = '80-Alcohol'
+    # ALCOHOL_LEVEL = '80-Alcohol'
 
-    TIMESTAMP = '31-10-23_12-27-13'
+    TIMESTAMP = '16-11-23_14-44-40'
 
 
     # sub_folder_name = 'Driving backward'

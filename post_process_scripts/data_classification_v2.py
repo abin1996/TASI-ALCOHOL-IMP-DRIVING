@@ -16,7 +16,7 @@ log_file_path = os.path.join(os.getcwd(), "post_process_logs")
 if not os.path.exists(log_file_path):
     os.makedirs(log_file_path, exist_ok=True)
 log_filename = log_file_path + '/post_process_' + datetime.datetime.now().strftime('%d-%m-%Y_%H_%M_%S.log')
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s', filename=log_filename, filemode='w')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s', filename=log_filename, filemode='w')
 
 
 #DATA CLASSIFICATION
@@ -24,15 +24,22 @@ def perform_data_classification(subject_id, alcohol_session_name, timestamped_fo
     joystick_file_path = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, "event_signal/joystick.txt")
     timestamp_lists_all_subcategories = event_timestamp(joystick_file_path)
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+    log.info('Data recategory started')
+    start_time = time.time()
     copy_files_to_subfolders(source_folder, sub_categories_to_classify)
     for sub_category in sub_categories_to_classify:
         timestamp_list = timestamp_lists_all_subcategories[sub_category]
         file_recategory(timestamp_list, source_folder, sub_category)
     log.info('Data recategory finished')
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 
 #IMAGE EXTRACTION
 def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+    log.info('Image extraction started for: {}'.format(data_classification_folder_type))
+    start_time = time.time()
     for sub_category in sub_categories_to_classify:
         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
         sub_category_folder = os.path.join(source_folder, sub_category)
@@ -50,6 +57,9 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
                     os.remove(file_path)
             extract_images_from_bag(camera_input_folder, camera_output_folder, is_camera_flipped_vert, is_camera_flipped_hor, start_time, stop_time)
     log.info('Image extraction finished for: {}'.format(data_classification_folder_type))
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 #Check if the images are synced
 # 
 def image_sync_completed(subject_id, alcohol_session_name,target_folder_path):
@@ -78,6 +88,8 @@ def image_sync_completed(subject_id, alcohol_session_name,target_folder_path):
 def perform_image_sync(subject_id, alcohol_session_name, target_folder_path):
     source_folder = os.path.join(target_folder_path, subject_id, alcohol_session_name)
     sub_categories_to_classify = os.listdir(source_folder)
+    log.info('Image Sync started for all cameras')
+    start_time = time.time()
     for sub_category in sub_categories_to_classify:
         sub_category_folder = os.path.join(source_folder, sub_category)
         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
@@ -98,6 +110,9 @@ def perform_image_sync(subject_id, alcohol_session_name, target_folder_path):
                         parent_folder = os.path.join(source_folder, sub_category, sub_category + '_' + str(sub_category_run_number), "images")
                         sync_primary_and_secondary_images(primary_sync_ref_image, primary_sync_ref_image_path, img_folder, secondary_sync_ref_image_path, parent_folder)
     log.info('Image Sync completed for all cameras')
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 #CAN EXTRACTION
 def perform_can_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
@@ -105,6 +120,8 @@ def perform_can_extraction(subject_id, alcohol_session_name, timestamped_folder_
     timestamp_lists_all_subcategories = event_timestamp(joystick_file_path)
     can_file_name = os.listdir(source_folder)[0]
     can_input_file_path = os.path.join(source_folder, can_file_name)
+    log.info('CAN extraction started for: {}'.format(data_classification_folder_type))
+    start_time = time.time()
     for sub_category in sub_categories_to_classify:
         timestamp_list = timestamp_lists_all_subcategories[sub_category]
         filtered_timestamps = filtered_event_timestamp(timestamp_list)
@@ -112,10 +129,15 @@ def perform_can_extraction(subject_id, alcohol_session_name, timestamped_folder_
         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category, sub_category)
         extract_can_for_sub_category(can_input_file_path, target_folder_path, paired_filtered_list)
     log.info('CAN extraction finished for: {}'.format(data_classification_folder_type))
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 
 #GPS EXTRACTION
 def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(source_folder_path, subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type)
+    log.info('GPS extraction started for: {}'.format(data_classification_folder_type))
+    start_time = time.time()
     for sub_category in sub_categories_to_classify:
         target_folder_path = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name, sub_category)
         sub_category_folder = os.path.join(source_folder, sub_category)
@@ -132,11 +154,16 @@ def perform_gps_extraction(subject_id, alcohol_session_name, timestamped_folder_
                     os.remove(file_path)
             extract_gps_to_csv(gps_input_folder, gps_output_folder, start_time, stop_time)
     log.info('GPS extraction finished for: {}'.format(data_classification_folder_type))
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 
 #VIDEO EXTRACTION USING FRAMES
 def perform_video_extraction_using_frames(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_to_classify, source_folder_path, target_folder_parent_path):
     source_folder = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name)
     image_folder_name = image_processed_folder_name(data_classification_folder_type)
+    log.info('Video extraction started for: {}'.format(data_classification_folder_type))
+    start_time = time.time()
     for sub_category in sub_categories_to_classify:
         sub_category_folder = os.path.join(source_folder, sub_category)
         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
@@ -151,8 +178,13 @@ def perform_video_extraction_using_frames(subject_id, alcohol_session_name, data
                         os.remove(file_path)
             extract_images_to_video(video_input_folder, video_output_folder, data_classification_folder_type)
     log.info('Video extraction finished for: {}'.format(data_classification_folder_type))
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 #PERFORM PERSPECTIVE TRANSFORMATION
 def perform_lane_deviation_calculation(subject_id, alcohol_session_name, data_classification_folder_type, sub_categories_to_classify, target_folder_parent_path, lane_deviation_parameters,mat_hor_len):
+    log.info('Lane deviation calculation started for: {}'.format(data_classification_folder_type))
+    start_time = time.time()
     image_folder_name = image_processed_folder_name(data_classification_folder_type)
     skip_perpective_transformation = lane_deviation_parameters['skip_perpective_transformation']
     top_left = lane_deviation_parameters['corner_points']['top_left']
@@ -176,9 +208,14 @@ def perform_lane_deviation_calculation(subject_id, alcohol_session_name, data_cl
             if not skip_perpective_transformation:
                 p_transform(corner_positions, calibration_img, camera_input_folder, camera_output_folder, flipped)
             distance2lane(camera_output_folder,lane_deviation_output, image_folder_name, mat_hor_len)
-    log.info('lane deviation calculation finished for: {}'.format(data_classification_folder_type))
+    log.info('Lane deviation calculation finished for: {}'.format(data_classification_folder_type))
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 
 def combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_name, sub_categories_to_classify, target_folder_parent_path):
+    log.info('Lane Deviation combination process started')
+    start_time = time.time()
     source_folder = os.path.join(target_folder_parent_path, subject_id, alcohol_session_name)
     for sub_category in sub_categories_to_classify:
         sub_category_folder = os.path.join(source_folder, sub_category)
@@ -208,6 +245,9 @@ def combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_nam
                 #Print the average time difference
                 log.debug("Average time difference: {}".format(df_combined['Time_Difference (ms)'].mean()))
     log.info('Lane Deviation combination process finished')
+    end_time = time.time()
+    execution_time = int((end_time - start_time)/60)
+    log.info('Execution time: {} mins'.format(execution_time))
 
 
 if __name__ == '__main__':
@@ -223,8 +263,12 @@ if __name__ == '__main__':
         timestamped_folder_name = base_config['timestamped_folder_name']
         source_folder_path = base_config['source_folder_path']
         target_folder_path = base_config['target_folder_path']
+        hor_length_of_calibration_mat = base_config.get('length_of_calibration_mat', 1455)
+        sync_required = base_config.get('sync_required',False)
+
+
+
         dict_of_runs = config['execution_specific_config']
-        hor_length_of_calibration_mat = config.get('length_of_calibration_mat',1455)
         # log_file_path = os.path.join(source_folder_path, subject_id, alcohol_session_name)
 
         for data_classification_folder_type, run in dict_of_runs.items():
@@ -243,9 +287,9 @@ if __name__ == '__main__':
             if "execute_image_extraction" in run and  run["execute_image_extraction"] == True:
                 perform_image_extraction_for_camera(subject_id, alcohol_session_name, timestamped_folder_name, data_classification_folder_type, run['sub_categories_to_classify'], source_folder_path, target_folder_path)
 
-
-        # if not image_sync_completed(subject_id, alcohol_session_name,target_folder_path):
-        perform_image_sync(subject_id, alcohol_session_name, target_folder_path)
+        if sync_required:
+            log.info("Syncing images")
+            perform_image_sync(subject_id, alcohol_session_name, target_folder_path)
 
         for data_classification_folder_type, run in dict_of_runs.items():
             if "execute_video_extraction" in run and run["execute_video_extraction"] == True:
@@ -263,4 +307,4 @@ if __name__ == '__main__':
 
         end_time = time.time()
         execution_time = int((end_time - start_time)/60)
-        log.info('Execution time: {} mins'.format(execution_time))
+        log.info('Complete Data Post Processing Execution time: {} mins'.format(execution_time))

@@ -21,7 +21,6 @@ log = logging.getLogger(__name__)
 def timestamp_to_date(timestamp):
     # convert the timestamp to a datetime object in the local timezone
     dt_object = datetime.fromtimestamp(timestamp)
-    time = dt_object.time()
     return dt_object
 
 def event_timestamp(filename):
@@ -66,7 +65,6 @@ def event_timestamp(filename):
     new_index_button_list = []
     for i in range(7, len(new_lines), 9):  # get the line number of button in each sequence
         new_index_button_list.append(i)
-    # print('button_list',index_button_list)
 
     event_A_timestamp_list = []  # the list contains all button log that represents event A
     event_B_timestamp_list = []  # the list contains all button log that represents event B
@@ -76,7 +74,20 @@ def event_timestamp(filename):
 
     for m in new_index_button_list:
         n = m - 4  # n is the line that contains the timestamp info
-        timestamp = int(new_lines[n].split(':')[1])
+        #Regex to read the number from string which looks like this "secs: 1698330357\n"
+        timestamp_sec = 0
+        nanosec_inf = 0
+        secs_match = re.search(r"[0-9]+", new_lines[n])
+        if secs_match:
+            timestamp_sec = secs_match.group(0)
+        nsecs_match = re.search(r"[0-9]+", new_lines[n+1])
+        if nsecs_match:
+            nanosec_inf = nsecs_match.group(0)
+            if len(nanosec_inf) < 9:
+                nanosec_inf = '0'*(9-len(nanosec_inf)) + nanosec_inf
+
+        timstamp_str = timestamp_sec + nanosec_inf
+        timestamp = int(timstamp_str)/1e9
         hr_min_sec = timestamp_to_date(timestamp)
 
         if new_lines[m] == "buttons: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]\n":
@@ -101,7 +112,7 @@ def event_timestamp(filename):
 def copy_files_to_subfolders(source_folder, subfolder_names):
     # Ensure the source folder exists
     if not os.path.exists(source_folder):
-        print("The source folder '{}' does not exist.".format(source_folder))
+        log.error("The source folder '{}' does not exist.".format(source_folder))
         return
 
     # Create subfolders if they don't already exist
@@ -158,7 +169,6 @@ def extract_can_for_sub_category(source_file,save_file_path, timestamp_ranges):
 
             # Filter the data within the timestamp range
             filtered_data = data[(data["time"] >= start_timestamp) & (data["time"] <= end_timestamp)]
-            # print(filtered_data)
 
             # Define the user-defined directory and file name
             user_defined_directory = save_file_path + "_" + str(EVENT_IND) + "/can/"  # Replace with your directory
@@ -249,7 +259,6 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
 
         if len(event_timestamp_paired[q]) == 2:
             event_begin_time, event_finish_time = event_timestamp_paired[q]
-
             # Calculate the time differences
             video_start_time = event_begin_time - bag_start_time
             video_stop_time = event_finish_time - bag_start_time
@@ -272,9 +281,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
                 os.makedirs(event_new_path)
 
                 for p in range(len(complete_event_bag_ind_list[q])):
-                    # print("P: ",p)
                     old_A_file_path = os.path.join(folder_path, files[complete_event_bag_ind_list[q][p]])
-                    print("Path: ", old_A_file_path)
                     new_A_file_path = os.path.join(event_new_path, files[complete_event_bag_ind_list[q][p]])
 
                     shutil.copy2(old_A_file_path, new_A_file_path)
@@ -311,10 +318,8 @@ def extract_images_from_bag(input_folder, output_folder, is_camera_flipped_vert,
                     time_milli = t.to_nsec() / 1e9
                     timestamp_obj = datetime.fromtimestamp(time_milli)
                     if timestamp_obj < start_time:
-                        # print("Skipping frame")
                         continue
                     if timestamp_obj > stop_time:
-                        # print("Stopping frame extraction for the bag")
                         break
                     bridge = CvBridge()
                     try:
@@ -334,7 +339,6 @@ def extract_images_from_bag(input_folder, output_folder, is_camera_flipped_vert,
                     #     cv_img = cv2.flip(cv_img, -1)
                     session_count += 1
                     filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{t}.png')
-                    # print(filename)
                     cv2.imwrite(filename, cv_img)
                 bag.close()
     return 
@@ -378,10 +382,7 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
         primary_image_time = extract_timestamp_from_filename(primary_image_filename)
         secondary_image_time = extract_timestamp_from_filename(secondary_image_filename)
         time_diff = primary_image_time - secondary_image_time
-        primary_time_diff = primary_image_time - prev_primary_image_time
         total_time_diff += abs(time_diff)
-        # print("Primary time diff:", primary_time_diff)
-        # print("prim:",primary_image_filename, "sec:",secondary_image_filename, "time diff:", time_diff)
 
         if time_diff <= 33 and time_diff >= -33:
             primary_image_count += 1
@@ -393,7 +394,6 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
             generated_frame_time = int(secondary_image_time*1000000)
             # generated_frame_time = f'{generated_frame_time:.18f}'
             filename = os.path.join(primary_image_folder_path, f'bag_{primary_image_filename.split("_")[1]}_frame_{primary_image_filename.split("_")[3]}_{generated_frame_time}.png')
-            # print(filename + ": Generated frame Primary")
             prim_generated_image_count += 1
             prev_img = cv2.imread(primary_image_path)
             cv2.imwrite(filename, prev_img)
@@ -404,7 +404,6 @@ def sync_primary_and_secondary_images(primary_image_folder_name,primary_image_fo
             prev_primary_image_time = primary_image_time
             generated_frame_time = int(primary_image_time*1000000)
             filename = os.path.join(secondary_image_folder_path, f'bag_{secondary_image_filename.split("_")[1]}_frame_{secondary_image_filename.split("_")[3]}_{generated_frame_time}.png')
-            # print(filename + ": Generated frame Secondary")
             sec_generated_image_count += 1
             prev_img = cv2.imread(secondary_image_path)
             cv2.imwrite(filename, prev_img)
@@ -451,8 +450,7 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
             if topicName == "/tcpfix":
                 file_topic_name = "position_data.csv"
             filename = os.path.join(target_folder, file_topic_name)
-            # print("Writing topic " + topicName + " to " + filename)
-            firstIteration = is_empty_csv(filename) 
+            firstIteration = is_empty_csv(filename)
             with open(filename, 'a+', newline='') as csvfile:
                 filewriter = csv.writer(csvfile, delimiter=',')
                  # allows header row
@@ -460,10 +458,8 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
                     time_milli = t.to_nsec() / 1e9
                     timestamp_obj = datetime.fromtimestamp(time_milli)
                     if timestamp_obj < start_time:
-                        # print("Skipping frame")
                         continue
                     if timestamp_obj > stop_time:
-                        # print("Stopping frame extraction for the bag")
                         break
                     # parse data from this instant
                     msgString = str(msg)
@@ -484,7 +480,8 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
                         filewriter.writerow(headers)
                         firstIteration = False
 
-                    values = [str(t)] # first column will have rosbag timestamp
+                    # values = [str(t)]
+                    values = [str(timestamp_obj.strftime('%d-%m-%y_%H:%M:%S.%f'))]# first column will have rosbag timestamp
                     i=0
                     for pair in instantaneousListOfData:
                         if i not in [1, 2, 3, 4, 5, 6]:
@@ -496,7 +493,8 @@ def extract_gps_to_csv(input_folder,target_folder, start_time, stop_time):
                     #Add each value 6 times to the csv file. Increment the timestamp by 33 milliseconds each time. The timestamp is t variable
                     for i in range(6):
                         t += rospy.Duration.from_sec(0.033)
-                        values[0] = str(t)
+                        # values[0] = str(t)
+                        values[0] = str(datetime.fromtimestamp(t.to_nsec() / 1e9).strftime('%d-%m-%y_%H:%M:%S.%f'))
                         filewriter.writerow(values)
         bag.close()
     log.debug("Done reading all " + numberOfFiles + " bag files.")
@@ -506,8 +504,8 @@ def get_event_start_stop_time(input_folder):
     event_timestamp_csv_path = os.path.join(input_folder, "event_timestamp.csv")
     event_timestamp_df = pd.read_csv(event_timestamp_csv_path)
     #Read start and stop time as datetime objects
-    start_time = datetime.strptime(event_timestamp_df["Start Timestamp"][0], '%Y-%m-%d %H:%M:%S')
-    stop_time = datetime.strptime(event_timestamp_df["Stop Timestamp"][0], '%Y-%m-%d %H:%M:%S')
+    start_time = datetime.strptime(event_timestamp_df["Start Timestamp"][0], '%Y-%m-%d %H:%M:%S.%f')
+    stop_time = datetime.strptime(event_timestamp_df["Stop Timestamp"][0], '%Y-%m-%d %H:%M:%S.%f')
     return start_time, stop_time
 
 def is_empty_csv(path):
@@ -574,9 +572,7 @@ def extract_images_to_video(input_bag_folder, output_video_path, data_classifica
     sorted_png_files = sorted(png_files, key=lambda filename: extract_timestamp(filename))
     for img_filename in sorted_png_files:
         img_path = os.path.join(input_bag_folder, img_filename)
-        # print("Processing:", img_path)
         frame = cv2.imread(img_path)
-        # frame = cv2.flip(frame, 0)
         if video_writer is None:
             height, width, _ = frame.shape
             video_writer = cv2.VideoWriter(video_filename, codec, fps, (width, height))

@@ -9,9 +9,9 @@ VIDEO_FRAMERATE = 15
 MJPEG_VIDEO = 1
 RAWIMAGE_VIDEO = 2
 VIDEO_CONVERTER_TO_USE = "ffmpeg" # or you may want to use "avconv"
-RECORDING_FOLDER_NAME = '22-09-23_15:25:12'
-SOURCE_CAMERA_BAG_FOLDER = "/home/iac_user/DATA_COLLECTION/" + RECORDING_FOLDER_NAME
-SAVE_FOLDER_FOR_CAMERA_IMAGES = '/home/iac_user/PROCESSED_DATA_COLLECTION/' + RECORDING_FOLDER_NAME
+RECORDING_FOLDER_NAME = '16-11-23_14-44-40'
+SOURCE_CAMERA_BAG_FOLDER = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/SubjectGPS/Baseline/" + RECORDING_FOLDER_NAME
+SAVE_FOLDER_FOR_CAMERA_IMAGES = "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/" + RECORDING_FOLDER_NAME
 
 def combine_bags_to_video(input_bag_folder, output_video_path, camera_topic):
     # Initialize video writer

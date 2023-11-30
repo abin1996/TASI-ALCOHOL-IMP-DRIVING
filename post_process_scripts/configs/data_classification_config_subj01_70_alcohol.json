@@ -25,8 +25,8 @@
         "images3": {
             "execute_data_classification": false,
             "execute_image_extraction": false,
-            "execute_video_extraction": true,
-            "execute_lane_deviation_calculation": true,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": false,
             "sub_categories_to_classify": [
                 "Driving backward", "Driving forward", "Parking"
             ],
@@ -59,8 +59,8 @@
         "images4": {
             "execute_data_classification": false,
             "execute_image_extraction": false,
-            "execute_video_extraction": true,
-            "execute_lane_deviation_calculation": true,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": false,
             "sub_categories_to_classify": [
                 "Driving backward", "Driving forward", "Parking"
             ],
@@ -94,14 +94,14 @@
         "images1": {
             "execute_data_classification": false,
             "execute_image_extraction": false,
-            "execute_video_extraction": true,
+            "execute_video_extraction": false,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"
             ]
         },
         "images2": {
             "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"

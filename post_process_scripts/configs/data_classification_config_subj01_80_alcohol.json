@@ -6,19 +6,19 @@
         "alcohol_session_name": "80-Alcohol",
         "timestamped_folder_name": "26-10-23_12-27-01",
         "length_of_calibration_mat": 1455,
-        "sync_required": false
+        "sync_required": true
     },
     "execution_specific_config": {
         "images1": {
-            "execute_data_classification": true,
-            "execute_image_extraction": true,
-            "execute_video_extraction": true,
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
             "sub_categories_to_classify": [
                 "Eye tracking"
             ]
         },
         "images2": {
-            "execute_data_classification": true,
+            "execute_data_classification": false,
             "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [

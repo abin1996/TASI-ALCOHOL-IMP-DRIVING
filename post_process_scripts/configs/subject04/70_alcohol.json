@@ -2,9 +2,9 @@
     "base_config": {
         "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
         "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
-        "subject_id": "Subject03",
+        "subject_id": "Subject04",
         "alcohol_session_name": "70-Alcohol",
-        "timestamped_folder_name": "08-11-23_11-52-04",
+        "timestamped_folder_name": "09-11-23_11-37-06",
         "length_of_calibration_mat": 1455,
         "sync_required": true
     },
@@ -31,7 +31,7 @@
                 "Driving backward", "Driving forward", "Parking"
             ],
             "lane_deviation_parameters": {
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/right-cam-2023-11-08-100212-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject01/subj01_right_cali.png",
                 "corner_points": {
                     "top_left": [
                         509,
@@ -66,7 +66,7 @@
             ],
             "lane_deviation_parameters": {
 
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/left-cam-2023-11-08-100454-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject01/subj01_left_cali.png",
                 "corner_points": {
                     "top_left": [
                         498,

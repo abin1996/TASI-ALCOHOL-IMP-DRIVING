@@ -94,20 +94,20 @@ if __name__ == "__main__":
     lane_deviation_parameters = {
         "corner_points": {
             "top_left": [
-                498,
-                57
+                24,
+                9
             ],
             "top_right": [
-                1250,
-                104
+                522,
+                50
             ],
             "bottom_left": [
-                502,
-                548
+                51,
+                363
             ],
             "bottom_right": [
-                1209,
-                486
+                506,
+                281
             ]
         }
     }
@@ -116,9 +116,9 @@ if __name__ == "__main__":
     bottom_left = lane_deviation_parameters['corner_points']['bottom_left']
     bottom_right = lane_deviation_parameters['corner_points']['bottom_right']
     corner_positions = [top_left, top_right, bottom_left, bottom_right]
-    cali_img = cv2.imread("/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/left-cam-2023-11-08-100454-flipped.jpg")
+    cali_img = cv2.imread("/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img/left_cali_Subject04_flipped.jpg")
 
     input_folder = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img"
-    output_folder = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img"
+    output_folder = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img"
 
     p_transform(corner_positions, cali_img, input_folder, output_folder,True)

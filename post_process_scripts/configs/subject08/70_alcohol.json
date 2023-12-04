@@ -2,9 +2,9 @@
     "base_config": {
         "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
         "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
-        "subject_id": "Subject04",
+        "subject_id": "Subject08",
         "alcohol_session_name": "70-Alcohol",
-        "timestamped_folder_name": "09-11-23_11-37-06",
+        "timestamped_folder_name": "16-11-23_13-44-05",
         "length_of_calibration_mat": 1455,
         "sync_required": true
     },
@@ -31,23 +31,23 @@
                 "Driving backward", "Driving forward", "Parking"
             ],
             "lane_deviation_parameters": {
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img/right_cali_Subject04_flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject08/Subject07_cali_img/right-cam-2023-11-16-101225_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        22,
-                        170
+                        119,
+                        129
                     ],
                     "top_right": [
-                        978,
-                        210
+                        857,
+                        166
                     ],
                     "bottom_left": [
-                        60,
-                        711
+                        164,
+                        674
                     ],
                     "bottom_right": [
-                        974,
-                        543
+                        862,
+                        501
                     ]
                 },
                 "sub_categories_for_lane_deviation": [
@@ -66,23 +66,23 @@
             ],
             "lane_deviation_parameters": {
 
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img/left_cali_Subject04_flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject08/Subject07_cali_img/left-cam-2023-11-16-101604_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        498,
-                        57
+                        92,
+                        12
                     ],
                     "top_right": [
-                        1250,
-                        104
+                        839,
+                        111
                     ],
                     "bottom_left": [
-                        502,
-                        548
+                        119,
+                        566
                     ],
                     "bottom_right": [
-                        1209,
-                        486
+                        816,
+                        444
                     ]
                 },
                 "sub_categories_for_lane_deviation": [

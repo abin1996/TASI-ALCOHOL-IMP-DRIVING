@@ -2,10 +2,10 @@
     "base_config": {
         "target_folder_path": "/media/tasi/InternalDrive/POST_PROCESSED_DATA/",
         "source_folder_path": "/media/tasi/InternalDrive/DATA_COLLECTION/ORG_DATA/",
-        "subject_id": "Subject08",
+        "subject_id": "Subject12",
         "alcohol_session_name": "80-Alcohol",
-        "timestamped_folder_name": "16-11-23_14-32-23",
-        "length_of_calibration_mat": 1455,
+        "timestamped_folder_name": "28-11-23_12-37-12",
+        "length_of_calibration_mat": 2455,
         "sync_required": true
     },
     "execution_specific_config": {

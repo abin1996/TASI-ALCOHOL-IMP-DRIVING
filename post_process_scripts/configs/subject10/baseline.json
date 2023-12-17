@@ -1,107 +1,107 @@
 {
     "base_config": {
-        "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
-        "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
-        "subject_id": "Subject03",
-        "alcohol_session_name": "70-Alcohol",
-        "timestamped_folder_name": "08-11-23_11-52-04",
-        "length_of_calibration_mat": 1455,
-        "sync_required": false
+        "target_folder_path": "/media/tasi/InternalDrive/POST_PROCESSED_DATA/",
+        "source_folder_path": "/media/tasi/InternalDrive/DATA_COLLECTION/ORG_DATA/",
+        "subject_id": "Subject10",
+        "alcohol_session_name": "Baseline",
+        "timestamped_folder_name": "20-11-23_11-07-12",
+        "length_of_calibration_mat": 2155,
+        "sync_required": true
     },
     "execution_specific_config": {
         "can": {
-            "execute_can_extraction": false,
+            "execute_can_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward", "Driving forward", "Parking"
             ]
         },
         "gps": {
-            "execute_data_classification": false,
-            "execute_gps_extraction": false,
+            "execute_data_classification": true,
+            "execute_gps_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking"
             ]
         },
         "images3": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "execute_lane_deviation_calculation": true,
             "sub_categories_to_classify": [
-                "Driving backward", "Driving forward", "Parking"
+                "Driving backward","Driving forward","Parking"
             ],
             "lane_deviation_parameters": {
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/right-cam-2023-11-08-100212-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive/DATA_COLLECTION/ORG_DATA/Subject10/Subject10_cali_img/right-cam-2023-11-20-105121_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        509,
-                        152
+                        63,
+                        139
                     ],
                     "top_right": [
-                        1242,
-                        191
+                        982,
+                        214
                     ],
                     "bottom_left": [
-                        509,
-                        643
+                        90,
+                        698
                     ],
                     "bottom_right": [
-                        1226,
-                        569
+                        978,
+                        487
                     ]
                 },
                 "sub_categories_for_lane_deviation": [
-                    "Driving backward", "Driving forward"
+                    "Driving backward","Driving forward"
                 ],
                 "skip_perpective_transformation": false
             }
         },
         "images4": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "execute_lane_deviation_calculation": true,
             "sub_categories_to_classify": [
-                "Driving backward", "Driving forward", "Parking"
+                "Driving backward","Driving forward","Parking"
             ],
             "lane_deviation_parameters": {
 
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/left-cam-2023-11-08-100454-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive/DATA_COLLECTION/ORG_DATA/Subject10/Subject10_cali_img/left-cam-2023-11-20-105629_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        498,
-                        57
+                        84,
+                        24
                     ],
                     "top_right": [
-                        1250,
-                        104
+                        1030,
+                        111
                     ],
                     "bottom_left": [
-                        502,
-                        548
+                        137,
+                        578
                     ],
                     "bottom_right": [
-                        1209,
-                        486
+                        1010,
+                        394
                     ]
                 },
                 "sub_categories_for_lane_deviation": [
-                    "Driving backward", "Driving forward"
+                    "Driving backward","Driving forward"
                 ],
                 "skip_perpective_transformation": false
             }
         },
         "images1": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"
             ]
         },
         "images2": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"

@@ -158,7 +158,7 @@ if __name__ == '__main__':
     # new_directory = "F:/SubjectAnn/Baseline/24-10-23_12-43-25/event_signal"
     # new_directory = "/home/iac_user/DATA_COLLECTION/SubjectAnn/70-Alcohol/24-10-23_13-49-28/event_signal"
     
-    new_directory = "/home/iac_user/DATA_COLLECTION(DO NOT DELETE)/Subject02/Baseline/31-10-23_10-16-52" + "/event_signal"
+    new_directory = "/media/tasi/ImDrive_Org/DATA_COLLECTION(DO NOT DELETE)/Subject13/Baseline/29-11-23_10-15-46" + "/event_signal"
 
     # Change the working directory
     os.chdir(new_directory)

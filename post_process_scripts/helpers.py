@@ -283,7 +283,7 @@ def file_recategory(timestamp_list, org_folder_name, new_folder_name):
                 for p in range(len(complete_event_bag_ind_list[q])):
                     old_A_file_path = os.path.join(folder_path, files[complete_event_bag_ind_list[q][p]])
                     new_A_file_path = os.path.join(event_new_path, files[complete_event_bag_ind_list[q][p]])
-
+                    log.debug("Copying {} to {}".format(old_A_file_path, new_A_file_path))
                     shutil.copy2(old_A_file_path, new_A_file_path)
             csv_file_path = event_new_path +'/'+ "event_timestamp.csv"
             event_name = new_folder_name + '_' + str(q+1)
@@ -317,9 +317,14 @@ def extract_images_from_bag(input_folder, output_folder, is_camera_flipped_vert,
 
                     time_milli = t.to_nsec() / 1e9
                     timestamp_obj = datetime.fromtimestamp(time_milli)
+                    log.debug("Timestamp: {}".format(timestamp_obj))
+                    log.debug("Start time: {}".format(start_time))
+                    log.debug("Stop time: {}".format(stop_time))
                     if timestamp_obj < start_time:
+                        log.debug("Skipping frame before start time")
                         continue
                     if timestamp_obj > stop_time:
+                        log.debug("Skipping frame after stop time")
                         break
                     bridge = CvBridge()
                     try:
@@ -341,6 +346,7 @@ def extract_images_from_bag(input_folder, output_folder, is_camera_flipped_vert,
                     filename = os.path.join(output_folder, f'bag_{bag_number}_frame_{session_count}_{t}.png')
                     cv2.imwrite(filename, cv_img)
                 bag.close()
+    log.info("Done reading all bag files. Total Images: {}".format(session_count))
     return 
 # Function to extract timestamp from a filename
 def extract_timestamp_from_filename(filename):

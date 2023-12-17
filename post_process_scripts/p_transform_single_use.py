@@ -11,9 +11,9 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
     The coordinates need to be obtained from the paint app
         '''''''''
 
-    if not os.path.exists(input_folder):
-        print(f"The input folder '{input_folder}' does not exist. Stopping.")
-        return
+    # if not os.path.exists(input_folder):
+    #     print(f"The input folder '{input_folder}' does not exist. Stopping.")
+    #     return
     #Clear output folder before running
     # if os.path.exists(output_folder):
     #      for file in os.listdir(output_folder):
@@ -61,7 +61,7 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
     dpp_hor = mat_hor_len / num_trans_hor_pixel
     # print('horizontal dpp:', dpp_hor, 'mm')
     # filename = os.path.join(output_folder,"Transformed_image.jpg")
-    filename = "/home/tasi/Transformed_image_left.jpg"
+    filename = "/home/tasi/Transformed_image_right.jpg"
     log.debug(filename)
     cv2.imwrite(filename, result)
     print(filename)
@@ -92,22 +92,23 @@ def p_transform(corner_positions, calibration_img, input_folder, output_folder, 
 if __name__ == "__main__":
 
     lane_deviation_parameters = {
+        "calibration_img_path": "/home/tasi/subject13_cali_img/subj13_left_cali_1_flipped.jpg",
         "corner_points": {
             "top_left": [
-                24,
-                9
+                8,
+                117
             ],
             "top_right": [
-                522,
-                50
+                633,
+                125
             ],
             "bottom_left": [
-                51,
-                363
+                34,
+                458
             ],
             "bottom_right": [
-                506,
-                281
+                616,
+                308
             ]
         }
     }
@@ -116,9 +117,9 @@ if __name__ == "__main__":
     bottom_left = lane_deviation_parameters['corner_points']['bottom_left']
     bottom_right = lane_deviation_parameters['corner_points']['bottom_right']
     corner_positions = [top_left, top_right, bottom_left, bottom_right]
-    cali_img = cv2.imread("/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img/left_cali_Subject04_flipped.jpg")
+    cali_img = cv2.imread(lane_deviation_parameters['calibration_img_path'])
 
     input_folder = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img"
     output_folder = "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject04/Subject04_cali_img"
 
-    p_transform(corner_positions, cali_img, input_folder, output_folder,True)
+    p_transform(corner_positions, cali_img, input_folder, output_folder,False)

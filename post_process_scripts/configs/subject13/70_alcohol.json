@@ -2,52 +2,52 @@
     "base_config": {
         "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
         "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
-        "subject_id": "Subject03",
+        "subject_id": "Subject13",
         "alcohol_session_name": "70-Alcohol",
-        "timestamped_folder_name": "08-11-23_11-52-04",
-        "length_of_calibration_mat": 1455,
-        "sync_required": false
+        "timestamped_folder_name": "29-11-23_11-37-19",
+        "length_of_calibration_mat": 2255,
+        "sync_required": true
     },
     "execution_specific_config": {
         "can": {
-            "execute_can_extraction": false,
+            "execute_can_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward", "Driving forward", "Parking"
             ]
         },
         "gps": {
-            "execute_data_classification": false,
-            "execute_gps_extraction": false,
+            "execute_data_classification": true,
+            "execute_gps_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking"
             ]
         },
         "images3": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "execute_lane_deviation_calculation": true,
             "sub_categories_to_classify": [
                 "Driving backward", "Driving forward", "Parking"
             ],
             "lane_deviation_parameters": {
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/right-cam-2023-11-08-100212-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject15/Subject15_cali_img/right-cam-2023-12-05-100717_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        509,
-                        152
+                        26,
+                        140
                     ],
                     "top_right": [
-                        1242,
-                        191
+                        1084,
+                        245
                     ],
                     "bottom_left": [
-                        509,
-                        643
+                        39,
+                        712
                     ],
                     "bottom_right": [
-                        1226,
-                        569
+                        1082,
+                        472
                     ]
                 },
                 "sub_categories_for_lane_deviation": [
@@ -57,8 +57,8 @@
             }
         },
         "images4": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "execute_lane_deviation_calculation": true,
             "sub_categories_to_classify": [
@@ -66,23 +66,23 @@
             ],
             "lane_deviation_parameters": {
 
-                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject03/Subejct03_cali_img/left-cam-2023-11-08-100454-flipped.jpg",
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject15/Subject15_cali_img/left-cam-2023-12-05-100143_flipped.jpg",
                 "corner_points": {
                     "top_left": [
-                        498,
-                        57
+                        96,
+                        10
                     ],
                     "top_right": [
-                        1250,
-                        104
+                        1176,
+                        146
                     ],
                     "bottom_left": [
-                        502,
-                        548
+                        134,
+                        566
                     ],
                     "bottom_right": [
-                        1209,
-                        486
+                        1149,
+                        383
                     ]
                 },
                 "sub_categories_for_lane_deviation": [
@@ -92,16 +92,16 @@
             }
         },
         "images1": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"
             ]
         },
         "images2": {
-            "execute_data_classification": false,
-            "execute_image_extraction": false,
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
             "execute_video_extraction": true,
             "sub_categories_to_classify": [
                 "Driving backward","Driving forward","Parking","Eye tracking"

@@ -60,28 +60,6 @@ def perform_image_extraction_for_camera(subject_id, alcohol_session_name, timest
     end_time = time.time()
     execution_time = int((end_time - process_start_time)/60)
     log.info('Execution time: {} mins'.format(execution_time))
-#Check if the images are synced
-# 
-# def image_sync_completed(subject_id, alcohol_session_name,target_folder_path):
-#     source_folder = os.path.join(target_folder_path, subject_id, alcohol_session_name)
-#     sub_categories_to_classify = os.listdir(source_folder)
-#     camera_sync_status = {}
-#     for sub_category in sub_categories_to_classify:
-#         sub_category_folder = os.path.join(source_folder, sub_category)
-#         sub_category_runs = len([folder for folder in os.listdir(sub_category_folder) if os.path.isdir(os.path.join(sub_category_folder, folder))] )
-#         for sub_category_run_number in range(1, sub_category_runs+1):
-#             images_dirs = os.listdir(os.path.join(sub_category_folder, sub_category + '_' + str(sub_category_run_number), "images"))
-#             for img_folder in images_dirs:
-#                 sync_csv_path = os.path.join(source_folder, sub_category, sub_category + '_' + str(sub_category_run_number), "images",img_folder+"_generated_frames.csv")
-#                 # print(sync_csv_path)
-#                 if not os.path.exists(sync_csv_path):
-#                     camera_sync_status[img_folder] = False
-#                 else:
-#                     camera_sync_status[img_folder] = True
-#     if False in camera_sync_status.values():
-#         return False
-#     else:
-#         return True
 
 #IMAGE SYNC
 
@@ -259,7 +237,7 @@ def combine_lane_deviation_output_from_side_cams(subject_id, alcohol_session_nam
 if __name__ == '__main__':
     # Read the arguments from the json file who's path is given as the first argument
 
-    log.info('Starting post processing')
+
     start_time = time.time()
     with open(sys.argv[1]) as json_file:
         config = json.load(json_file)
@@ -272,7 +250,7 @@ if __name__ == '__main__':
         hor_length_of_calibration_mat = base_config.get('length_of_calibration_mat', 1455)
         sync_required = base_config.get('sync_required',False)
 
-
+        log.info('Starting post processing for subject: {} and session: {}'.format(subject_id, alcohol_session_name))
 
         dict_of_runs = config['execution_specific_config']
         # log_file_path = os.path.join(source_folder_path, subject_id, alcohol_session_name)

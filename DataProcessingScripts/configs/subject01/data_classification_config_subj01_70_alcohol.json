@@ -1,0 +1,111 @@
+{
+    "base_config": {
+        "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+        "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+        "subject_id": "Subject01",
+        "alcohol_session_name": "70-Alcohol",
+        "timestamped_folder_name": "26-10-23_11-41-54",
+        "length_of_calibration_mat": 1455,
+        "sync_required": true
+    },
+    "execution_specific_config": {
+        "can": {
+            "execute_can_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward", "Driving forward", "Parking"
+            ]
+        },
+        "gps": {
+            "execute_data_classification": false,
+            "execute_gps_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking"
+            ]
+        },
+        "images3": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": false,
+            "sub_categories_to_classify": [
+                "Driving backward", "Driving forward", "Parking"
+            ],
+            "lane_deviation_parameters": {
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject01/subj01_right_cali.png",
+                "corner_points": {
+                    "top_left": [
+                        229,
+                        162
+                    ],
+                    "top_right": [
+                        948,
+                        199
+                    ],
+                    "bottom_left": [
+                        253,
+                        689
+                    ],
+                    "bottom_right": [
+                        947,
+                        542
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward", "Driving forward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images4": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "execute_lane_deviation_calculation": false,
+            "sub_categories_to_classify": [
+                "Driving backward", "Driving forward", "Parking"
+            ],
+            "lane_deviation_parameters": {
+
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject01/subj01_left_cali.png",
+                "corner_points": {
+                    "top_left": [
+                        146,
+                        45
+                    ],
+                    "top_right": [
+                        887,
+                        122
+                    ],
+                    "bottom_left": [
+                        175,
+                        587
+                    ],
+                    "bottom_right": [
+                        864,
+                        458
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward", "Driving forward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images1": {
+            "execute_data_classification": false,
+            "execute_image_extraction": false,
+            "execute_video_extraction": false,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking","Eye tracking"
+            ]
+        },
+        "images2": {
+            "execute_data_classification": false,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking","Eye tracking"
+            ]
+        }
+    }
+}

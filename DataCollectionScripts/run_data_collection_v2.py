@@ -144,13 +144,16 @@ def extract_bag_number(path):
 # Function to check the response of the recording script
 def check_rec_resp(script_resp,window_text):
     print(script_resp)
-    # Check if the response contains the size of the files and display the status
     if not "size" in script_resp:
         window_text += "\n\nRecording status will change after a minute"
         window['-OUTPUT-'].update(window_text)
         return
     category_data = {}
     current_category = None
+    # rec_file_name = get_rec_file_name(script_resp)
+    # display_text = "\nRECORDING FOLDER NAME: {}".format(rec_file_name)
+    # window_text += display_text
+    # window['-OUTPUT-'].update("RECORDING FOLDER NAME: ",rec_file_name)
     display_text = ""
     lines = script_resp.strip().split("\n")
     for line in lines:
@@ -163,7 +166,7 @@ def check_rec_resp(script_resp,window_text):
             key, value = line.split(":", 1)
             category_data[current_category][key.strip()] = value.strip()
 
-    # Check the size of the files and display the error status depending on the file size
+    # print(category_data)
     for category, data in category_data.items():
         if category == "CAN-MESSAGES":
             if "size" not in data:
@@ -193,6 +196,7 @@ def check_rec_resp(script_resp,window_text):
             display_text += "\n"+"!!!!!!!!!!  ERROR  !!!!!!!!!!" 
         if bag_number != " ":
             display_text += "\n" + f"{category} -- Bag Number:{bag_number}, Status: {status}"
+        
         else:
             display_text += "\n" + f"{category} -- Status: {status}"
     window_text += display_text
@@ -224,6 +228,8 @@ def main(subject_id, sessionName):
     while True:
         event, values = window.read()
         window['-TEXT1-'].update(subject_data)
+        # check_counter += 1
+        # ret_code = check_system_connection(window['-DEVICE-'], check_counter)
         
         if event == CHECK_SYSTEM_CONNECTION:
             check_counter += 1
@@ -248,6 +254,7 @@ def main(subject_id, sessionName):
             output_dir = Path(parent_folder_brac_path)
             output_dir.mkdir(parents=True, exist_ok=True)
             filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
+            # print("filename:",filename)
             output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "before", root_brac_filename), daemon=True)
             output_thread.start()  
 
@@ -265,6 +272,7 @@ def main(subject_id, sessionName):
             output_dir = Path(parent_folder_brac_path)
             output_dir.mkdir(parents=True, exist_ok=True)
             filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
+            # print("filename:",filename)
             output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "after", root_brac_filename), daemon=True)
             output_thread.start()  
 
@@ -309,7 +317,9 @@ def main(subject_id, sessionName):
             kill_running_processes_name("all_camera_recording",RUNNING_PROCESSES)
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
-            video_recorded_started = False            
+            video_recorded_started = False
+            # check_recording_thread.join()
+            
 
     kill_running_processes(RUNNING_PROCESSES)
     # Close the window and clean up
@@ -322,6 +332,8 @@ if __name__ == "__main__":
         argParser.add_argument("-s", "--subjectID", help="Subject ID",default="Subject_01")
         argParser.add_argument("-n", "--sessionName", help="Session Name",default="Baseline")
         args = argParser.parse_args()
+        print("args=%s" % args)
+
         print("args.SubjectID=%s" % args.subjectID)
         print("args.SessionName=%s" % args.sessionName)
         main(args.subjectID, args.sessionName)

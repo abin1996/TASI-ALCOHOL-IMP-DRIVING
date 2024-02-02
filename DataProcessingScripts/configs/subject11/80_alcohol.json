@@ -1,0 +1,29 @@
+{
+    "base_config": {
+        "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+        "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+        "subject_id": "Subject11",
+        "alcohol_session_name": "80-Alcohol",
+        "timestamped_folder_name": "21-11-23_12-58-01",
+        "length_of_calibration_mat": 2455,
+        "sync_required": true
+    },
+    "execution_specific_config": {
+        "images1": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "sub_categories_to_classify": [
+                "Eye tracking"
+            ]
+        },
+        "images2": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "sub_categories_to_classify": [
+                "Eye tracking"
+            ]
+        }
+    }
+}

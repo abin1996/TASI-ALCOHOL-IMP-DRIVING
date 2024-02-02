@@ -1,0 +1,111 @@
+{
+    "base_config": {
+        "target_folder_path": "/media/tasi/InternalDrive1/POST_PROCESSED_DATA/",
+        "source_folder_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/",
+        "subject_id": "Subject11",
+        "alcohol_session_name": "Baseline",
+        "timestamped_folder_name": "21-11-23_11-07-20",
+        "length_of_calibration_mat": 2455,
+        "sync_required": true
+    },
+    "execution_specific_config": {
+        "can": {
+            "execute_can_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward", "Driving forward", "Parking"
+            ]
+        },
+        "gps": {
+            "execute_data_classification": true,
+            "execute_gps_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking"
+            ]
+        },
+        "images3": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "execute_lane_deviation_calculation": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking"
+            ],
+            "lane_deviation_parameters": {
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject11/Subject11_cali_img/right-cam-2023-11-21-104348_flipped.jpg",
+                "corner_points": {
+                    "top_left": [
+                        4,
+                        119
+                    ],
+                    "top_right": [
+                        1000,
+                        210
+                    ],
+                    "bottom_left": [
+                        37,
+                        693
+                    ],
+                    "bottom_right": [
+                        995,
+                        464
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward","Driving forward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images4": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "execute_lane_deviation_calculation": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking"
+            ],
+            "lane_deviation_parameters": {
+
+                "calibration_img_path": "/media/tasi/InternalDrive1/DATA_COLLECTION/ORG_DATA/Subject11/Subject11_cali_img/left-cam-2023-11-21-105322_flipped.jpg",
+                "corner_points": {
+                    "top_left": [
+                        190,
+                        51
+                    ],
+                    "top_right": [
+                        1161,
+                        188
+                    ],
+                    "bottom_left": [
+                        194,
+                        584
+                    ],
+                    "bottom_right": [
+                        1123,
+                        452
+                    ]
+                },
+                "sub_categories_for_lane_deviation": [
+                    "Driving backward","Driving forward"
+                ],
+                "skip_perpective_transformation": false
+            }
+        },
+        "images1": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking","Eye tracking"
+            ]
+        },
+        "images2": {
+            "execute_data_classification": true,
+            "execute_image_extraction": true,
+            "execute_video_extraction": true,
+            "sub_categories_to_classify": [
+                "Driving backward","Driving forward","Parking","Eye tracking"
+            ]
+        }
+    }
+}

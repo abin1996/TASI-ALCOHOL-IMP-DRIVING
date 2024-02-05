@@ -45,10 +45,8 @@ layout = [
             [sg.Frame("Data Collection Information", [[sg.Text("Subject: \nSession Name:",font=('Helvetica', 20), key='-TEXT1-', text_color='black')]])],
             [sg.Button(CHECK_SYSTEM_CONNECTION,button_color="brown",font=('Helvetica', 20))],
             [sg.Button(BEFORE_DRIVE_START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
-            # [sg.VPush()],
             [sg.Button(START_RECORD_AUDIO_BUTTON,button_color="green",font=('Helvetica', 20))],
             [sg.Button(STOP_AUDIO_RECORD_BUTTON,button_color="red", font=('Helvetica', 20))],
-            # [sg.VPush()],
             [sg.Button(START_RECORDING_DRIVING_BUTTON,button_color="green",font=('Helvetica', 20))],
             [sg.Button(STOP_RECORDING_DRIVING_BUTTON,button_color="red",font=('Helvetica', 20))],
             [sg.Button(AFTER_DRIVE_START_BRAC_BUTTON,button_color="darkblue",font=('Helvetica', 20))],
@@ -150,10 +148,6 @@ def check_rec_resp(script_resp,window_text):
         return
     category_data = {}
     current_category = None
-    # rec_file_name = get_rec_file_name(script_resp)
-    # display_text = "\nRECORDING FOLDER NAME: {}".format(rec_file_name)
-    # window_text += display_text
-    # window['-OUTPUT-'].update("RECORDING FOLDER NAME: ",rec_file_name)
     display_text = ""
     lines = script_resp.strip().split("\n")
     for line in lines:
@@ -166,7 +160,6 @@ def check_rec_resp(script_resp,window_text):
             key, value = line.split(":", 1)
             category_data[current_category][key.strip()] = value.strip()
 
-    # print(category_data)
     for category, data in category_data.items():
         if category == "CAN-MESSAGES":
             if "size" not in data:
@@ -228,7 +221,6 @@ def main(subject_id, sessionName):
     while True:
         event, values = window.read()
         window['-TEXT1-'].update(subject_data)
-        # check_counter += 1
         # ret_code = check_system_connection(window['-DEVICE-'], check_counter)
         
         if event == CHECK_SYSTEM_CONNECTION:
@@ -254,7 +246,6 @@ def main(subject_id, sessionName):
             output_dir = Path(parent_folder_brac_path)
             output_dir.mkdir(parents=True, exist_ok=True)
             filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-            # print("filename:",filename)
             output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "before", root_brac_filename), daemon=True)
             output_thread.start()  
 
@@ -272,7 +263,6 @@ def main(subject_id, sessionName):
             output_dir = Path(parent_folder_brac_path)
             output_dir.mkdir(parents=True, exist_ok=True)
             filename = parent_folder_brac_path + 'brac_{}.csv'.format(start_time.strftime('%d-%m-%y_%H-%M-%S'))
-            # print("filename:",filename)
             output_thread = threading.Thread(target=record_brac, args=(filename, start_time, BRAC_DBC, window['-OUTPUT-'], subject_id, sessionName, "after", root_brac_filename), daemon=True)
             output_thread.start()  
 
@@ -318,7 +308,6 @@ def main(subject_id, sessionName):
             time.sleep(0.5)
             kill_running_processes_name("camera_drivers",RUNNING_PROCESSES)
             video_recorded_started = False
-            # check_recording_thread.join()
             
 
     kill_running_processes(RUNNING_PROCESSES)

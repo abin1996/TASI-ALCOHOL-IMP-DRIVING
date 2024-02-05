@@ -41,10 +41,7 @@ def get_frame_data(db, frame, start_time, print_to_stdout=False):
     cur_time = start_time + datetime.timedelta(milliseconds=float(frame.timestamp))
     cur_time = cur_time.strftime('%d-%m-%y_%H:%M:%S.%f')
     cur_raw_data = frame.data 
-    cur_dlc = frame.dlc
-    cur_flags = frame.flags
     cur_msg_name = msg.name
-    cur_msg_comment = msg.comment
     cur_signals = []
     result_ready = False 
     test_failed = False
